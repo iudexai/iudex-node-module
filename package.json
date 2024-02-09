@@ -23,12 +23,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/iudexai/iudex.git"
+    "url": "git+https://github.com/iudexai/iudex-node-module.git"
   },
   "bugs": {
-    "url": "https://github.com/iudexai/iudex/issues"
+    "url": "https://github.com/iudexai/iudex-node-module/issues"
   },
-  "homepage": "https://github.com/iudexai/iudex#readme",
+  "homepage": "https://github.com/iudexai/iudex-node-module#readme",
   "devDependencies": {
     "@types/node": "^20.11.16",
     "bun": "^1.0.26",
