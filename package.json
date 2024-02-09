@@ -1,0 +1,46 @@
+{
+  "name": "iudex",
+  "version": "0.6.0",
+  "description": "Iudex client",
+  "scripts": {
+    "build": "tsup",
+    "test": "jest"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "iudex",
+    "ai",
+    "client",
+    "llm",
+    "openai"
+  ],
+  "author": "Iudex",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iudexai/iudex.git"
+  },
+  "bugs": {
+    "url": "https://github.com/iudexai/iudex/issues"
+  },
+  "homepage": "https://github.com/iudexai/iudex#readme",
+  "devDependencies": {
+    "@types/node": "^20.11.16",
+    "bun": "^1.0.26",
+    "jest": "^29.7.0",
+    "openai": "^4.26.1",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "p-map": "^7.0.1",
+    "p-retry": "^6.2.0",
+    "zod": "^3.22.4"
+  }
+}
