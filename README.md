@@ -3,7 +3,7 @@
 Iudex is an infrastructure that enables complex and accurate function calling apis. Our infrastructure provides a
 natural language interface that can accomplish complex or answer complex queries given the control of your own functions.
 
-Check out [iudex.ai](iudex.ai) to sign up.
+Check out [iudex.ai](https://iudex.ai) to sign up.
 
 ## Client
 
