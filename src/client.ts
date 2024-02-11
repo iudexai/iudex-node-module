@@ -26,7 +26,7 @@ function unwrapApi(json: any): any {
 
 function parseIudexResponse(r: Response): Promise<any> {
   return checkResponse(r).json().then(throwOnApiError).then(unwrapApi).catch((e) => {
-    throw Error(`Request ${r.url} failed with ${r.status}: ${e.message}`)
+    throw Error(`Request ${r.url} failed with ${r.status}: ${e.message}`);
   });
 }
 
@@ -40,7 +40,7 @@ export function returnFunctionCall(baseUrl: string, apiKey: string) {
     };
     return fetch(baseUrl + '/function_calls/' + functionCallId + '/return', {
       method: 'PUT',
-      headers: { Authorization: `Bearer ${apiKey}` },
+      headers: { 'x-api-key': `${apiKey}` },
       body: JSON.stringify(bodyJson),
     }).then(parseIudexResponse);
   };
@@ -51,7 +51,7 @@ export function nextMessage(baseUrl: string, apiKey: string) {
   return function (workflowId: string): Promise<NextMessageRes> {
     return fetch(baseUrl + '/workflows/' + workflowId + '/next_message', {
       method: 'GET',
-      headers: { Authorization: `Bearer ${apiKey}` },
+      headers: { 'x-api-key': `${apiKey}` },
     }).then(parseIudexResponse);
   };
 }
@@ -61,7 +61,7 @@ export function startWorkflow(baseUrl: string, apiKey: string) {
   return function (query: string, modules?: string): Promise<StartWorkflowRes> {
     return fetch(baseUrl + '/workflows', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${apiKey}` },
+      headers: { 'x-api-key': `${apiKey}` },
       body: JSON.stringify({ query, modules }),
     }).then(parseIudexResponse);
   };
