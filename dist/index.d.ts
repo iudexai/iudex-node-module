@@ -194,6 +194,19 @@ type StartWorkflowRes = {
     message: string;
 };
 declare function startWorkflow(baseUrl: string, apiKey: string): (query: string, modules?: string) => Promise<StartWorkflowRes>;
+type FunctionJson = {
+    name: string;
+    description?: string;
+    parameters?: Record<string, any>;
+    returns?: Record<string, any>;
+    usageExample?: string;
+    returnsExample?: string;
+};
+type putFunctionJsonsReq = {
+    jsons: FunctionJson[];
+    module?: string;
+};
+declare function putFunctionJsons(baseUrl: string, apiKey: string): (jsons: FunctionJson[], module?: string) => Promise<void>;
 
 declare const DEFAULT_BASE_URL = "https://5pz08znmzj.execute-api.us-west-2.amazonaws.com";
 type IudexMessage = ChatTurn;
@@ -221,6 +234,7 @@ declare class Iudex {
         apiKey?: string;
         baseUrl?: string;
     });
+    uploadFunctions: (jsons: Array<OpenAI.ChatCompletionCreateParams.Function>, modules?: string) => Promise<void>;
     chatCompletionsCreate: (body: OpenAI.ChatCompletionCreateParamsNonStreaming & {
         messages: Array<ChatCompletionMessageWithIudex>;
     }) => Promise<ChatCompletionWithIudex>;
@@ -241,4 +255,4 @@ declare function mapIudexToOpenAi(m: IudexMessage, workflowId: string): Omit<Cha
  */
 declare function extractMessageTextContent(content: OpenAI.ChatCompletionUserMessageParam['content']): string;
 
-export { type ChatCompletionMessageWithIudex, type ChatCompletionWithIudex, DEFAULT_BASE_URL, Iudex, type IudexMessage, type NextMessageRes, type ReturnFunctionCallBody, type ReturnFunctionCallRes, type StartWorkflowRes, Iudex as default, extractMessageTextContent, mapIudexToOpenAi, nextMessage, returnFunctionCall, startWorkflow };
+export { type ChatCompletionMessageWithIudex, type ChatCompletionWithIudex, DEFAULT_BASE_URL, Iudex, type IudexMessage, type NextMessageRes, type ReturnFunctionCallBody, type ReturnFunctionCallRes, type StartWorkflowRes, Iudex as default, extractMessageTextContent, mapIudexToOpenAi, nextMessage, putFunctionJsons, type putFunctionJsonsReq, returnFunctionCall, startWorkflow };

@@ -8,17 +8,21 @@ function checkResponse(r: Response): Response {
 }
 
 function throwOnApiError<T>(json: T): T {
-  if (!json) {
-    return json;
-  }
-  if ((json as any).message === 'Service Unavailable') {
+  // Check service unavailable message
+  if ((json as any)?.message === 'Service Unavailable') {
     throw Error((json as any).message);
   }
+  // Pass through otherwise
   return json;
 }
 
 function unwrapApi(json: any): any {
-  if (json && json.body && typeof json.body === 'string' && json.body.startsWith('{') && json.body.endsWith('}')) {
+  // If there is a body, return that instead
+  if (json?.body
+    && typeof json.body === 'string'
+    && json.body.startsWith('{')
+    && json.body.endsWith('}')
+  ) {
     return JSON.parse(json.body);
   }
   return json;
@@ -30,6 +34,7 @@ function parseIudexResponse(r: Response): Promise<any> {
   });
 }
 
+// TODO change to putFunctionCallReturn to better match api def name
 export type ReturnFunctionCallBody = Pick<ChatFunctionReturn, 'functionCallId'|'functionReturn'>;
 export type ReturnFunctionCallRes = { workflowId: string; message: string; };
 export function returnFunctionCall(baseUrl: string, apiKey: string) {
@@ -56,6 +61,7 @@ export function nextMessage(baseUrl: string, apiKey: string) {
   };
 }
 
+// TODO change to postWorkflows to better match api def name
 export type StartWorkflowRes = { workflowId: string; message: string; };
 export function startWorkflow(baseUrl: string, apiKey: string) {
   return function (query: string, modules?: string): Promise<StartWorkflowRes> {
@@ -63,6 +69,27 @@ export function startWorkflow(baseUrl: string, apiKey: string) {
       method: 'POST',
       headers: { 'x-api-key': `${apiKey}` },
       body: JSON.stringify({ query, modules }),
+    }).then(parseIudexResponse);
+  };
+}
+
+
+type FunctionJson = {
+  name: string;
+  description?: string;
+  parameters?: Record<string, any>;
+  returns?: Record<string, any>;
+  usageExample?: string;
+  returnsExample?: string;
+};
+export type putFunctionJsonsReq = { jsons: FunctionJson[]; module?: string; };
+export function putFunctionJsons(baseUrl: string, apiKey: string) {
+  return function (jsons: FunctionJson[], module?: string): Promise<void> {
+    const bodyJson: putFunctionJsonsReq = { jsons, module };
+    return fetch(baseUrl + '/function_jsons', {
+      method: 'PUT',
+      headers: { 'x-api-key': `${apiKey}` },
+      body: JSON.stringify(bodyJson),
     }).then(parseIudexResponse);
   };
 }

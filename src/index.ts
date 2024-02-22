@@ -1,8 +1,8 @@
 import OpenAI from 'openai';
 import { ChatTurn } from './message.js';
 import * as client from './client.js';
-import { poll } from './utils.js';
 export * from './client.js';
+import { poll } from './utils.js';
 
 export const DEFAULT_BASE_URL = 'https://5pz08znmzj.execute-api.us-west-2.amazonaws.com';
 
@@ -51,6 +51,14 @@ export class Iudex {
     this.baseUrl = baseUrl;
   }
 
+  uploadFunctions = (
+    jsons: Array<OpenAI.ChatCompletionCreateParams.Function>,
+    modules?: string,
+  ): Promise<void> => {
+    return client.putFunctionJsons(this.baseUrl, this.apiKey)(jsons, modules);
+  };
+
+  // OpenAI interface shim
   chatCompletionsCreate = (body: OpenAI.ChatCompletionCreateParamsNonStreaming & {
     messages: Array<ChatCompletionMessageWithIudex>
   }): Promise<ChatCompletionWithIudex>  => {
@@ -71,7 +79,8 @@ export class Iudex {
       const functionReturn = lastMessage.content;
 
       // Put data
-      const functionCallRes = client.returnFunctionCall(this.baseUrl, this.apiKey)(callId, functionReturn);
+      const functionCallRes =
+        client.returnFunctionCall(this.baseUrl, this.apiKey)(callId, functionReturn);
 
       // Wait for new message
       const nextMessageRes = functionCallRes
@@ -91,16 +100,17 @@ export class Iudex {
     }
 
     // Else create new workflow
-    return client.startWorkflow(this.baseUrl, this.apiKey)(extractMessageTextContent(lastMessage.content))
+    const messageContent = extractMessageTextContent(lastMessage.content);
+    return client.startWorkflow(this.baseUrl, this.apiKey)(messageContent)
       .then(({ workflowId }) =>
         poll(client.nextMessage(this.baseUrl, this.apiKey), [workflowId])
-        .then((r) => {
-          return {
-            model: body.model,
-            ...mapIudexToOpenAi(r, workflowId),
-          };
-        }
-      ));
+          .then((r) => {
+            return {
+              model: body.model,
+              ...mapIudexToOpenAi(r, workflowId),
+            };
+          }),
+      );
   };
 
   chat = {
@@ -113,7 +123,10 @@ export class Iudex {
 /**
  * Maps IudexMessage to OpenAI.ChatCompletion.
  */
-export function mapIudexToOpenAi(m: IudexMessage, workflowId: string): Omit<ChatCompletionWithIudex, 'model'> {
+export function mapIudexToOpenAi(
+  m: IudexMessage,
+  workflowId: string,
+): Omit<ChatCompletionWithIudex, 'model'> {
   // If the result is a function_call, we return the function call
   if (m.type === 'functionCall') {
     const message = {

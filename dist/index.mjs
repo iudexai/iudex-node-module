@@ -6,16 +6,13 @@ function checkResponse(r) {
   return r;
 }
 function throwOnApiError(json) {
-  if (!json) {
-    return json;
-  }
-  if (json.message === "Service Unavailable") {
+  if (json?.message === "Service Unavailable") {
     throw Error(json.message);
   }
   return json;
 }
 function unwrapApi(json) {
-  if (json && json.body && typeof json.body === "string" && json.body.startsWith("{") && json.body.endsWith("}")) {
+  if (json?.body && typeof json.body === "string" && json.body.startsWith("{") && json.body.endsWith("}")) {
     return JSON.parse(json.body);
   }
   return json;
@@ -33,7 +30,7 @@ function returnFunctionCall(baseUrl, apiKey) {
     };
     return fetch(baseUrl + "/function_calls/" + functionCallId + "/return", {
       method: "PUT",
-      headers: { Authorization: `Bearer ${apiKey}` },
+      headers: { "x-api-key": `${apiKey}` },
       body: JSON.stringify(bodyJson)
     }).then(parseIudexResponse);
   };
@@ -42,7 +39,7 @@ function nextMessage(baseUrl, apiKey) {
   return function(workflowId) {
     return fetch(baseUrl + "/workflows/" + workflowId + "/next_message", {
       method: "GET",
-      headers: { Authorization: `Bearer ${apiKey}` }
+      headers: { "x-api-key": `${apiKey}` }
     }).then(parseIudexResponse);
   };
 }
@@ -50,8 +47,18 @@ function startWorkflow(baseUrl, apiKey) {
   return function(query, modules) {
     return fetch(baseUrl + "/workflows", {
       method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}` },
+      headers: { "x-api-key": `${apiKey}` },
       body: JSON.stringify({ query, modules })
+    }).then(parseIudexResponse);
+  };
+}
+function putFunctionJsons(baseUrl, apiKey) {
+  return function(jsons, module) {
+    const bodyJson = { jsons, module };
+    return fetch(baseUrl + "/function_jsons", {
+      method: "PUT",
+      headers: { "x-api-key": `${apiKey}` },
+      body: JSON.stringify(bodyJson)
     }).then(parseIudexResponse);
   };
 }
@@ -98,6 +105,10 @@ var Iudex = class {
     this.apiKey = apiKey;
     this.baseUrl = baseUrl;
   }
+  uploadFunctions = (jsons, modules) => {
+    return putFunctionJsons(this.baseUrl, this.apiKey)(jsons, modules);
+  };
+  // OpenAI interface shim
   chatCompletionsCreate = (body) => {
     const lastMessage = body.messages[body.messages.length - 1];
     if (!lastMessage) {
@@ -120,14 +131,15 @@ var Iudex = class {
     if (!lastMessage.content) {
       throw Error(`The message content is empty.`);
     }
-    return startWorkflow(this.baseUrl, this.apiKey)(extractMessageTextContent(lastMessage.content)).then(({ workflowId }) => poll(nextMessage(this.baseUrl, this.apiKey), [workflowId]).then(
-      (r) => {
+    const messageContent = extractMessageTextContent(lastMessage.content);
+    return startWorkflow(this.baseUrl, this.apiKey)(messageContent).then(
+      ({ workflowId }) => poll(nextMessage(this.baseUrl, this.apiKey), [workflowId]).then((r) => {
         return {
           model: body.model,
           ...mapIudexToOpenAi(r, workflowId)
         };
-      }
-    ));
+      })
+    );
   };
   chat = {
     completions: {
@@ -193,6 +205,7 @@ export {
   extractMessageTextContent,
   mapIudexToOpenAi,
   nextMessage,
+  putFunctionJsons,
   returnFunctionCall,
   startWorkflow
 };
