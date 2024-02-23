@@ -33,9 +33,9 @@ pnpm add iudex
 
 2. Connecting LLMs with any external APIs (Google, Reddit, Twitter, Slack, etc).
 
-3. Automatically extracting data for dashboard generation.
+3. Generating dashboards from events databases.
 
-4. Adding rules to data extraction.
+4. Adding rules based evaluation to extracted data.
 
 
 ## How Iudex Works
