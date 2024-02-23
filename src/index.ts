@@ -28,6 +28,7 @@ export type ChatCompletionWithIudex = OpenAI.ChatCompletion & {
 export class Iudex {
   baseUrl: string;
   apiKey: string;
+  functionLinker?: (fnName: string) => (...args: any[]) => any;
 
   constructor({
     apiKey = process.env.IUDEX_API_KEY,
@@ -56,6 +57,33 @@ export class Iudex {
     modules?: string,
   ): Promise<void> => {
     return client.putFunctionJsons(this.baseUrl, this.apiKey)(jsons, modules);
+  };
+
+  linkFunctions = (functionLinker: (fnName: string) => (...args: any[]) => any): void => {
+    this.functionLinker = functionLinker;
+  };
+
+  sendMessage = async (message: string): Promise<string> => {
+    if (!this.functionLinker) {
+      throw Error(
+        'Establish a way to call functions using `.linkFunctions` before' +
+        ' sending a message.',
+      );
+    }
+
+    const { workflowId } = await client.startWorkflow(this.baseUrl, this.apiKey)(message);
+    let nextMessage = await poll(client.nextMessage(this.baseUrl, this.apiKey), [workflowId]);
+    while (nextMessage.type === 'functionCall') {
+      const fn = this.functionLinker(nextMessage.functionName);
+      const fnReturn = await fn(nextMessage.functionArgs);
+      await client.returnFunctionCall(this.baseUrl, this.apiKey)(
+        nextMessage.functionCallId,
+        JSON.stringify(fnReturn),
+      );
+      nextMessage = await poll(client.nextMessage(this.baseUrl, this.apiKey), [workflowId]);
+    }
+
+    return nextMessage.text;
   };
 
   // OpenAI interface shim

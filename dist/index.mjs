@@ -90,6 +90,7 @@ var DEFAULT_BASE_URL = "https://5pz08znmzj.execute-api.us-west-2.amazonaws.com";
 var Iudex = class {
   baseUrl;
   apiKey;
+  functionLinker;
   constructor({
     apiKey = process.env.IUDEX_API_KEY,
     baseUrl = process.env.IUDEX_BASE_URL || DEFAULT_BASE_URL
@@ -107,6 +108,28 @@ var Iudex = class {
   }
   uploadFunctions = (jsons, modules) => {
     return putFunctionJsons(this.baseUrl, this.apiKey)(jsons, modules);
+  };
+  linkFunctions = (functionLinker) => {
+    this.functionLinker = functionLinker;
+  };
+  sendMessage = async (message) => {
+    if (!this.functionLinker) {
+      throw Error(
+        "Establish a way to call functions using `.linkFunctions` before sending a message."
+      );
+    }
+    const { workflowId } = await startWorkflow(this.baseUrl, this.apiKey)(message);
+    let nextMessage2 = await poll(nextMessage(this.baseUrl, this.apiKey), [workflowId]);
+    while (nextMessage2.type === "functionCall") {
+      const fn = this.functionLinker(nextMessage2.functionName);
+      const fnReturn = await fn(nextMessage2.functionArgs);
+      await returnFunctionCall(this.baseUrl, this.apiKey)(
+        nextMessage2.functionCallId,
+        JSON.stringify(fnReturn)
+      );
+      nextMessage2 = await poll(nextMessage(this.baseUrl, this.apiKey), [workflowId]);
+    }
+    return nextMessage2.text;
   };
   // OpenAI interface shim
   chatCompletionsCreate = (body) => {

@@ -1,13 +1,12 @@
 # Iudex client
 
-Iudex is an infrastructure that enables complex and accurate function calling apis. Our infrastructure provides a
-natural language interface that can accomplish complex or answer complex queries given the control of your own functions.
+**Easily build 🛠️ natural language interfaces for ✨ your own ✨ applications 💻**
 
-Check out [iudex.ai](https://iudex.ai) to sign up.
+Iudex is an API layer that allows you to quickly build applications that can use LLM reasoning in a way that is more
+accurate, secure, and scalable than the toy examples from other projects. Iudex does this by providing an out-of-the-box
+LLM orchestration architecture capable of working with millions of functions and documents.
 
-## Client
-
-To access Iudex, we highly recommend using this JavaScript client.
+**❗ Leverage the power 🦾 of LLMs 🤖 with Iudex ❗**
 
 ## Installation
 ```bash
@@ -18,11 +17,95 @@ yarn add iudex
 pnpm add iudex
 ```
 
+## Getting Started
+
+1. Sign up at [iudex.ai](https://iudex.ai) or shoot a message at support@iudex.ai to get an API key.
+2. Install either the Node or Python client into your project. For Node, use `npm install iudex`.
+3. Store the API key as an environment variable e.g. `IUDEX_API_KEY`.
+4. Upload your function specs as function JSON schema.
+5. Send a message to Iudex.
+6. Get a computed result back.
+
+
+## What can Iudex help you build?
+
+1. Chat bots that can perform actions.
+
+2. Connecting LLMs with any external APIs (Google, Reddit, Twitter, Slack, etc).
+
+3. Automatically extracting data for dashboard generation.
+
+4. Adding rules to data extraction.
+
+
+## How Iudex Works
+
+Iudex works by first indexing your functions. Afterwards, when making a query, Iudex will figure out the best way to accomplish that query
+by intelligently sequencing the functions you have connected and with the prebuilt functions we have created. This way, Iudex ensures
+that the functions that get called do not suffer from hallucinations and can properly use the results from previously run functions.
+
+
 ## Usage
+
+*Basic example*
+
+```typescript
+import dotenv from 'dotenv';
+import { Iudex } from 'iudex';
+
+/* 1. Instantiate client */
+const iudex = new Iudex({ apiKey: process.env.IUDEX_API_KEY });
+
+/* 2. Upload function json schemas */
+await iudex.uploadFunctions([
+  {
+    name: 'getCurrentWeather',
+    description: 'Gets the current weather',
+    parameters: {
+      type: 'object',
+      properties: {
+        location: {
+          type: 'string',
+          description: 'The city and state, e.g. San Francisco, CA',
+        },
+        unit: { type: 'string', enum: ['celsius', 'fahrenheit'] },
+      },
+      required: ['location'],
+    },
+  },
+]);
+
+// Example function defined in code
+function getCurrentWeather({ location, unit }: { location: string; unit: string }) {
+  if (location.toLowerCase().includes('tokyo')) {
+    return { location: 'Tokyo', temperature: '10', unit: 'celsius' };
+  } else if (location.toLowerCase().includes('san francisco')) {
+    return { location: 'San Francisco', temperature: '72', unit: 'fahrenheit' };
+  } else if (location.toLowerCase().includes('paris')) {
+    return { location: 'Paris', temperature: '22', unit: 'fahrenheit' };
+  } else {
+    return { location, temperature: 'unknown' };
+  }
+}
+
+/* 3. Create a way to reference functions using strings */
+function functionLinker(fnName: string) {
+  return {
+    getCurrentWeather,
+  }[fnName];
+};
+
+/* 4. Send a message to Iudex */
+const message = 'What is the weather in tokyo?';
+const iudexReply = await iudex.sendMessage(message);
+
+/* 5. See result */
+console.log(`Result for "${message}": ${iudexReply}`);
+```
 
 *Example where using Iudex replaces OpenAI*
 
-Here, Iudex replaces instances of the OpenAI client where function calling is used.
+Iudex replaces instances of the OpenAI client where function calling is used.
 `fnMap` just needs to be defined to link all functions you want the function calling
 api to be able to call. For Iudex all parameters except `messages` is ignored.
 Functions only need to be uploaded once.
@@ -125,7 +208,7 @@ while (toolMessage && messageHasToolCall(toolMessage)) {
 
 
 /* 8. Print final result */
-console.log('FINISHED', toolMessage);
+console.log('Result: ', toolMessage);
 
 
 //// Helpers

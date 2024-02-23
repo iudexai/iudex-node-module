@@ -230,11 +230,14 @@ type ChatCompletionWithIudex = OpenAI.ChatCompletion & {
 declare class Iudex {
     baseUrl: string;
     apiKey: string;
+    functionLinker?: (fnName: string) => (...args: any[]) => any;
     constructor({ apiKey, baseUrl, }?: {
         apiKey?: string;
         baseUrl?: string;
     });
     uploadFunctions: (jsons: Array<OpenAI.ChatCompletionCreateParams.Function>, modules?: string) => Promise<void>;
+    linkFunctions: (functionLinker: (fnName: string) => (...args: any[]) => any) => void;
+    sendMessage: (message: string) => Promise<string>;
     chatCompletionsCreate: (body: OpenAI.ChatCompletionCreateParamsNonStreaming & {
         messages: Array<ChatCompletionMessageWithIudex>;
     }) => Promise<ChatCompletionWithIudex>;
