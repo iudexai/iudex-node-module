@@ -20,10 +20,15 @@ pnpm add iudex
 ## Getting Started
 
 1. Sign up at [iudex.ai](https://iudex.ai) or shoot a message at support@iudex.ai to get an API key.
+
 2. Install either the Node or Python client into your project. For Node, use `npm install iudex`.
+
 3. Store the API key as an environment variable e.g. `IUDEX_API_KEY`.
+
 4. Upload your function specs as function JSON schema.
+
 5. Send a message to Iudex.
+
 6. Get a computed result back.
 
 
@@ -51,6 +56,7 @@ that the functions that get called do not suffer from hallucinations and can pro
 
 ```typescript
 import dotenv from 'dotenv';
+dotenv.config();
 import { Iudex } from 'iudex';
 
 /* 1. Instantiate client */
@@ -89,11 +95,11 @@ function getCurrentWeather({ location, unit }: { location: string; unit: string 
 }
 
 /* 3. Create a way to reference functions using strings */
-function functionLinker(fnName: string) {
+iudex.linkFunctions((fnName: string) => {
   return {
     getCurrentWeather,
   }[fnName];
-};
+});
 
 /* 4. Send a message to Iudex */
 const message = 'What is the weather in tokyo?';

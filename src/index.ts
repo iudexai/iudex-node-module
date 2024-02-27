@@ -3,6 +3,8 @@ import { ChatTurn } from './message.js';
 import * as client from './client.js';
 export * from './client.js';
 import { poll } from './utils.js';
+import { FunctionJson } from './function-types.js';
+export * from './function-types.js';
 
 export const DEFAULT_BASE_URL = 'https://5pz08znmzj.execute-api.us-west-2.amazonaws.com';
 
@@ -53,7 +55,7 @@ export class Iudex {
   }
 
   uploadFunctions = (
-    jsons: Array<OpenAI.ChatCompletionCreateParams.Function>,
+    jsons: Array<OpenAI.ChatCompletionCreateParams.Function | FunctionJson>,
     modules?: string,
   ): Promise<void> => {
     return client.putFunctionJsons(this.baseUrl, this.apiKey)(jsons, modules);
