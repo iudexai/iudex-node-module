@@ -2,8 +2,7 @@
 
 import dotenv from 'dotenv';
 dotenv.config();
-import { Iudex } from 'iudex';
-import { FunctionJson } from './function-types.js';
+import { Iudex, FunctionJson } from 'iudex';
 
 const getPokemonFunctionJson: FunctionJson = {
   name: 'getPokemon',

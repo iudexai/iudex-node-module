@@ -85,6 +85,101 @@ function poll(fn, args, {
   });
 }
 
+// src/function-types.ts
+import { z } from "zod";
+var objectJsonSchema = z.object({
+  type: z.literal("object"),
+  properties: z.record(z.lazy(() => valueJsonSchema)),
+  description: z.string().optional(),
+  required: z.array(z.string()).optional()
+});
+var recordJsonSchema = z.object({
+  type: z.literal("object"),
+  additionalProperties: z.lazy(() => valueJsonSchema),
+  description: z.string().optional()
+});
+var arrayJsonSchema = z.object({
+  type: z.literal("array"),
+  items: z.lazy(() => valueJsonSchema),
+  description: z.string().optional()
+});
+var tupleJsonSchema = z.object({
+  type: z.literal("array"),
+  prefixItems: z.array(z.string()),
+  description: z.string().optional()
+});
+var stringJsonSchema = z.object({
+  type: z.literal("string"),
+  enum: z.array(z.string()).optional(),
+  description: z.string().optional()
+});
+var numberJsonSchema = z.object({
+  type: z.union([z.literal("number"), z.literal("integer")]),
+  description: z.string().optional(),
+  minimum: z.number().optional(),
+  maximum: z.number().optional()
+});
+var booleanJsonSchema = z.object({
+  type: z.literal("boolean"),
+  description: z.string().optional()
+});
+var unionJsonSchema = z.object({
+  type: z.array(z.string()),
+  description: z.string().optional()
+});
+var realUnionJsonSchema = z.object({
+  anyOf: z.array(z.lazy(() => valueJsonSchema)),
+  description: z.string().optional()
+});
+var unknownJsonSchema = z.object({
+  type: z.literal("unknown"),
+  description: z.string().optional()
+});
+var nullJsonSchema = z.object({
+  type: z.literal("null"),
+  description: z.string().optional()
+});
+var refJsonSchema = z.object({
+  $ref: z.string(),
+  description: z.string().optional()
+});
+var valueJsonSchema = z.union([
+  objectJsonSchema,
+  recordJsonSchema,
+  arrayJsonSchema,
+  tupleJsonSchema,
+  stringJsonSchema,
+  numberJsonSchema,
+  booleanJsonSchema,
+  unionJsonSchema,
+  realUnionJsonSchema,
+  unknownJsonSchema,
+  nullJsonSchema,
+  refJsonSchema
+]);
+var functionJsonSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  parameters: z.union([
+    z.object({
+      type: z.literal("object"),
+      properties: z.record(valueJsonSchema),
+      description: z.string().optional(),
+      required: z.array(z.string()).optional()
+    }),
+    z.array(valueJsonSchema)
+  ]),
+  returns: valueJsonSchema,
+  usageExample: z.string().optional(),
+  returnsExample: z.string().optional()
+});
+var nullFunctionJson = {
+  name: "",
+  description: "",
+  parameters: [],
+  returns: { type: "null" }
+};
+
 // src/index.ts
 var DEFAULT_BASE_URL = "https://5pz08znmzj.execute-api.us-west-2.amazonaws.com";
 var Iudex = class {
@@ -226,8 +321,10 @@ export {
   Iudex,
   src_default as default,
   extractMessageTextContent,
+  functionJsonSchema,
   mapIudexToOpenAi,
   nextMessage,
+  nullFunctionJson,
   putFunctionJsons,
   returnFunctionCall,
   startWorkflow

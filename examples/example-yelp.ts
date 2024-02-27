@@ -2,9 +2,8 @@
 
 import dotenv from 'dotenv';
 dotenv.config();
-import { Iudex } from 'iudex';
+import { Iudex, FunctionJson } from 'iudex';
 import yelp from 'yelp-fusion';
-import { FunctionJson } from './function-types.js';
 
 const client = yelp.client('YOUR_API_KEY');
 

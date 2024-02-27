@@ -24,8 +24,10 @@ __export(src_exports, {
   Iudex: () => Iudex,
   default: () => src_default,
   extractMessageTextContent: () => extractMessageTextContent,
+  functionJsonSchema: () => functionJsonSchema,
   mapIudexToOpenAi: () => mapIudexToOpenAi,
   nextMessage: () => nextMessage,
+  nullFunctionJson: () => nullFunctionJson,
   putFunctionJsons: () => putFunctionJsons,
   returnFunctionCall: () => returnFunctionCall,
   startWorkflow: () => startWorkflow
@@ -118,6 +120,101 @@ function poll(fn, args, {
     return res;
   });
 }
+
+// src/function-types.ts
+var import_zod = require("zod");
+var objectJsonSchema = import_zod.z.object({
+  type: import_zod.z.literal("object"),
+  properties: import_zod.z.record(import_zod.z.lazy(() => valueJsonSchema)),
+  description: import_zod.z.string().optional(),
+  required: import_zod.z.array(import_zod.z.string()).optional()
+});
+var recordJsonSchema = import_zod.z.object({
+  type: import_zod.z.literal("object"),
+  additionalProperties: import_zod.z.lazy(() => valueJsonSchema),
+  description: import_zod.z.string().optional()
+});
+var arrayJsonSchema = import_zod.z.object({
+  type: import_zod.z.literal("array"),
+  items: import_zod.z.lazy(() => valueJsonSchema),
+  description: import_zod.z.string().optional()
+});
+var tupleJsonSchema = import_zod.z.object({
+  type: import_zod.z.literal("array"),
+  prefixItems: import_zod.z.array(import_zod.z.string()),
+  description: import_zod.z.string().optional()
+});
+var stringJsonSchema = import_zod.z.object({
+  type: import_zod.z.literal("string"),
+  enum: import_zod.z.array(import_zod.z.string()).optional(),
+  description: import_zod.z.string().optional()
+});
+var numberJsonSchema = import_zod.z.object({
+  type: import_zod.z.union([import_zod.z.literal("number"), import_zod.z.literal("integer")]),
+  description: import_zod.z.string().optional(),
+  minimum: import_zod.z.number().optional(),
+  maximum: import_zod.z.number().optional()
+});
+var booleanJsonSchema = import_zod.z.object({
+  type: import_zod.z.literal("boolean"),
+  description: import_zod.z.string().optional()
+});
+var unionJsonSchema = import_zod.z.object({
+  type: import_zod.z.array(import_zod.z.string()),
+  description: import_zod.z.string().optional()
+});
+var realUnionJsonSchema = import_zod.z.object({
+  anyOf: import_zod.z.array(import_zod.z.lazy(() => valueJsonSchema)),
+  description: import_zod.z.string().optional()
+});
+var unknownJsonSchema = import_zod.z.object({
+  type: import_zod.z.literal("unknown"),
+  description: import_zod.z.string().optional()
+});
+var nullJsonSchema = import_zod.z.object({
+  type: import_zod.z.literal("null"),
+  description: import_zod.z.string().optional()
+});
+var refJsonSchema = import_zod.z.object({
+  $ref: import_zod.z.string(),
+  description: import_zod.z.string().optional()
+});
+var valueJsonSchema = import_zod.z.union([
+  objectJsonSchema,
+  recordJsonSchema,
+  arrayJsonSchema,
+  tupleJsonSchema,
+  stringJsonSchema,
+  numberJsonSchema,
+  booleanJsonSchema,
+  unionJsonSchema,
+  realUnionJsonSchema,
+  unknownJsonSchema,
+  nullJsonSchema,
+  refJsonSchema
+]);
+var functionJsonSchema = import_zod.z.object({
+  name: import_zod.z.string(),
+  description: import_zod.z.string(),
+  parameters: import_zod.z.union([
+    import_zod.z.object({
+      type: import_zod.z.literal("object"),
+      properties: import_zod.z.record(valueJsonSchema),
+      description: import_zod.z.string().optional(),
+      required: import_zod.z.array(import_zod.z.string()).optional()
+    }),
+    import_zod.z.array(valueJsonSchema)
+  ]),
+  returns: valueJsonSchema,
+  usageExample: import_zod.z.string().optional(),
+  returnsExample: import_zod.z.string().optional()
+});
+var nullFunctionJson = {
+  name: "",
+  description: "",
+  parameters: [],
+  returns: { type: "null" }
+};
 
 // src/index.ts
 var DEFAULT_BASE_URL = "https://5pz08znmzj.execute-api.us-west-2.amazonaws.com";
@@ -260,8 +357,10 @@ var src_default = Iudex;
   DEFAULT_BASE_URL,
   Iudex,
   extractMessageTextContent,
+  functionJsonSchema,
   mapIudexToOpenAi,
   nextMessage,
+  nullFunctionJson,
   putFunctionJsons,
   returnFunctionCall,
   startWorkflow
