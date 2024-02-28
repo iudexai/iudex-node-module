@@ -2,6 +2,7 @@
 
 import dotenv from 'dotenv';
 dotenv.config();
+import _ from 'lodash';
 import { Iudex, FunctionJson } from 'iudex';
 
 const getPokemonFunctionJson: FunctionJson = {
@@ -98,7 +99,14 @@ const getPokemonFunctionJson: FunctionJson = {
 
 function getPokemon({ idOrName }: { idOrName: string }) {
   return fetch(`https://pokeapi.co/api/v2/pokemon/${idOrName}`)
-    .then(response => response.json());
+    .then(res => res.json())
+    .then(res => _.pick(res, [
+      'id', 'name', 'base_experience', 'height', 'weight', 'stats', 'types'
+    ]))
+    .then((res) => {
+      console.log('getPokemon response');
+      return res;
+    });
 }
 
 //////////////////// Example usage ////////////////////
@@ -115,7 +123,7 @@ iudex.linkFunctions((fnName: string) => {
 });
 
 // 4. Craft message
-const message = 'Get me the starting stats for pikachu.';
+const message = 'Get me the base stats for pikachu';
 
 // 5. Send message
 const iudexReply = await iudex.sendMessage(message);

@@ -106,11 +106,11 @@ export class Iudex {
     if (lastMessage?.tool_call_id && penUltMessage?.workflowId) {
       const workflowId = penUltMessage.workflowId;
       const callId = lastMessage.tool_call_id;
-      const functionReturn = lastMessage.content;
+      const functionReturn = lastMessage.content || '';
 
       // Put data
       const functionCallRes =
-        client.returnFunctionCall(this.baseUrl, this.apiKey)(callId, functionReturn);
+        client.returnFunctionCall(this.baseUrl, this.apiKey)(callId, String(functionReturn));
 
       // Wait for new message
       const nextMessageRes = functionCallRes

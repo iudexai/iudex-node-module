@@ -3,9 +3,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import { Iudex, FunctionJson } from 'iudex';
-import yelp from 'yelp-fusion';
-
-const client = yelp.client('YOUR_API_KEY');
 
 const searchYelpFunctionJson: FunctionJson = {
   name: 'searchYelp',
@@ -24,7 +21,7 @@ const searchYelpFunctionJson: FunctionJson = {
     },
   },
   returns: {
-    description: 'Array of businesses and its attributes which contains: name, url, categories, and hours.',
+    description: 'Array of businesses and attributes: name, url, categories, and hours.',
     type: 'array',
     items: {
       type: 'object',
@@ -98,11 +95,21 @@ const searchYelpFunctionJson: FunctionJson = {
   },
 };
 
-function searchYelp({ term, location }: { term: string; location: string }) {
-  return client.search({
-    term,
-    location,
-  }).then((res: any) => res.jsonBody.businesses);
+function searchYelp(params: { term: string; location: string }) {
+  const yelpApiKey = process.env.YELP_API_KEY;
+  if (!yelpApiKey) throw Error('YELP_API_KEY environment variable is missing or empty.');
+
+  const urlParams = new URLSearchParams(params);
+  return fetch(
+    `https://api.yelp.com/v3/businesses/search?sort_by=best_match&limit=20&${urlParams.toString()}`,
+    {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${yelpApiKey}`,
+      },
+    },
+  ).then(response => response.json());
 }
 
 //////////////////// Example usage ////////////////////

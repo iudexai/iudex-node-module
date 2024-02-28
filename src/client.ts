@@ -38,10 +38,10 @@ function parseIudexResponse(r: Response): Promise<any> {
 export type ReturnFunctionCallBody = Pick<ChatFunctionReturn, 'functionCallId'|'functionReturn'>;
 export type ReturnFunctionCallRes = { workflowId: string; message: string; };
 export function returnFunctionCall(baseUrl: string, apiKey: string) {
-  return function (functionCallId: string, functionReturn: any): Promise<void> {
+  return function (functionCallId: string, functionReturn: string): Promise<void> {
     const bodyJson: ReturnFunctionCallBody = {
       functionCallId,
-      functionReturn: JSON.stringify(functionReturn),
+      functionReturn,
     };
     return fetch(baseUrl + '/function_calls/' + functionCallId + '/return', {
       method: 'PUT',

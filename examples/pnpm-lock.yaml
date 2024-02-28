@@ -10,6 +10,9 @@ dependencies:
   iudex:
     specifier: link:..
     version: link:..
+  lodash:
+    specifier: ^4.17.21
+    version: 4.17.21
   yelp-fusion:
     specifier: ^3.0.0
     version: 3.0.0
@@ -104,6 +107,10 @@ packages:
     resolution: {integrity: sha512-fo9HBvWnx3NGUKMvMwB/CBCMMrfEJgbDTVDEkPygA3Bdd3lM1OyCd+rbQ8BwnpF6GdVeOLDNmyL4N5Bg80ZvdA==}
     dependencies:
       string-template: 0.2.1
+    dev: false
+
+  /lodash@4.17.21:
+    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
     dev: false
 
   /request-function@2.0.0:

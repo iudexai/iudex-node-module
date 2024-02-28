@@ -186,7 +186,7 @@ type ReturnFunctionCallRes = {
     workflowId: string;
     message: string;
 };
-declare function returnFunctionCall(baseUrl: string, apiKey: string): (functionCallId: string, functionReturn: any) => Promise<void>;
+declare function returnFunctionCall(baseUrl: string, apiKey: string): (functionCallId: string, functionReturn: string) => Promise<void>;
 type NextMessageRes = ChatFunctionCall | ChatText | undefined;
 declare function nextMessage(baseUrl: string, apiKey: string): (workflowId: string) => Promise<NextMessageRes>;
 type StartWorkflowRes = {

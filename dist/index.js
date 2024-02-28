@@ -62,7 +62,7 @@ function returnFunctionCall(baseUrl, apiKey) {
   return function(functionCallId, functionReturn) {
     const bodyJson = {
       functionCallId,
-      functionReturn: JSON.stringify(functionReturn)
+      functionReturn
     };
     return fetch(baseUrl + "/function_calls/" + functionCallId + "/return", {
       method: "PUT",
@@ -272,8 +272,8 @@ var Iudex = class {
     if (lastMessage?.tool_call_id && penUltMessage?.workflowId) {
       const workflowId = penUltMessage.workflowId;
       const callId = lastMessage.tool_call_id;
-      const functionReturn = lastMessage.content;
-      const functionCallRes = returnFunctionCall(this.baseUrl, this.apiKey)(callId, functionReturn);
+      const functionReturn = lastMessage.content || "";
+      const functionCallRes = returnFunctionCall(this.baseUrl, this.apiKey)(callId, String(functionReturn));
       const nextMessageRes = functionCallRes.then(() => poll(nextMessage(this.baseUrl, this.apiKey), [workflowId]));
       return nextMessageRes.then((r) => {
         return {
