@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+// TODO move this to iudex-node-module
+
 const chatTurnBaseSchema = z.object({
   id: z.string(),
   type: z.string(),
@@ -16,6 +18,15 @@ export const chatTextSchema = chatTurnBaseSchema.extend({
   text: z.string(),
 });
 export type ChatText = z.infer<typeof chatTextSchema>;
+
+export const chatErrorSchema = chatTurnBaseSchema.extend({
+  type: z.literal('error'),
+  name: z.string(),
+  message: z.string(),
+  cause: z.string().optional(),
+  stack: z.string().optional(),
+});
+export type ChatError = z.infer<typeof chatErrorSchema>;
 
 /**
  * For image message.
@@ -54,10 +65,11 @@ export const chatFunctionReturnSchema = chatTurnBaseSchema.extend({
 export type ChatFunctionReturn = z.infer<typeof chatFunctionReturnSchema>;
 
 /**
- * All chat turn types
+ * All chat turn types. Put new chat turn types here.
  */
 export const chatTurnSchema = z.discriminatedUnion('type', [
   chatTextSchema,
+  chatErrorSchema,
   chatImageSchema,
   chatListSchema,
   chatFunctionCallSchema,
@@ -66,7 +78,7 @@ export const chatTurnSchema = z.discriminatedUnion('type', [
 export type ChatTurn = z.infer<typeof chatTurnSchema>;
 
 /**
- * String union for all chat turn types
+ * String union for all chat turn types.
  */
 export type ChatTurnType = ChatTurn['type'];
 

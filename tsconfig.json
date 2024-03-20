@@ -3,19 +3,13 @@
   "compilerOptions": {
     "incremental": false,
     "outDir": "dist",
-    "paths": {
-      "@iudex/*": [
-        "./src/*",
-      ],
-    },
     "typeRoots": [
       "node_modules/@types",
     ],
   },
   "exclude": [
     "node_modules",
-    "**/dist",
-    "packages/*-page",
+    "dist",
   ],
   "include": [
     "**/*.ts",

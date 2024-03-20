@@ -1,14 +1,17 @@
 # Iudex client
 
-**Easily build 🛠️ natural language interfaces for ✨ your own ✨ applications 💻**
+**✨ Build 🛠 With Next Gen LLM Function Calling ✨**
 
-Iudex is an API layer that allows you to quickly build applications that can use LLM reasoning in a way that is more
-accurate, secure, and scalable than the toy examples from other projects. Iudex does this by providing an out-of-the-box
-LLM orchestration architecture capable of working with millions of functions and documents.
+[Iudex](https://iudex.ai) is an agent accessible via API that provides more accurate, secure, and scalable LLM function calling.
+- Scales to support 1000s of functions per query, not 10s
+- Supports arbitrarily complex queries and automatically handles edgecases
+- Ensures accuracy and interpretability using automated task orchestration
+- Iudex never has to ingest your code or data
 
-**❗ Leverage the power 🦾 of LLMs 🤖 with Iudex ❗**
+Sign Up at [iudex.ai](https://iudex.ai) or shoot a message at support@iudex.ai to get an API key.
 
 ## Installation
+
 ```bash
 npm install iudex
 # or
@@ -17,40 +20,11 @@ yarn add iudex
 pnpm add iudex
 ```
 
-## Getting Started
-
-1. Sign up at [iudex.ai](https://iudex.ai) or shoot a message at support@iudex.ai to get an API key.
-
-2. Install either the Node or Python client into your project. For Node, use `npm install iudex`.
-
-3. Store the API key as an environment variable e.g. `IUDEX_API_KEY`.
-
-4. Upload your function specs as function JSON schema.
-
-5. Send a message to Iudex.
-
-6. Get a computed result back.
-
-
-## What can Iudex help you build?
-
-1. Chat bots that can perform actions.
-
-2. Connecting LLMs with any external APIs (Google, Reddit, Twitter, Slack, etc).
-
-3. Generating dashboards from events databases.
-
-4. Adding rules based evaluation to extracted data.
-
-
 ## How Iudex Works
 
-Iudex works by first indexing your functions. Afterwards, when making a query, Iudex will figure out the best way to accomplish that query
-by intelligently sequencing the functions you have connected and with the prebuilt functions we have created. This way, Iudex ensures
-that the functions that get called do not suffer from hallucinations and can properly use the results from previously run functions.
+![Iudex flow diagram](https://gist.github.com/assets/2763712/be399690-bc8b-4f52-9e1f-228a3d2d6c4e)
 
-
-## Usage
+## Quickstart
 
 *Basic example*
 

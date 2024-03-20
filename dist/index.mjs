@@ -3,7 +3,10 @@ function checkResponse(r) {
   if (!r.ok) {
     throw Error(`Request ${r.url} failed with ${r.status}: ${r.statusText}`);
   }
-  return r;
+  if (r.status === 204) {
+    return Promise.resolve();
+  }
+  return r.json();
 }
 function throwOnApiError(json) {
   if (json?.message === "Service Unavailable") {
@@ -18,7 +21,7 @@ function unwrapApi(json) {
   return json;
 }
 function parseIudexResponse(r) {
-  return checkResponse(r).json().then(throwOnApiError).then(unwrapApi).catch((e) => {
+  return checkResponse(r).then(throwOnApiError).then(unwrapApi).catch((e) => {
     throw Error(`Request ${r.url} failed with ${r.status}: ${e.message}`);
   });
 }
@@ -181,7 +184,7 @@ var nullFunctionJson = {
 };
 
 // src/index.ts
-var DEFAULT_BASE_URL = "https://5pz08znmzj.execute-api.us-west-2.amazonaws.com";
+var DEFAULT_BASE_URL = "https://api.iudex.ai";
 var Iudex = class {
   baseUrl;
   apiKey;
@@ -207,24 +210,56 @@ var Iudex = class {
   linkFunctions = (functionLinker) => {
     this.functionLinker = functionLinker;
   };
-  sendMessage = async (message) => {
-    if (!this.functionLinker) {
-      throw Error(
-        "Establish a way to call functions using `.linkFunctions` before sending a message."
-      );
-    }
-    const { workflowId } = await startWorkflow(this.baseUrl, this.apiKey)(message);
+  /**
+   * @param message message to send
+   * @returns response as a chat object
+   */
+  sendChatTurn = async (message, opts = {}) => {
+    const { onChatTurn } = opts;
+    const userTurn = {
+      id: "msg_ephemeral_" + (/* @__PURE__ */ new Date()).toISOString(),
+      type: "text",
+      sender: "you",
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      text: message
+    };
+    onChatTurn?.(userTurn);
+    const { workflowId } = await startWorkflow(this.baseUrl, this.apiKey)(userTurn.text);
     let nextMessage2 = await poll(nextMessage(this.baseUrl, this.apiKey), [workflowId]);
+    onChatTurn?.(nextMessage2);
     while (nextMessage2.type === "functionCall") {
+      if (!this.functionLinker) {
+        throw Error(
+          "Establish a way to call functions using `.linkFunctions` before sending a message that might require your functions to answer."
+        );
+      }
       const fn = this.functionLinker(nextMessage2.functionName);
       const fnReturn = await fn(nextMessage2.functionArgs);
+      const fnReturnTurn = {
+        id: "msg_ephemeral_" + (/* @__PURE__ */ new Date()).toISOString(),
+        type: "functionReturn",
+        sender: nextMessage2.functionName,
+        timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+        functionCallId: nextMessage2.functionCallId,
+        functionReturn: JSON.stringify(fnReturn)
+      };
+      onChatTurn?.(fnReturnTurn);
       await returnFunctionCall(this.baseUrl, this.apiKey)(
-        nextMessage2.functionCallId,
-        JSON.stringify(fnReturn)
+        fnReturnTurn.functionCallId,
+        fnReturnTurn.functionReturn
       );
       nextMessage2 = await poll(nextMessage(this.baseUrl, this.apiKey), [workflowId]);
+      onChatTurn?.(nextMessage2);
     }
-    return nextMessage2.text;
+    return nextMessage2;
+  };
+  /**
+   * @param message message to send
+   * @returns response message as a string
+   */
+  sendMessage = async (message) => {
+    const chatTurn = await this.sendChatTurn(message);
+    return chatTurn.text;
   };
   // OpenAI interface shim
   chatCompletionsCreate = (body) => {

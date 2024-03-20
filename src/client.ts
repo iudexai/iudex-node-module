@@ -1,10 +1,13 @@
 import { ChatFunctionCall, ChatText, ChatFunctionReturn } from './message.js';
 
-function checkResponse(r: Response): Response {
+function checkResponse(r: Response): Promise<unknown> {
   if (!r.ok) {
     throw Error(`Request ${r.url} failed with ${r.status}: ${r.statusText}`);
   }
-  return r;
+  if (r.status === 204) {
+    return Promise.resolve();
+  }
+  return r.json();
 }
 
 function throwOnApiError<T>(json: T): T {
@@ -16,7 +19,7 @@ function throwOnApiError<T>(json: T): T {
   return json;
 }
 
-function unwrapApi(json: any): any {
+function unwrapApi(json: any): unknown {
   // If there is a body, return that instead
   if (json?.body
     && typeof json.body === 'string'
@@ -29,9 +32,12 @@ function unwrapApi(json: any): any {
 }
 
 function parseIudexResponse(r: Response): Promise<any> {
-  return checkResponse(r).json().then(throwOnApiError).then(unwrapApi).catch((e) => {
-    throw Error(`Request ${r.url} failed with ${r.status}: ${e.message}`);
-  });
+  return checkResponse(r)
+    .then(throwOnApiError)
+    .then(unwrapApi)
+    .catch((e) => {
+      throw Error(`Request ${r.url} failed with ${r.status}: ${e.message}`);
+    });
 }
 
 // TODO change to putFunctionCallReturn to better match api def name

@@ -1,12 +1,12 @@
 import OpenAI from 'openai';
-import { ChatTurn } from './message.js';
+import { ChatFunctionReturn, ChatText, ChatTurn } from './message.js';
 import * as client from './client.js';
 export * from './client.js';
 import { poll } from './utils.js';
 import { FunctionJson } from './function-types.js';
 export * from './function-types.js';
 
-export const DEFAULT_BASE_URL = 'https://5pz08znmzj.execute-api.us-west-2.amazonaws.com';
+export const DEFAULT_BASE_URL = 'https://api.iudex.ai';
 
 export type IudexMessage = ChatTurn;
 
@@ -30,7 +30,7 @@ export type ChatCompletionWithIudex = OpenAI.ChatCompletion & {
 export class Iudex {
   baseUrl: string;
   apiKey: string;
-  functionLinker?: (fnName: string) => (...args: any[]) => any;
+  functionLinker?: (fnName: string) => (...args: any[]) => unknown;
 
   constructor({
     apiKey = process.env.IUDEX_API_KEY,
@@ -61,31 +61,71 @@ export class Iudex {
     return client.putFunctionJsons(this.baseUrl, this.apiKey)(jsons, modules);
   };
 
-  linkFunctions = (functionLinker: (fnName: string) => (...args: any[]) => any): void => {
+  linkFunctions = (functionLinker: (fnName: string) => (...args: any[]) => unknown): void => {
     this.functionLinker = functionLinker;
   };
 
-  sendMessage = async (message: string): Promise<string> => {
-    if (!this.functionLinker) {
-      throw Error(
-        'Establish a way to call functions using `.linkFunctions` before' +
-        ' sending a message.',
-      );
-    }
+  /**
+   * @param message message to send
+   * @returns response as a chat object
+   */
+  sendChatTurn = async (
+    message: string,
+    opts: { onChatTurn?: (c: ChatTurn) => void} = {},
+  ): Promise<ChatText> => {
+    const { onChatTurn } = opts;
 
-    const { workflowId } = await client.startWorkflow(this.baseUrl, this.apiKey)(message);
+    const userTurn: ChatText = {
+      id: 'msg_ephemeral_' + new Date().toISOString(),
+      type: 'text',
+      sender: 'you',
+      timestamp: new Date().toISOString(),
+      text: message,
+    };
+    onChatTurn?.(userTurn);
+    const { workflowId } = await client.startWorkflow(this.baseUrl, this.apiKey)(userTurn.text);
+
     let nextMessage = await poll(client.nextMessage(this.baseUrl, this.apiKey), [workflowId]);
+    onChatTurn?.(nextMessage);
+
     while (nextMessage.type === 'functionCall') {
+      if (!this.functionLinker) {
+        throw Error(
+          'Establish a way to call functions using `.linkFunctions` before' +
+          ' sending a message that might require your functions to answer.',
+        );
+      }
       const fn = this.functionLinker(nextMessage.functionName);
       const fnReturn = await fn(nextMessage.functionArgs);
+
+      const fnReturnTurn: ChatFunctionReturn = {
+        id: 'msg_ephemeral_' + new Date().toISOString(),
+        type: 'functionReturn',
+        sender: nextMessage.functionName,
+        timestamp: new Date().toISOString(),
+        functionCallId: nextMessage.functionCallId,
+        functionReturn: JSON.stringify(fnReturn),
+      };
+      onChatTurn?.(fnReturnTurn);
       await client.returnFunctionCall(this.baseUrl, this.apiKey)(
-        nextMessage.functionCallId,
-        JSON.stringify(fnReturn),
+        fnReturnTurn.functionCallId,
+        fnReturnTurn.functionReturn,
       );
+
       nextMessage = await poll(client.nextMessage(this.baseUrl, this.apiKey), [workflowId]);
+      onChatTurn?.(nextMessage);
     }
 
-    return nextMessage.text;
+    return nextMessage;
+  };
+
+  /**
+   * @param message message to send
+   * @returns response message as a string
+   */
+  sendMessage = async (message: string): Promise<string> => {
+    const chatTurn = await this.sendChatTurn(message);
+    return chatTurn.text;
   };
 
   // OpenAI interface shim

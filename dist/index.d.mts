@@ -74,7 +74,7 @@ declare const chatFunctionReturnSchema: z.ZodObject<{
 }>;
 type ChatFunctionReturn = z.infer<typeof chatFunctionReturnSchema>;
 /**
- * All chat turn types
+ * All chat turn types. Put new chat turn types here.
  */
 declare const chatTurnSchema: z.ZodDiscriminatedUnion<"type", [z.ZodObject<{
     id: z.ZodString;
@@ -94,6 +94,33 @@ declare const chatTurnSchema: z.ZodDiscriminatedUnion<"type", [z.ZodObject<{
     sender: string;
     timestamp: string;
     text: string;
+}>, z.ZodObject<{
+    id: z.ZodString;
+    sender: z.ZodString;
+    timestamp: z.ZodString;
+    type: z.ZodLiteral<"error">;
+    name: z.ZodString;
+    message: z.ZodString;
+    cause: z.ZodOptional<z.ZodString>;
+    stack: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    type: "error";
+    id: string;
+    sender: string;
+    timestamp: string;
+    message: string;
+    name: string;
+    cause?: string | undefined;
+    stack?: string | undefined;
+}, {
+    type: "error";
+    id: string;
+    sender: string;
+    timestamp: string;
+    message: string;
+    name: string;
+    cause?: string | undefined;
+    stack?: string | undefined;
 }>, z.ZodObject<{
     id: z.ZodString;
     sender: z.ZodString;
@@ -650,8 +677,8 @@ declare const functionJsonSchema: z.ZodObject<{
     usageExample: z.ZodOptional<z.ZodString>;
     returnsExample: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
-    description: string;
     name: string;
+    description: string;
     parameters: ({
         type: "object";
         properties: Record<string, ObjectJsonSchema | RecordJsonSchema | ArrayJsonSchema | {
@@ -1079,8 +1106,8 @@ declare const functionJsonSchema: z.ZodObject<{
     usageExample?: string | undefined;
     returnsExample?: string | undefined;
 }, {
-    description: string;
     name: string;
+    description: string;
     parameters: ({
         type: "object";
         properties: Record<string, ObjectJsonSchema | RecordJsonSchema | ArrayJsonSchema | {
@@ -1511,7 +1538,7 @@ declare const functionJsonSchema: z.ZodObject<{
 type FunctionJson = z.infer<typeof functionJsonSchema>;
 declare const nullFunctionJson: FunctionJson;
 
-declare const DEFAULT_BASE_URL = "https://5pz08znmzj.execute-api.us-west-2.amazonaws.com";
+declare const DEFAULT_BASE_URL = "https://api.iudex.ai";
 type IudexMessage = ChatTurn;
 type ChatCompletionMessageWithIudex = OpenAI.ChatCompletionMessageParam & ({
     tool_call_id?: string;
@@ -1533,13 +1560,24 @@ type ChatCompletionWithIudex = OpenAI.ChatCompletion & {
 declare class Iudex {
     baseUrl: string;
     apiKey: string;
-    functionLinker?: (fnName: string) => (...args: any[]) => any;
+    functionLinker?: (fnName: string) => (...args: any[]) => unknown;
     constructor({ apiKey, baseUrl, }?: {
         apiKey?: string;
         baseUrl?: string;
     });
     uploadFunctions: (jsons: Array<OpenAI.ChatCompletionCreateParams.Function | FunctionJson>, modules?: string) => Promise<void>;
-    linkFunctions: (functionLinker: (fnName: string) => (...args: any[]) => any) => void;
+    linkFunctions: (functionLinker: (fnName: string) => (...args: any[]) => unknown) => void;
+    /**
+     * @param message message to send
+     * @returns response as a chat object
+     */
+    sendChatTurn: (message: string, opts?: {
+        onChatTurn?: ((c: ChatTurn) => void) | undefined;
+    }) => Promise<ChatText>;
+    /**
+     * @param message message to send
+     * @returns response message as a string
+     */
     sendMessage: (message: string) => Promise<string>;
     chatCompletionsCreate: (body: OpenAI.ChatCompletionCreateParamsNonStreaming & {
         messages: Array<ChatCompletionMessageWithIudex>;
