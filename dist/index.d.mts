@@ -1560,10 +1560,12 @@ type ChatCompletionWithIudex = OpenAI.ChatCompletion & {
 declare class Iudex {
     baseUrl: string;
     apiKey: string;
+    maxTries: number;
     functionLinker?: (fnName: string) => (...args: any[]) => unknown;
-    constructor({ apiKey, baseUrl, }?: {
+    constructor({ apiKey, baseUrl, maxTries, }?: {
         apiKey?: string;
         baseUrl?: string;
+        maxTries?: number;
     });
     uploadFunctions: (jsons: Array<OpenAI.ChatCompletionCreateParams.Function | FunctionJson>, modules?: string) => Promise<void>;
     linkFunctions: (functionLinker: (fnName: string) => (...args: any[]) => unknown) => void;
@@ -1573,6 +1575,7 @@ declare class Iudex {
      */
     sendChatTurn: (message: string, opts?: {
         onChatTurn?: ((c: ChatTurn) => void) | undefined;
+        initAuth?: string | undefined;
     }) => Promise<ChatText>;
     /**
      * @param message message to send

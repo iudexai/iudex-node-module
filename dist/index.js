@@ -57,7 +57,12 @@ function unwrapApi(json) {
   return json;
 }
 function parseIudexResponse(r) {
-  return checkResponse(r).then(throwOnApiError).then(unwrapApi).catch((e) => {
+  return checkResponse(r).then(throwOnApiError).then(unwrapApi).then((v) => {
+    if (process.env.DEBUG_MODE) {
+      console.log((/* @__PURE__ */ new Date()).toISOString(), "Response:", v);
+    }
+    return v;
+  }).catch((e) => {
     throw Error(`Request ${r.url} failed with ${r.status}: ${e.message}`);
   });
 }
@@ -110,7 +115,7 @@ function poll(fn, args, {
   maxTries,
   tries,
   waitMs
-} = { maxTries: 300, tries: 0, waitMs: 1e3 }) {
+} = { maxTries: 60, tries: 0, waitMs: 1e3 }) {
   if (tries >= maxTries) {
     throw Error(
       `Polling failed after ${maxTries} tries for function ${fn.name}.`
@@ -224,14 +229,13 @@ var DEFAULT_BASE_URL = "https://api.iudex.ai";
 var Iudex = class {
   baseUrl;
   apiKey;
+  maxTries;
   functionLinker;
   constructor({
     apiKey = process.env.IUDEX_API_KEY,
-    baseUrl = process.env.IUDEX_BASE_URL || DEFAULT_BASE_URL
-  } = {
-    apiKey: process.env.IUDEX_API_KEY,
-    baseUrl: DEFAULT_BASE_URL
-  }) {
+    baseUrl = process.env.IUDEX_BASE_URL || DEFAULT_BASE_URL,
+    maxTries = process.env.IUDEX_MAX_TRIES ? parseInt(process.env.IUDEX_MAX_TRIES) : 60
+  } = {}) {
     if (!apiKey) {
       throw Error(
         `The IUDEX_API_KEY environment variable is missing or empty. Provide IUDEX_API_KEY to the environment on load OR instantiate the Iudex client with the apiKey option. Example: \`new Iudex({ apiKey: 'My API Key' })\``
@@ -239,6 +243,7 @@ var Iudex = class {
     }
     this.apiKey = apiKey;
     this.baseUrl = baseUrl;
+    this.maxTries = maxTries;
   }
   uploadFunctions = (jsons, modules) => {
     return putFunctionJsons(this.baseUrl, this.apiKey)(jsons, modules);
@@ -261,7 +266,11 @@ var Iudex = class {
     };
     onChatTurn?.(userTurn);
     const { workflowId } = await startWorkflow(this.baseUrl, this.apiKey)(userTurn.text);
-    let nextMessage2 = await poll(nextMessage(this.baseUrl, this.apiKey), [workflowId]);
+    let nextMessage2 = await poll(
+      nextMessage(this.baseUrl, this.apiKey),
+      [workflowId],
+      { maxTries: 60, tries: 0, waitMs: 1e3 }
+    );
     onChatTurn?.(nextMessage2);
     while (nextMessage2.type === "functionCall") {
       if (!this.functionLinker) {
@@ -284,7 +293,11 @@ var Iudex = class {
         fnReturnTurn.functionCallId,
         fnReturnTurn.functionReturn
       );
-      nextMessage2 = await poll(nextMessage(this.baseUrl, this.apiKey), [workflowId]);
+      nextMessage2 = await poll(
+        nextMessage(this.baseUrl, this.apiKey),
+        [workflowId],
+        { maxTries: 60, tries: 0, waitMs: 1e3 }
+      );
       onChatTurn?.(nextMessage2);
     }
     return nextMessage2;
@@ -309,7 +322,11 @@ var Iudex = class {
       const callId = lastMessage.tool_call_id;
       const functionReturn = lastMessage.content || "";
       const functionCallRes = returnFunctionCall(this.baseUrl, this.apiKey)(callId, String(functionReturn));
-      const nextMessageRes = functionCallRes.then(() => poll(nextMessage(this.baseUrl, this.apiKey), [workflowId]));
+      const nextMessageRes = functionCallRes.then(() => poll(
+        nextMessage(this.baseUrl, this.apiKey),
+        [workflowId],
+        { maxTries: 60, tries: 0, waitMs: 1e3 }
+      ));
       return nextMessageRes.then((r) => {
         return {
           model: body.model,
@@ -322,7 +339,11 @@ var Iudex = class {
     }
     const messageContent = extractMessageTextContent(lastMessage.content);
     return startWorkflow(this.baseUrl, this.apiKey)(messageContent).then(
-      ({ workflowId }) => poll(nextMessage(this.baseUrl, this.apiKey), [workflowId]).then((r) => {
+      ({ workflowId }) => poll(
+        nextMessage(this.baseUrl, this.apiKey),
+        [workflowId],
+        { maxTries: 60, tries: 0, waitMs: 1e3 }
+      ).then((r) => {
         return {
           model: body.model,
           ...mapIudexToOpenAi(r, workflowId)

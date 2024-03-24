@@ -13,7 +13,7 @@ export function poll<Args extends any[], Ret>(
     maxTries: number;
     tries: number;
     waitMs: number;
-  } = { maxTries: 300, tries: 0, waitMs: 1000 },
+  } = { maxTries: 60, tries: 0, waitMs: 1000 },
 ): Promise<NonNullable<Ret>> {
   if (tries >= maxTries) {
     throw Error(

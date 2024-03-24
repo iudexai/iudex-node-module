@@ -35,6 +35,12 @@ function parseIudexResponse(r: Response): Promise<any> {
   return checkResponse(r)
     .then(throwOnApiError)
     .then(unwrapApi)
+    .then(v => {
+      if (process.env.DEBUG_MODE) {
+        console.log(new Date().toISOString(), 'Response:', v);
+      }
+      return v;
+    })
     .catch((e) => {
       throw Error(`Request ${r.url} failed with ${r.status}: ${e.message}`);
     });

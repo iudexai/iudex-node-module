@@ -30,18 +30,18 @@ export type ChatCompletionWithIudex = OpenAI.ChatCompletion & {
 export class Iudex {
   baseUrl: string;
   apiKey: string;
+  maxTries: number;
   functionLinker?: (fnName: string) => (...args: any[]) => unknown;
 
   constructor({
     apiKey = process.env.IUDEX_API_KEY,
     baseUrl = process.env.IUDEX_BASE_URL || DEFAULT_BASE_URL,
+    maxTries = process.env.IUDEX_MAX_TRIES ? parseInt(process.env.IUDEX_MAX_TRIES) : 60,
   }: {
     apiKey?: string;
     baseUrl?: string;
-  } = {
-    apiKey: process.env.IUDEX_API_KEY,
-    baseUrl: DEFAULT_BASE_URL,
-  }) {
+    maxTries?: number;
+  } = {}) {
     if (!apiKey) {
       throw Error(
         `The IUDEX_API_KEY environment variable is missing or empty.` +
@@ -52,6 +52,7 @@ export class Iudex {
     }
     this.apiKey = apiKey;
     this.baseUrl = baseUrl;
+    this.maxTries = maxTries;
   }
 
   uploadFunctions = (
@@ -71,7 +72,10 @@ export class Iudex {
    */
   sendChatTurn = async (
     message: string,
-    opts: { onChatTurn?: (c: ChatTurn) => void} = {},
+    opts: {
+      onChatTurn?: (c: ChatTurn) => void,
+      initAuth?: string,
+    } = {},
   ): Promise<ChatText> => {
     const { onChatTurn } = opts;
 
@@ -85,7 +89,11 @@ export class Iudex {
     onChatTurn?.(userTurn);
     const { workflowId } = await client.startWorkflow(this.baseUrl, this.apiKey)(userTurn.text);
 
-    let nextMessage = await poll(client.nextMessage(this.baseUrl, this.apiKey), [workflowId]);
+    let nextMessage = await poll(
+      client.nextMessage(this.baseUrl, this.apiKey),
+      [workflowId],
+      { maxTries: 60, tries: 0, waitMs: 1000 },
+    );
     onChatTurn?.(nextMessage);
 
     while (nextMessage.type === 'functionCall') {
@@ -112,7 +120,11 @@ export class Iudex {
         fnReturnTurn.functionReturn,
       );
 
-      nextMessage = await poll(client.nextMessage(this.baseUrl, this.apiKey), [workflowId]);
+      nextMessage = await poll(
+        client.nextMessage(this.baseUrl, this.apiKey),
+        [workflowId],
+        { maxTries: 60, tries: 0, waitMs: 1000 },
+      );
       onChatTurn?.(nextMessage);
     }
 
@@ -153,8 +165,11 @@ export class Iudex {
         client.returnFunctionCall(this.baseUrl, this.apiKey)(callId, String(functionReturn));
 
       // Wait for new message
-      const nextMessageRes = functionCallRes
-        .then(() => poll(client.nextMessage(this.baseUrl, this.apiKey), [workflowId]));
+      const nextMessageRes = functionCallRes.then(() => poll(
+        client.nextMessage(this.baseUrl, this.apiKey),
+        [workflowId],
+        { maxTries: 60, tries: 0, waitMs: 1000 },
+      ));
 
       // Return result as OpenAI.ChatCompletion
       return nextMessageRes.then((r) => {
@@ -173,7 +188,11 @@ export class Iudex {
     const messageContent = extractMessageTextContent(lastMessage.content);
     return client.startWorkflow(this.baseUrl, this.apiKey)(messageContent)
       .then(({ workflowId }) =>
-        poll(client.nextMessage(this.baseUrl, this.apiKey), [workflowId])
+        poll(
+          client.nextMessage(this.baseUrl, this.apiKey),
+          [workflowId],
+          { maxTries: 60, tries: 0, waitMs: 1000 },
+        )
           .then((r) => {
             return {
               model: body.model,

@@ -1,5 +1,3 @@
-// https://pokeapi.co/docs/v2#pokemon-section
-
 import dotenv from 'dotenv';
 dotenv.config();
 import { Iudex, FunctionJson } from 'iudex';
@@ -187,7 +185,7 @@ iudex.linkFunctions((fnName: string) => {
 });
 
 // 4. Craft message
-const message = 'What is the weather in san francisco';
+const message = 'What is the weather in san francisco and in tokyo?';
 
 // 5. Send message
 const iudexReply = await iudex.sendMessage(message);
