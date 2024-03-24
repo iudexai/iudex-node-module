@@ -22,7 +22,8 @@ pnpm add iudex
 
 ## How Iudex Works
 
-![Iudex flow diagram](https://gist.github.com/assets/2763712/be399690-bc8b-4f52-9e1f-228a3d2d6c4e)
+![Untitled-2023-06-01-2152](https://github.com/iudexai/iudex-node-module/assets/2763712/4f384d6d-3845-422b-9891-f76810449cc9)
+
 
 ## Quickstart
 
