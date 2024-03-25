@@ -1,6 +1,9 @@
 lockfileVersion: '6.0'
 
 dependencies:
+  function-json-schema:
+    specifier: ^1.0.1
+    version: 1.0.1
   p-map:
     specifier: ^7.0.1
     version: 7.0.1
@@ -12,6 +15,9 @@ dependencies:
     version: 3.21.4
 
 devDependencies:
+  '@tsconfig/recommended':
+    specifier: ^1.0.4
+    version: 1.0.4
   '@types/node':
     specifier: ^20.11.16
     version: 20.11.16
@@ -1078,6 +1084,10 @@ packages:
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
     dev: true
 
+  /@tsconfig/recommended@1.0.4:
+    resolution: {integrity: sha512-7RfsHlJYsqASGpV7R7zJ72baBBoqvbTj9dD4SHYSeLSMkMjSUhi15SZQK/7GQPCAmOhEoEC87HneaXihVXF6YA==}
+    dev: true
+
   /@types/babel__core@7.20.5:
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
     dependencies:
@@ -1848,6 +1858,12 @@ packages:
   /function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
     dev: true
+
+  /function-json-schema@1.0.1:
+    resolution: {integrity: sha512-NapRQBnuf4w9eNitbWuRqaCVZUzNg+se6RwdYetb3cMgIi1Ri9kFRRrmbDOt8WyY1ojn6jsUeYgILA+d00TtDw==}
+    dependencies:
+      zod: 3.21.4
+    dev: false
 
   /gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}

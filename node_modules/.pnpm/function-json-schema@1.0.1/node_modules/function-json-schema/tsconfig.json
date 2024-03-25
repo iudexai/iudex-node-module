@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig-base.json",
+  "compilerOptions": {
+    "incremental": false,
+    "outDir": "dist",
+    "typeRoots": [
+      "node_modules/@types",
+    ],
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+  ],
+  "include": [
+    "**/*.ts",
+    "**/*.d.ts",
+    "**/*.tsx",
+    "**/*.cjs",
+    "**/*.mjs",
+  ],
+}

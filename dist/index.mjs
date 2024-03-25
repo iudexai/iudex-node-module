@@ -1,4 +1,184 @@
-// src/client.ts
+// src/index.ts
+export * from "function-json-schema";
+
+// src/utils.ts
+function setTimeoutPromise(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+function poll(fn, args, {
+  maxTries,
+  tries,
+  waitMs
+} = { maxTries: 60, tries: 0, waitMs: 1e3 }) {
+  if (tries >= maxTries) {
+    throw Error(
+      `Polling failed after ${maxTries} tries for function ${fn.name}.`
+    );
+  }
+  return fn(...args).then((res) => {
+    if (res == null) {
+      return setTimeoutPromise(waitMs).then(() => poll(fn, args, { maxTries, tries: tries + 1, waitMs }));
+    }
+    return res;
+  });
+}
+function deconstructedPromise() {
+  let promiseResolve;
+  let promiseReject;
+  const promise = new Promise((resolve, reject) => {
+    promiseResolve = resolve;
+    promiseReject = reject;
+  });
+  return {
+    promise,
+    resolve: promiseResolve,
+    reject: promiseReject
+  };
+}
+
+// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_isPlaceholder.js
+function _isPlaceholder(a) {
+  return a != null && typeof a === "object" && a["@@functional/placeholder"] === true;
+}
+
+// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_curry1.js
+function _curry1(fn) {
+  return function f1(a) {
+    if (arguments.length === 0 || _isPlaceholder(a)) {
+      return f1;
+    } else {
+      return fn.apply(this, arguments);
+    }
+  };
+}
+
+// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_curry2.js
+function _curry2(fn) {
+  return function f2(a, b) {
+    switch (arguments.length) {
+      case 0:
+        return f2;
+      case 1:
+        return _isPlaceholder(a) ? f2 : _curry1(function(_b) {
+          return fn(a, _b);
+        });
+      default:
+        return _isPlaceholder(a) && _isPlaceholder(b) ? f2 : _isPlaceholder(a) ? _curry1(function(_a) {
+          return fn(_a, b);
+        }) : _isPlaceholder(b) ? _curry1(function(_b) {
+          return fn(a, _b);
+        }) : fn(a, b);
+    }
+  };
+}
+
+// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_isArray.js
+var isArray_default = Array.isArray || function _isArray(val) {
+  return val != null && val.length >= 0 && Object.prototype.toString.call(val) === "[object Array]";
+};
+
+// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_has.js
+function _has(prop, obj) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_isArguments.js
+var toString = Object.prototype.toString;
+var _isArguments = /* @__PURE__ */ function() {
+  return toString.call(arguments) === "[object Arguments]" ? function _isArguments2(x) {
+    return toString.call(x) === "[object Arguments]";
+  } : function _isArguments2(x) {
+    return _has("callee", x);
+  };
+}();
+var isArguments_default = _isArguments;
+
+// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/keys.js
+var hasEnumBug = !/* @__PURE__ */ {
+  toString: null
+}.propertyIsEnumerable("toString");
+var nonEnumerableProps = ["constructor", "valueOf", "isPrototypeOf", "toString", "propertyIsEnumerable", "hasOwnProperty", "toLocaleString"];
+var hasArgsEnumBug = /* @__PURE__ */ function() {
+  "use strict";
+  return arguments.propertyIsEnumerable("length");
+}();
+var contains = function contains2(list, item) {
+  var idx = 0;
+  while (idx < list.length) {
+    if (list[idx] === item) {
+      return true;
+    }
+    idx += 1;
+  }
+  return false;
+};
+var keys = typeof Object.keys === "function" && !hasArgsEnumBug ? /* @__PURE__ */ _curry1(function keys2(obj) {
+  return Object(obj) !== obj ? [] : Object.keys(obj);
+}) : /* @__PURE__ */ _curry1(function keys3(obj) {
+  if (Object(obj) !== obj) {
+    return [];
+  }
+  var prop, nIdx;
+  var ks = [];
+  var checkArgsLength = hasArgsEnumBug && isArguments_default(obj);
+  for (prop in obj) {
+    if (_has(prop, obj) && (!checkArgsLength || prop !== "length")) {
+      ks[ks.length] = prop;
+    }
+  }
+  if (hasEnumBug) {
+    nIdx = nonEnumerableProps.length - 1;
+    while (nIdx >= 0) {
+      prop = nonEnumerableProps[nIdx];
+      if (_has(prop, obj) && !contains(ks, prop)) {
+        ks[ks.length] = prop;
+      }
+      nIdx -= 1;
+    }
+  }
+  return ks;
+});
+var keys_default = keys;
+
+// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_toISOString.js
+var pad = function pad2(n) {
+  return (n < 10 ? "0" : "") + n;
+};
+var _toISOString = typeof Date.prototype.toISOString === "function" ? function _toISOString2(d) {
+  return d.toISOString();
+} : function _toISOString3(d) {
+  return d.getUTCFullYear() + "-" + pad(d.getUTCMonth() + 1) + "-" + pad(d.getUTCDate()) + "T" + pad(d.getUTCHours()) + ":" + pad(d.getUTCMinutes()) + ":" + pad(d.getUTCSeconds()) + "." + (d.getUTCMilliseconds() / 1e3).toFixed(3).slice(2, 5) + "Z";
+};
+
+// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_arrayReduce.js
+function _arrayReduce(reducer, acc, list) {
+  var index = 0;
+  var length = list.length;
+  while (index < length) {
+    acc = reducer(acc, list[index]);
+    index += 1;
+  }
+  return acc;
+}
+
+// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_isInteger.js
+var isInteger_default = Number.isInteger || function _isInteger(n) {
+  return n << 0 === n;
+};
+
+// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/mapObjIndexed.js
+var mapObjIndexed = /* @__PURE__ */ _curry2(function mapObjIndexed2(fn, obj) {
+  return _arrayReduce(function(acc, key) {
+    acc[key] = fn(obj[key], key, obj);
+    return acc;
+  }, {}, keys_default(obj));
+});
+var mapObjIndexed_default = mapObjIndexed;
+
+// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/trim.js
+var hasProtoTrim = typeof String.prototype.trim === "function";
+
+// src/clients/function-client.ts
 function checkResponse(r) {
   if (!r.ok) {
     throw Error(`Request ${r.url} failed with ${r.status}: ${r.statusText}`);
@@ -29,6 +209,15 @@ function parseIudexResponse(r) {
   }).catch((e) => {
     throw Error(`Request ${r.url} failed with ${r.status}: ${e.message}`);
   });
+}
+function createFunctionClient(baseUrl, apiKey) {
+  const fns = {
+    returnFunctionCall,
+    nextMessage,
+    startWorkflow,
+    putFunctionJsons
+  };
+  return mapObjIndexed_default((fn) => fn(baseUrl, apiKey), fns);
 }
 function returnFunctionCall(baseUrl, apiKey) {
   return function(functionCallId, functionReturn) {
@@ -71,129 +260,259 @@ function putFunctionJsons(baseUrl, apiKey) {
   };
 }
 
-// src/utils.ts
-function setTimeoutPromise(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+// src/clients/workflow-client.ts
+function createWorkflowClient(baseUrl, apiKey) {
+  const fns = {
+    fetchGetWorkflows,
+    fetchGetWorkflowById,
+    fetchPostWorkflows
+  };
+  return mapObjIndexed_default((fn) => fn(baseUrl, apiKey), fns);
 }
-function poll(fn, args, {
-  maxTries,
-  tries,
-  waitMs
-} = { maxTries: 60, tries: 0, waitMs: 1e3 }) {
-  if (tries >= maxTries) {
-    throw Error(
-      `Polling failed after ${maxTries} tries for function ${fn.name}.`
-    );
+async function checkResponseStatus(res) {
+  const body = await res.json();
+  if (!res.ok) {
+    const error = body.error || res.statusText;
+    throw new Error(`Request failed with: ${error}`);
   }
-  return fn(...args).then((res) => {
-    if (res == null) {
-      return setTimeoutPromise(waitMs).then(() => poll(fn, args, { maxTries, tries: tries + 1, waitMs }));
-    }
-    return res;
-  });
+  return body;
+}
+function fetchGetWorkflows(baseUrl, apiKey) {
+  return function() {
+    return fetch(`${baseUrl}/workflows`, {
+      method: "GET",
+      headers: { "x-api-key": apiKey }
+    }).then(checkResponseStatus);
+  };
+}
+function fetchGetWorkflowById(baseUrl, apiKey) {
+  return function(req) {
+    return fetch(`${baseUrl}/workflows/${req.workflowId}`, {
+      method: "GET",
+      headers: { "x-api-key": apiKey }
+    }).then(checkResponseStatus);
+  };
+}
+function fetchPostWorkflows(baseUrl, apiKey) {
+  return function(req) {
+    return fetch(`${baseUrl}/workflows`, {
+      method: "POST",
+      body: JSON.stringify(req),
+      headers: { "x-api-key": apiKey }
+    }).then(checkResponseStatus);
+  };
 }
 
-// src/function-types.ts
-import { z } from "zod";
-var objectJsonSchema = z.object({
-  type: z.literal("object"),
-  properties: z.record(z.lazy(() => valueJsonSchema)),
-  description: z.string().optional(),
-  required: z.array(z.string()).optional()
-});
-var recordJsonSchema = z.object({
-  type: z.literal("object"),
-  additionalProperties: z.lazy(() => valueJsonSchema),
-  description: z.string().optional()
-});
-var arrayJsonSchema = z.object({
-  type: z.literal("array"),
-  items: z.lazy(() => valueJsonSchema),
-  description: z.string().optional()
-});
-var tupleJsonSchema = z.object({
-  type: z.literal("array"),
-  prefixItems: z.array(z.string()),
-  description: z.string().optional()
-});
-var stringJsonSchema = z.object({
-  type: z.literal("string"),
-  enum: z.array(z.string()).optional(),
-  description: z.string().optional()
-});
-var numberJsonSchema = z.object({
-  type: z.union([z.literal("number"), z.literal("integer")]),
-  description: z.string().optional(),
-  minimum: z.number().optional(),
-  maximum: z.number().optional()
-});
-var booleanJsonSchema = z.object({
-  type: z.literal("boolean"),
-  description: z.string().optional()
-});
-var unionJsonSchema = z.object({
-  type: z.array(z.string()),
-  description: z.string().optional()
-});
-var realUnionJsonSchema = z.object({
-  anyOf: z.array(z.lazy(() => valueJsonSchema)),
-  description: z.string().optional()
-});
-var unknownJsonSchema = z.object({
-  type: z.literal("unknown"),
-  description: z.string().optional()
-});
-var nullJsonSchema = z.object({
-  type: z.literal("null"),
-  description: z.string().optional()
-});
-var refJsonSchema = z.object({
-  $ref: z.string(),
-  description: z.string().optional()
-});
-var valueJsonSchema = z.union([
-  objectJsonSchema,
-  recordJsonSchema,
-  arrayJsonSchema,
-  tupleJsonSchema,
-  stringJsonSchema,
-  numberJsonSchema,
-  booleanJsonSchema,
-  unionJsonSchema,
-  realUnionJsonSchema,
-  unknownJsonSchema,
-  nullJsonSchema,
-  refJsonSchema
-]);
-var functionJsonSchema = z.object({
-  name: z.string(),
-  description: z.string(),
-  parameters: z.union([
-    z.object({
-      type: z.literal("object"),
-      properties: z.record(valueJsonSchema),
-      description: z.string().optional(),
-      required: z.array(z.string()).optional()
-    }),
-    z.array(valueJsonSchema)
-  ]),
-  returns: valueJsonSchema,
-  usageExample: z.string().optional(),
-  returnsExample: z.string().optional()
-});
-var nullFunctionJson = {
-  name: "",
-  description: "",
-  parameters: [],
-  returns: { type: "null" }
+// src/clients/workflow-schemas.ts
+import z3 from "zod";
+
+// src/types/task-types.ts
+import z from "zod";
+var TaskStatus = {
+  // Queued state
+  Pending: "Pending",
+  // awaiting processing
+  // Processing states
+  Planning: "Planning",
+  // in programmer
+  Executing: "Executing",
+  // in executor
+  Sequencing: "Sequencing",
+  // in sequencer
+  // Terminal states
+  Resolved: "Resolved",
+  // execution resolved task
+  Sequenced: "Sequenced"
+  // no resolution; sequuencer created subtasks
 };
+var baseTaskSchema = z.object({
+  id: z.string(),
+  description: z.string(),
+  status: z.nativeEnum(TaskStatus),
+  stepIndex: z.number(),
+  depth: z.number(),
+  numRewrites: z.number()
+});
+var Feasibility = {
+  Feasible: "Feasible",
+  Rewritable: "Rewritable",
+  Infeasible: "Infeasible"
+};
+var feasibilityCheckSchema = z.object({
+  feasibility: z.nativeEnum(Feasibility),
+  reason: z.coerce.string(),
+  fix: z.string().optional()
+});
+var Resolution = {
+  Resolved: "Resolved",
+  Rewritable: "Rewritable",
+  Infeasible: "Infeasible"
+};
+var resolutionCheckSchema = z.object({
+  resolution: z.nativeEnum(Resolution),
+  reason: z.coerce.string(),
+  fix: z.string().optional()
+});
+var taskPendingSchema = baseTaskSchema.extend({
+  status: z.literal(TaskStatus.Pending)
+});
+var taskPlanningSchema = baseTaskSchema.extend({
+  status: z.literal(TaskStatus.Planning),
+  // present if rewriting
+  program: z.string().optional(),
+  feasibilityCheck: feasibilityCheckSchema.optional(),
+  // present if rewriting from executor
+  resolutionCheck: resolutionCheckSchema.optional()
+});
+var taskExecutingSchema = baseTaskSchema.extend({
+  status: z.literal(TaskStatus.Executing),
+  program: z.string(),
+  usedFunctionNames: z.array(z.string()),
+  feasibilityCheck: feasibilityCheckSchema
+});
+var taskResolvedSchema = baseTaskSchema.extend({
+  status: z.literal(TaskStatus.Resolved),
+  program: z.string(),
+  usedFunctionNames: z.array(z.string()),
+  feasibilityCheck: feasibilityCheckSchema,
+  resolutionCheck: resolutionCheckSchema
+});
+var taskSequencingSchema = baseTaskSchema.extend({
+  status: z.literal(TaskStatus.Sequencing),
+  program: z.string(),
+  feasibilityCheck: feasibilityCheckSchema,
+  // present if sequencing from executor
+  usedFunctionNames: z.array(z.string()).optional(),
+  resolutionCheck: resolutionCheckSchema.optional()
+});
+var taskSequencedSchema = baseTaskSchema.extend({
+  status: z.literal(TaskStatus.Sequenced),
+  program: z.string(),
+  subtasks: z.lazy(() => taskSchema.array()),
+  feasibilityCheck: feasibilityCheckSchema,
+  usedFunctionNames: z.array(z.string()).optional(),
+  resolutionCheck: resolutionCheckSchema.optional()
+});
+var taskSchema = z.union([
+  taskPendingSchema,
+  taskPlanningSchema,
+  taskExecutingSchema,
+  taskResolvedSchema,
+  taskSequencingSchema,
+  taskSequencedSchema
+]);
+
+// src/types/workflow-types.ts
+import z2 from "zod";
+var WorkflowStatus = {
+  Running: "Running",
+  Completed: "Completed",
+  Failed: "Failed",
+  Paused: "Paused",
+  TimedOut: "TimedOut"
+};
+var workflowSchema = z2.object({
+  workflowId: z2.string(),
+  root: taskSchema,
+  modules: z2.array(z2.string()).optional(),
+  createdAt: z2.string(),
+  updatedAt: z2.string(),
+  orgId: z2.string()
+});
+var workflowInfoSchema = z2.object({
+  workflowId: z2.string(),
+  modules: z2.array(z2.string()).optional(),
+  createdAt: z2.string(),
+  updatedAt: z2.string(),
+  // Task summary
+  description: z2.string(),
+  status: z2.nativeEnum(WorkflowStatus),
+  numLeafTasks: z2.number()
+});
+
+// src/clients/workflow-schemas.ts
+var getWorkflowsResSchema = z3.object({
+  workflowInfos: z3.array(workflowInfoSchema)
+});
+var getWorkflowByIdReqSchema = z3.object({
+  workflowId: z3.string()
+});
+var getWorkflowByIdResSchema = z3.object({
+  workflow: taskSchema
+  // root task
+});
+var postWorkflowsReqSchema = z3.object({
+  query: z3.string(),
+  modules: z3.array(z3.string()).optional(),
+  orgId: z3.string().optional()
+});
+var postWorkflowsResSchema = z3.object({
+  message: z3.string(),
+  workflowId: z3.string()
+});
+
+// src/types/chat-types.ts
+import { z as z4 } from "zod";
+var chatTurnBaseSchema = z4.object({
+  id: z4.string(),
+  type: z4.string(),
+  sender: z4.string(),
+  timestamp: z4.string()
+});
+var chatTextSchema = chatTurnBaseSchema.extend({
+  type: z4.literal("text"),
+  text: z4.string()
+});
+var chatErrorSchema = chatTurnBaseSchema.extend({
+  type: z4.literal("error"),
+  name: z4.string(),
+  message: z4.string(),
+  cause: z4.string().optional(),
+  stack: z4.string().optional()
+});
+var chatImageSchema = chatTurnBaseSchema.extend({
+  type: z4.literal("image"),
+  image: z4.string(),
+  description: z4.string()
+});
+var chatListSchema = chatTurnBaseSchema.extend({
+  type: z4.literal("list"),
+  list: z4.array(z4.string())
+});
+var chatFunctionCallSchema = chatTurnBaseSchema.extend({
+  type: z4.literal("functionCall"),
+  functionCallId: z4.string(),
+  functionName: z4.string(),
+  functionArgs: z4.record(z4.unknown())
+});
+var chatFunctionReturnSchema = chatTurnBaseSchema.extend({
+  type: z4.literal("functionReturn"),
+  functionCallId: z4.string(),
+  functionReturn: z4.string()
+});
+var chatTurnSchema = z4.discriminatedUnion("type", [
+  chatTextSchema,
+  chatErrorSchema,
+  chatImageSchema,
+  chatListSchema,
+  chatFunctionCallSchema,
+  chatFunctionReturnSchema
+]);
 
 // src/index.ts
+function createClient(baseUrl, apiKey) {
+  return {
+    ...createFunctionClient(baseUrl, apiKey),
+    ...createWorkflowClient(baseUrl, apiKey)
+  };
+}
 var DEFAULT_BASE_URL = "https://api.iudex.ai";
 var Iudex = class {
   baseUrl;
   apiKey;
   maxTries;
+  client;
+  currentWorkflowId;
   functionLinker;
   constructor({
     apiKey = process.env.IUDEX_API_KEY,
@@ -208,9 +527,11 @@ var Iudex = class {
     this.apiKey = apiKey;
     this.baseUrl = baseUrl;
     this.maxTries = maxTries;
+    this.client = createClient(this.baseUrl, this.apiKey);
+    this.streamCurrentTask = this.streamCurrentTask.bind(this);
   }
   uploadFunctions = (jsons, modules) => {
-    return putFunctionJsons(this.baseUrl, this.apiKey)(jsons, modules);
+    return this.client.putFunctionJsons(jsons, modules);
   };
   linkFunctions = (functionLinker) => {
     this.functionLinker = functionLinker;
@@ -221,6 +542,12 @@ var Iudex = class {
    */
   sendChatTurn = async (message, opts = {}) => {
     const { onChatTurn } = opts;
+    const {
+      promise: currentWorkflowId,
+      resolve: setCurrentWorkflowId,
+      reject: rejectCurrentWorkflowId
+    } = deconstructedPromise();
+    this.currentWorkflowId = currentWorkflowId;
     const userTurn = {
       id: "msg_ephemeral_" + (/* @__PURE__ */ new Date()).toISOString(),
       type: "text",
@@ -229,9 +556,13 @@ var Iudex = class {
       text: message
     };
     onChatTurn?.(userTurn);
-    const { workflowId } = await startWorkflow(this.baseUrl, this.apiKey)(userTurn.text);
+    const { workflowId } = await this.client.startWorkflow(userTurn.text).catch((e) => {
+      rejectCurrentWorkflowId(e);
+      throw e;
+    });
+    setCurrentWorkflowId(workflowId);
     let nextMessage2 = await poll(
-      nextMessage(this.baseUrl, this.apiKey),
+      this.client.nextMessage,
       [workflowId],
       { maxTries: 60, tries: 0, waitMs: 1e3 }
     );
@@ -253,12 +584,12 @@ var Iudex = class {
         functionReturn: JSON.stringify(fnReturn)
       };
       onChatTurn?.(fnReturnTurn);
-      await returnFunctionCall(this.baseUrl, this.apiKey)(
+      await this.client.returnFunctionCall(
         fnReturnTurn.functionCallId,
         fnReturnTurn.functionReturn
       );
       nextMessage2 = await poll(
-        nextMessage(this.baseUrl, this.apiKey),
+        this.client.nextMessage,
         [workflowId],
         { maxTries: 60, tries: 0, waitMs: 1e3 }
       );
@@ -274,7 +605,41 @@ var Iudex = class {
     const chatTurn = await this.sendChatTurn(message);
     return chatTurn.text;
   };
-  // OpenAI interface shim
+  async *streamCurrentTask() {
+    if (!this.currentWorkflowId) {
+      throw Error("No current workflow id. Send a message first.");
+    }
+    const workflowId = await this.currentWorkflowId;
+    let rootTask = await this.client.fetchGetWorkflowById({ workflowId }).then((r) => r.workflow);
+    let processingTask = getFirstTaskByStatus(rootTask, [
+      "Pending",
+      "Planning",
+      "Executing",
+      "Sequencing"
+    ]);
+    let oldProcessingTask;
+    while (processingTask) {
+      if (oldProcessingTask?.id !== processingTask.id || oldProcessingTask?.status !== processingTask.status) {
+        yield processingTask;
+        oldProcessingTask = processingTask;
+      }
+      await setTimeoutPromise(1e3);
+      rootTask = await this.client.fetchGetWorkflowById({ workflowId }).then((r) => r.workflow);
+      processingTask = getFirstTaskByStatus(rootTask, [
+        "Pending",
+        "Planning",
+        "Executing",
+        "Sequencing"
+      ]);
+    }
+    const resolvedTask = getLastTaskByStatus(rootTask, "Resolved");
+    if (!resolvedTask) {
+      throw Error("No processing nor resolved task found.");
+    }
+    yield resolvedTask;
+    return;
+  }
+  // ======================= OpenAI interface shim ======================
   chatCompletionsCreate = (body) => {
     const lastMessage = body.messages[body.messages.length - 1];
     if (!lastMessage) {
@@ -285,9 +650,9 @@ var Iudex = class {
       const workflowId = penUltMessage.workflowId;
       const callId = lastMessage.tool_call_id;
       const functionReturn = lastMessage.content || "";
-      const functionCallRes = returnFunctionCall(this.baseUrl, this.apiKey)(callId, String(functionReturn));
+      const functionCallRes = this.client.returnFunctionCall(callId, String(functionReturn));
       const nextMessageRes = functionCallRes.then(() => poll(
-        nextMessage(this.baseUrl, this.apiKey),
+        this.client.nextMessage,
         [workflowId],
         { maxTries: 60, tries: 0, waitMs: 1e3 }
       ));
@@ -301,10 +666,17 @@ var Iudex = class {
     if (!lastMessage.content) {
       throw Error(`The message content is empty.`);
     }
+    const {
+      promise: currentWorkflowId,
+      resolve: setCurrentWorkflowId,
+      reject: rejectCurrentWorkflowId
+    } = deconstructedPromise();
+    this.currentWorkflowId = currentWorkflowId;
     const messageContent = extractMessageTextContent(lastMessage.content);
-    return startWorkflow(this.baseUrl, this.apiKey)(messageContent).then(
-      ({ workflowId }) => poll(
-        nextMessage(this.baseUrl, this.apiKey),
+    return this.client.startWorkflow(messageContent).then(({ workflowId }) => {
+      setCurrentWorkflowId(workflowId);
+      return poll(
+        this.client.nextMessage,
         [workflowId],
         { maxTries: 60, tries: 0, waitMs: 1e3 }
       ).then((r) => {
@@ -312,8 +684,11 @@ var Iudex = class {
           model: body.model,
           ...mapIudexToOpenAi(r, workflowId)
         };
-      })
-    );
+      });
+    }).catch((e) => {
+      rejectCurrentWorkflowId(e);
+      throw e;
+    });
   };
   chat = {
     completions: {
@@ -371,18 +746,98 @@ function extractMessageTextContent(content) {
   }
   return content.map((c) => c.type === "text" ? c.text : "").join("");
 }
-var src_default = Iudex;
+function getLastTaskByStatus(root, status) {
+  const arrayStatus = !Array.isArray(status) ? [status] : status;
+  const traverse = reversePreOrderTraversal(
+    (t) => t.subtasks || [],
+    (t) => arrayStatus.includes(t.status)
+  );
+  return traverse(root);
+}
+function getFirstTaskByStatus(root, status) {
+  const arrayStatus = !Array.isArray(status) ? [status] : status;
+  const traverse = preOrderTraversal(
+    (t) => t.subtasks || [],
+    (t) => arrayStatus.includes(t.status)
+  );
+  return traverse(root);
+}
+function reversePreOrderTraversal(getChildren, predicate) {
+  return function traverse(node) {
+    if (predicate(node)) {
+      return node;
+    }
+    const reversedChildren = getChildren(node).reverse();
+    for (const child of reversedChildren) {
+      const maybeFound = traverse(child);
+      if (maybeFound !== void 0) {
+        return maybeFound;
+      }
+    }
+    return void 0;
+  };
+}
+function preOrderTraversal(getChildren, predicate) {
+  return function traverse(node) {
+    if (predicate(node)) {
+      return node;
+    }
+    const children = getChildren(node);
+    for (const child of children) {
+      const maybeFound = traverse(child);
+      if (maybeFound !== void 0) {
+        return maybeFound;
+      }
+    }
+    return void 0;
+  };
+}
 export {
   DEFAULT_BASE_URL,
+  Feasibility,
   Iudex,
-  src_default as default,
+  Resolution,
+  TaskStatus,
+  WorkflowStatus,
+  baseTaskSchema,
+  chatErrorSchema,
+  chatFunctionCallSchema,
+  chatFunctionReturnSchema,
+  chatImageSchema,
+  chatListSchema,
+  chatTextSchema,
+  chatTurnSchema,
+  createClient,
+  createFunctionClient,
+  createWorkflowClient,
   extractMessageTextContent,
-  functionJsonSchema,
+  feasibilityCheckSchema,
+  fetchGetWorkflowById,
+  fetchGetWorkflows,
+  fetchPostWorkflows,
+  getFirstTaskByStatus,
+  getLastTaskByStatus,
+  getWorkflowByIdReqSchema,
+  getWorkflowByIdResSchema,
+  getWorkflowsResSchema,
   mapIudexToOpenAi,
   nextMessage,
-  nullFunctionJson,
+  postWorkflowsReqSchema,
+  postWorkflowsResSchema,
+  preOrderTraversal,
   putFunctionJsons,
+  resolutionCheckSchema,
   returnFunctionCall,
-  startWorkflow
+  reversePreOrderTraversal,
+  startWorkflow,
+  taskExecutingSchema,
+  taskPendingSchema,
+  taskPlanningSchema,
+  taskResolvedSchema,
+  taskSchema,
+  taskSequencedSchema,
+  taskSequencingSchema,
+  workflowInfoSchema,
+  workflowSchema
 };
 //# sourceMappingURL=index.mjs.map

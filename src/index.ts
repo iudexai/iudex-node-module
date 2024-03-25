@@ -1,10 +1,26 @@
 import OpenAI from 'openai';
-import { ChatFunctionReturn, ChatText, ChatTurn } from './message.js';
-import * as client from './client.js';
-export * from './client.js';
-import { poll } from './utils.js';
-import { FunctionJson } from './function-types.js';
-export * from './function-types.js';
+import { FunctionJson } from 'function-json-schema';
+export * from 'function-json-schema';
+
+import { deconstructedPromise, poll, setTimeoutPromise } from './utils.js';
+import { ChatFunctionReturn, ChatText, ChatTurn } from './types/chat-types.js';
+import { createFunctionClient } from './clients/function-client.js';
+import { createWorkflowClient } from './clients/workflow-client.js';
+import { Task, TaskSequenced, TaskStatus, TaskStatusesToType } from './types/task-types.js';
+
+export function createClient(baseUrl: string, apiKey: string) {
+  return {
+    ...createFunctionClient(baseUrl, apiKey),
+    ...createWorkflowClient(baseUrl, apiKey),
+  };
+}
+
+export * from './clients/function-client.js';
+export * from './clients/workflow-client.js';
+export * from './clients/workflow-schemas.js';
+export * from './types/task-types.js';
+export * from './types/workflow-types.js';
+export * from './types/chat-types.js';
 
 export const DEFAULT_BASE_URL = 'https://api.iudex.ai';
 
@@ -31,6 +47,9 @@ export class Iudex {
   baseUrl: string;
   apiKey: string;
   maxTries: number;
+  client: ReturnType<typeof createClient>;
+  currentWorkflowId?: Promise<string>;
+
   functionLinker?: (fnName: string) => (...args: any[]) => unknown;
 
   constructor({
@@ -53,13 +72,17 @@ export class Iudex {
     this.apiKey = apiKey;
     this.baseUrl = baseUrl;
     this.maxTries = maxTries;
+    this.client = createClient(this.baseUrl, this.apiKey);
+
+    // Need it for generator function
+    this.streamCurrentTask = this.streamCurrentTask.bind(this);
   }
 
   uploadFunctions = (
     jsons: Array<OpenAI.ChatCompletionCreateParams.Function | FunctionJson>,
     modules?: string,
   ): Promise<void> => {
-    return client.putFunctionJsons(this.baseUrl, this.apiKey)(jsons, modules);
+    return this.client.putFunctionJsons(jsons, modules);
   };
 
   linkFunctions = (functionLinker: (fnName: string) => (...args: any[]) => unknown): void => {
@@ -78,6 +101,12 @@ export class Iudex {
     } = {},
   ): Promise<ChatText> => {
     const { onChatTurn } = opts;
+    const {
+      promise: currentWorkflowId,
+      resolve: setCurrentWorkflowId,
+      reject: rejectCurrentWorkflowId,
+    } = deconstructedPromise<string>();
+    this.currentWorkflowId = currentWorkflowId;
 
     const userTurn: ChatText = {
       id: 'msg_ephemeral_' + new Date().toISOString(),
@@ -87,10 +116,15 @@ export class Iudex {
       text: message,
     };
     onChatTurn?.(userTurn);
-    const { workflowId } = await client.startWorkflow(this.baseUrl, this.apiKey)(userTurn.text);
+    const { workflowId } = await this.client.startWorkflow(userTurn.text)
+      .catch(e => {
+        rejectCurrentWorkflowId(e);
+        throw e;
+      });
+    setCurrentWorkflowId(workflowId);
 
     let nextMessage = await poll(
-      client.nextMessage(this.baseUrl, this.apiKey),
+      this.client.nextMessage,
       [workflowId],
       { maxTries: 60, tries: 0, waitMs: 1000 },
     );
@@ -115,13 +149,13 @@ export class Iudex {
         functionReturn: JSON.stringify(fnReturn),
       };
       onChatTurn?.(fnReturnTurn);
-      await client.returnFunctionCall(this.baseUrl, this.apiKey)(
+      await this.client.returnFunctionCall(
         fnReturnTurn.functionCallId,
         fnReturnTurn.functionReturn,
       );
 
       nextMessage = await poll(
-        client.nextMessage(this.baseUrl, this.apiKey),
+        this.client.nextMessage,
         [workflowId],
         { maxTries: 60, tries: 0, waitMs: 1000 },
       );
@@ -140,7 +174,54 @@ export class Iudex {
     return chatTurn.text;
   };
 
-  // OpenAI interface shim
+  async *streamCurrentTask(): AsyncGenerator<Task> {
+    if (!this.currentWorkflowId) {
+      throw Error('No current workflow id. Send a message first.');
+    }
+    const workflowId = await this.currentWorkflowId;
+
+    // Start from root
+    let rootTask = await this.client.fetchGetWorkflowById({ workflowId }).then(r => r.workflow);
+    // Get processing task
+    let processingTask = getFirstTaskByStatus(rootTask, [
+      'Pending',
+      'Planning',
+      'Executing',
+      'Sequencing',
+    ]);
+    let oldProcessingTask: typeof processingTask;
+
+    while (processingTask) {
+      // Only yield when theres a new processing task
+      if (oldProcessingTask?.id !== processingTask.id
+        || oldProcessingTask?.status !== processingTask.status
+      ) {
+        yield processingTask;
+        oldProcessingTask = processingTask;
+      }
+      // Wait
+      await setTimeoutPromise(1000);
+      // Fetch
+      rootTask = await this.client.fetchGetWorkflowById({ workflowId }).then(r => r.workflow);
+      // Set
+      processingTask = getFirstTaskByStatus(rootTask, [
+        'Pending',
+        'Planning',
+        'Executing',
+        'Sequencing',
+      ]);
+    }
+
+    // Get the resolved task
+    const resolvedTask = getLastTaskByStatus(rootTask, 'Resolved');
+    if (!resolvedTask) {
+      throw Error('No processing nor resolved task found.');
+    }
+    yield resolvedTask;
+    return;
+  }
+
+  // ======================= OpenAI interface shim ======================
   chatCompletionsCreate = (body: OpenAI.ChatCompletionCreateParamsNonStreaming & {
     messages: Array<ChatCompletionMessageWithIudex>
   }): Promise<ChatCompletionWithIudex>  => {
@@ -162,11 +243,11 @@ export class Iudex {
 
       // Put data
       const functionCallRes =
-        client.returnFunctionCall(this.baseUrl, this.apiKey)(callId, String(functionReturn));
+        this.client.returnFunctionCall(callId, String(functionReturn));
 
       // Wait for new message
       const nextMessageRes = functionCallRes.then(() => poll(
-        client.nextMessage(this.baseUrl, this.apiKey),
+        this.client.nextMessage,
         [workflowId],
         { maxTries: 60, tries: 0, waitMs: 1000 },
       ));
@@ -185,21 +266,31 @@ export class Iudex {
     }
 
     // Else create new workflow
+    const {
+      promise: currentWorkflowId,
+      resolve: setCurrentWorkflowId,
+      reject: rejectCurrentWorkflowId,
+    } = deconstructedPromise<string>();
+    this.currentWorkflowId = currentWorkflowId;
     const messageContent = extractMessageTextContent(lastMessage.content);
-    return client.startWorkflow(this.baseUrl, this.apiKey)(messageContent)
-      .then(({ workflowId }) =>
-        poll(
-          client.nextMessage(this.baseUrl, this.apiKey),
+    return this.client.startWorkflow(messageContent)
+      .then(({ workflowId }) => {
+        setCurrentWorkflowId(workflowId);
+        return poll(
+          this.client.nextMessage,
           [workflowId],
           { maxTries: 60, tries: 0, waitMs: 1000 },
-        )
-          .then((r) => {
-            return {
-              model: body.model,
-              ...mapIudexToOpenAi(r, workflowId),
-            };
-          }),
-      );
+        ).then((r) => {
+          return {
+            model: body.model,
+            ...mapIudexToOpenAi(r, workflowId),
+          };
+        });
+      })
+      .catch(e => {
+        rejectCurrentWorkflowId(e);
+        throw e;
+      });
   };
 
   chat = {
@@ -277,4 +368,79 @@ export function extractMessageTextContent(
   return content.map(c => c.type === 'text' ? c.text : '').join('');
 }
 
-export default Iudex;
+// ======================= Task traversal ======================
+export function getLastTaskByStatus<Statuses extends TaskStatus | TaskStatus[]>(
+  root: Task,
+  status: Statuses,
+): TaskStatusesToType<Statuses> | undefined {
+  const arrayStatus = !Array.isArray(status) ? [status] : status;
+
+  const traverse = reversePreOrderTraversal<Task>(
+    t => (t as TaskSequenced).subtasks || [],
+    t => (arrayStatus as TaskStatus[]).includes(t.status),
+  );
+
+  return traverse(root) as TaskStatusesToType<Statuses> | undefined;
+}
+
+
+export function getFirstTaskByStatus<S extends TaskStatus | TaskStatus[]>(
+  root: Task,
+  status: S | S[],
+): TaskStatusesToType<S | S[]> | undefined {
+  const arrayStatus = !Array.isArray(status) ? [status] : status;
+
+  const traverse = preOrderTraversal<Task>(
+    t => (t as TaskSequenced).subtasks || [],
+    t => (arrayStatus as TaskStatus[]).includes(t.status),
+  );
+
+  return traverse(root) as TaskStatusesToType<S | S[]> | undefined;
+}
+
+
+export function reversePreOrderTraversal<T>(
+  // Gets children from node
+  getChildren: (node: T) => T[],
+  // If true, stops traversal and returns value
+  predicate: (node: T) => boolean,
+) {
+  return function traverse(node: T): T | undefined {
+    if (predicate(node)) {
+      return node;
+    }
+
+    const reversedChildren = getChildren(node).reverse();
+    for (const child of reversedChildren) {
+      const maybeFound = traverse(child);
+      if (maybeFound !== undefined) {
+        return maybeFound;
+      }
+    }
+
+    return undefined;
+  };
+}
+
+export function preOrderTraversal<T>(
+  // Gets children from node
+  getChildren: (node: T) => T[],
+  // If true, stops traversal and returns value
+  predicate: (node: T) => boolean,
+) {
+  return function traverse(node: T): T | undefined {
+    if (predicate(node)) {
+      return node;
+    }
+
+    const children = getChildren(node);
+    for (const child of children) {
+      const maybeFound = traverse(child);
+      if (maybeFound !== undefined) {
+        return maybeFound;
+      }
+    }
+
+    return undefined;
+  };
+}
