@@ -76,6 +76,7 @@ __export(src_exports, {
   taskSequencedSchema: () => taskSequencedSchema,
   taskSequencingSchema: () => taskSequencingSchema,
   workflowInfoSchema: () => workflowInfoSchema,
+  workflowMetadataSchema: () => workflowMetadataSchema,
   workflowSchema: () => workflowSchema
 });
 module.exports = __toCommonJS(src_exports);
@@ -491,12 +492,16 @@ var WorkflowStatus = {
   Paused: "Paused",
   TimedOut: "TimedOut"
 };
+var workflowMetadataSchema = import_zod2.default.object({
+  maxFunctionMatches: import_zod2.default.number().optional()
+});
 var workflowSchema = import_zod2.default.object({
   workflowId: import_zod2.default.string(),
   root: taskSchema,
   modules: import_zod2.default.array(import_zod2.default.string()).optional(),
   createdAt: import_zod2.default.string(),
   updatedAt: import_zod2.default.string(),
+  metadata: workflowMetadataSchema.optional(),
   orgId: import_zod2.default.string()
 });
 var workflowInfoSchema = import_zod2.default.object({
@@ -524,7 +529,9 @@ var getWorkflowByIdResSchema = import_zod3.default.object({
 var postWorkflowsReqSchema = import_zod3.default.object({
   query: import_zod3.default.string(),
   modules: import_zod3.default.array(import_zod3.default.string()).optional(),
-  orgId: import_zod3.default.string().optional()
+  opts: import_zod3.default.object({
+    maxFunctionMatches: import_zod3.default.number().optional()
+  }).optional()
 });
 var postWorkflowsResSchema = import_zod3.default.object({
   message: import_zod3.default.string(),
@@ -580,13 +587,13 @@ var chatTurnSchema = import_zod4.z.discriminatedUnion("type", [
 ]);
 
 // src/index.ts
+var DEFAULT_BASE_URL = "https://api.iudex.ai";
 function createClient(baseUrl, apiKey) {
   return {
     ...createFunctionClient(baseUrl, apiKey),
     ...createWorkflowClient(baseUrl, apiKey)
   };
 }
-var DEFAULT_BASE_URL = "https://api.iudex.ai";
 var Iudex = class {
   baseUrl;
   apiKey;
@@ -919,6 +926,7 @@ function preOrderTraversal(getChildren, predicate) {
   taskSequencedSchema,
   taskSequencingSchema,
   workflowInfoSchema,
+  workflowMetadataSchema,
   workflowSchema,
   ...require("function-json-schema")
 });

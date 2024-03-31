@@ -9,13 +9,13 @@ declare const chatTurnBaseSchema: z.ZodObject<{
     sender: z.ZodString;
     timestamp: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    id: string;
     type: string;
+    id: string;
     sender: string;
     timestamp: string;
 }, {
-    id: string;
     type: string;
+    id: string;
     sender: string;
     timestamp: string;
 }>;
@@ -30,14 +30,14 @@ declare const chatTextSchema: z.ZodObject<{
     type: z.ZodLiteral<"text">;
     text: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    id: string;
     type: "text";
+    id: string;
     sender: string;
     timestamp: string;
     text: string;
 }, {
-    id: string;
     type: "text";
+    id: string;
     sender: string;
     timestamp: string;
     text: string;
@@ -53,8 +53,8 @@ declare const chatErrorSchema: z.ZodObject<{
     cause: z.ZodOptional<z.ZodString>;
     stack: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
-    id: string;
     type: "error";
+    id: string;
     sender: string;
     timestamp: string;
     message: string;
@@ -62,8 +62,8 @@ declare const chatErrorSchema: z.ZodObject<{
     cause?: string | undefined;
     stack?: string | undefined;
 }, {
-    id: string;
     type: "error";
+    id: string;
     sender: string;
     timestamp: string;
     message: string;
@@ -84,19 +84,19 @@ declare const chatImageSchema: z.ZodObject<{
     image: z.ZodString;
     description: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    id: string;
     type: "image";
+    id: string;
     sender: string;
     timestamp: string;
-    description: string;
     image: string;
+    description: string;
 }, {
-    id: string;
     type: "image";
+    id: string;
     sender: string;
     timestamp: string;
-    description: string;
     image: string;
+    description: string;
 }>;
 type ChatImage = z.infer<typeof chatImageSchema>;
 declare const chatListSchema: z.ZodObject<{
@@ -106,14 +106,14 @@ declare const chatListSchema: z.ZodObject<{
     type: z.ZodLiteral<"list">;
     list: z.ZodArray<z.ZodString, "many">;
 }, "strip", z.ZodTypeAny, {
-    id: string;
     type: "list";
+    id: string;
     sender: string;
     timestamp: string;
     list: string[];
 }, {
-    id: string;
     type: "list";
+    id: string;
     sender: string;
     timestamp: string;
     list: string[];
@@ -128,16 +128,16 @@ declare const chatFunctionCallSchema: z.ZodObject<{
     functionName: z.ZodString;
     functionArgs: z.ZodRecord<z.ZodString, z.ZodUnknown>;
 }, "strip", z.ZodTypeAny, {
-    id: string;
     type: "functionCall";
+    id: string;
     sender: string;
     timestamp: string;
     functionCallId: string;
     functionName: string;
     functionArgs: Record<string, unknown>;
 }, {
-    id: string;
     type: "functionCall";
+    id: string;
     sender: string;
     timestamp: string;
     functionCallId: string;
@@ -153,15 +153,15 @@ declare const chatFunctionReturnSchema: z.ZodObject<{
     functionCallId: z.ZodString;
     functionReturn: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    id: string;
     type: "functionReturn";
+    id: string;
     sender: string;
     timestamp: string;
     functionCallId: string;
     functionReturn: string;
 }, {
-    id: string;
     type: "functionReturn";
+    id: string;
     sender: string;
     timestamp: string;
     functionCallId: string;
@@ -178,14 +178,14 @@ declare const chatTurnSchema: z.ZodDiscriminatedUnion<"type", [z.ZodObject<{
     type: z.ZodLiteral<"text">;
     text: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    id: string;
     type: "text";
+    id: string;
     sender: string;
     timestamp: string;
     text: string;
 }, {
-    id: string;
     type: "text";
+    id: string;
     sender: string;
     timestamp: string;
     text: string;
@@ -199,8 +199,8 @@ declare const chatTurnSchema: z.ZodDiscriminatedUnion<"type", [z.ZodObject<{
     cause: z.ZodOptional<z.ZodString>;
     stack: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
-    id: string;
     type: "error";
+    id: string;
     sender: string;
     timestamp: string;
     message: string;
@@ -208,8 +208,8 @@ declare const chatTurnSchema: z.ZodDiscriminatedUnion<"type", [z.ZodObject<{
     cause?: string | undefined;
     stack?: string | undefined;
 }, {
-    id: string;
     type: "error";
+    id: string;
     sender: string;
     timestamp: string;
     message: string;
@@ -224,19 +224,19 @@ declare const chatTurnSchema: z.ZodDiscriminatedUnion<"type", [z.ZodObject<{
     image: z.ZodString;
     description: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    id: string;
     type: "image";
+    id: string;
     sender: string;
     timestamp: string;
-    description: string;
     image: string;
+    description: string;
 }, {
-    id: string;
     type: "image";
+    id: string;
     sender: string;
     timestamp: string;
-    description: string;
     image: string;
+    description: string;
 }>, z.ZodObject<{
     id: z.ZodString;
     sender: z.ZodString;
@@ -244,14 +244,14 @@ declare const chatTurnSchema: z.ZodDiscriminatedUnion<"type", [z.ZodObject<{
     type: z.ZodLiteral<"list">;
     list: z.ZodArray<z.ZodString, "many">;
 }, "strip", z.ZodTypeAny, {
-    id: string;
     type: "list";
+    id: string;
     sender: string;
     timestamp: string;
     list: string[];
 }, {
-    id: string;
     type: "list";
+    id: string;
     sender: string;
     timestamp: string;
     list: string[];
@@ -264,16 +264,16 @@ declare const chatTurnSchema: z.ZodDiscriminatedUnion<"type", [z.ZodObject<{
     functionName: z.ZodString;
     functionArgs: z.ZodRecord<z.ZodString, z.ZodUnknown>;
 }, "strip", z.ZodTypeAny, {
-    id: string;
     type: "functionCall";
+    id: string;
     sender: string;
     timestamp: string;
     functionCallId: string;
     functionName: string;
     functionArgs: Record<string, unknown>;
 }, {
-    id: string;
     type: "functionCall";
+    id: string;
     sender: string;
     timestamp: string;
     functionCallId: string;
@@ -287,15 +287,15 @@ declare const chatTurnSchema: z.ZodDiscriminatedUnion<"type", [z.ZodObject<{
     functionCallId: z.ZodString;
     functionReturn: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    id: string;
     type: "functionReturn";
+    id: string;
     sender: string;
     timestamp: string;
     functionCallId: string;
     functionReturn: string;
 }, {
-    id: string;
     type: "functionReturn";
+    id: string;
     sender: string;
     timestamp: string;
     functionCallId: string;
@@ -796,38 +796,38 @@ declare const getWorkflowsResSchema: z$1.ZodObject<{
         numLeafTasks: z$1.ZodNumber;
     }, "strip", z$1.ZodTypeAny, {
         status: "Running" | "Completed" | "Failed" | "Paused" | "TimedOut";
+        description: string;
         workflowId: string;
         createdAt: string;
         updatedAt: string;
-        description: string;
         numLeafTasks: number;
         modules?: string[] | undefined;
     }, {
         status: "Running" | "Completed" | "Failed" | "Paused" | "TimedOut";
+        description: string;
         workflowId: string;
         createdAt: string;
         updatedAt: string;
-        description: string;
         numLeafTasks: number;
         modules?: string[] | undefined;
     }>, "many">;
 }, "strip", z$1.ZodTypeAny, {
     workflowInfos: {
         status: "Running" | "Completed" | "Failed" | "Paused" | "TimedOut";
+        description: string;
         workflowId: string;
         createdAt: string;
         updatedAt: string;
-        description: string;
         numLeafTasks: number;
         modules?: string[] | undefined;
     }[];
 }, {
     workflowInfos: {
         status: "Running" | "Completed" | "Failed" | "Paused" | "TimedOut";
+        description: string;
         workflowId: string;
         createdAt: string;
         updatedAt: string;
-        description: string;
         numLeafTasks: number;
         modules?: string[] | undefined;
     }[];
@@ -1050,15 +1050,25 @@ type GetWorkflowByIdRes = z$1.infer<typeof getWorkflowByIdResSchema>;
 declare const postWorkflowsReqSchema: z$1.ZodObject<{
     query: z$1.ZodString;
     modules: z$1.ZodOptional<z$1.ZodArray<z$1.ZodString, "many">>;
-    orgId: z$1.ZodOptional<z$1.ZodString>;
+    opts: z$1.ZodOptional<z$1.ZodObject<{
+        maxFunctionMatches: z$1.ZodOptional<z$1.ZodNumber>;
+    }, "strip", z$1.ZodTypeAny, {
+        maxFunctionMatches?: number | undefined;
+    }, {
+        maxFunctionMatches?: number | undefined;
+    }>>;
 }, "strip", z$1.ZodTypeAny, {
     query: string;
     modules?: string[] | undefined;
-    orgId?: string | undefined;
+    opts?: {
+        maxFunctionMatches?: number | undefined;
+    } | undefined;
 }, {
     query: string;
     modules?: string[] | undefined;
-    orgId?: string | undefined;
+    opts?: {
+        maxFunctionMatches?: number | undefined;
+    } | undefined;
 }>;
 declare const postWorkflowsResSchema: z$1.ZodObject<{
     message: z$1.ZodString;
@@ -1094,18 +1104,32 @@ declare const WorkflowStatus: {
     readonly TimedOut: "TimedOut";
 };
 type WorkflowStatus = (typeof WorkflowStatus)[keyof typeof WorkflowStatus];
+declare const workflowMetadataSchema: z$1.ZodObject<{
+    maxFunctionMatches: z$1.ZodOptional<z$1.ZodNumber>;
+}, "strip", z$1.ZodTypeAny, {
+    maxFunctionMatches?: number | undefined;
+}, {
+    maxFunctionMatches?: number | undefined;
+}>;
+type WorkflowMetadata = z$1.infer<typeof workflowMetadataSchema>;
 declare const workflowSchema: z$1.ZodObject<{
     workflowId: z$1.ZodString;
     root: z$1.ZodType<Task, z$1.ZodTypeDef, Task>;
     modules: z$1.ZodOptional<z$1.ZodArray<z$1.ZodString, "many">>;
     createdAt: z$1.ZodString;
     updatedAt: z$1.ZodString;
+    metadata: z$1.ZodOptional<z$1.ZodObject<{
+        maxFunctionMatches: z$1.ZodOptional<z$1.ZodNumber>;
+    }, "strip", z$1.ZodTypeAny, {
+        maxFunctionMatches?: number | undefined;
+    }, {
+        maxFunctionMatches?: number | undefined;
+    }>>;
     orgId: z$1.ZodString;
 }, "strip", z$1.ZodTypeAny, {
     workflowId: string;
     createdAt: string;
     updatedAt: string;
-    orgId: string;
     root: {
         id: string;
         status: "Pending";
@@ -1206,12 +1230,15 @@ declare const workflowSchema: z$1.ZodObject<{
             fix?: string | undefined;
         } | undefined;
     });
+    orgId: string;
     modules?: string[] | undefined;
+    metadata?: {
+        maxFunctionMatches?: number | undefined;
+    } | undefined;
 }, {
     workflowId: string;
     createdAt: string;
     updatedAt: string;
-    orgId: string;
     root: {
         id: string;
         status: "Pending";
@@ -1312,7 +1339,11 @@ declare const workflowSchema: z$1.ZodObject<{
             fix?: string | undefined;
         } | undefined;
     });
+    orgId: string;
     modules?: string[] | undefined;
+    metadata?: {
+        maxFunctionMatches?: number | undefined;
+    } | undefined;
 }>;
 type Workflow = z$1.infer<typeof workflowSchema>;
 declare const workflowInfoSchema: z$1.ZodObject<{
@@ -1331,31 +1362,47 @@ declare const workflowInfoSchema: z$1.ZodObject<{
     numLeafTasks: z$1.ZodNumber;
 }, "strip", z$1.ZodTypeAny, {
     status: "Running" | "Completed" | "Failed" | "Paused" | "TimedOut";
+    description: string;
     workflowId: string;
     createdAt: string;
     updatedAt: string;
-    description: string;
     numLeafTasks: number;
     modules?: string[] | undefined;
 }, {
     status: "Running" | "Completed" | "Failed" | "Paused" | "TimedOut";
+    description: string;
     workflowId: string;
     createdAt: string;
     updatedAt: string;
-    description: string;
     numLeafTasks: number;
     modules?: string[] | undefined;
 }>;
 type WorkflowInfo = z$1.infer<typeof workflowInfoSchema>;
 
+declare const DEFAULT_BASE_URL = "https://api.iudex.ai";
+type IudexMessage = ChatTurn;
+type ChatCompletionMessageWithIudex = OpenAI.ChatCompletionMessageParam & ({
+    tool_call_id?: string;
+    workflowId?: string;
+} | {
+    tool_call_id: string;
+    workflowId: string;
+});
+type ChatCompletionWithIudex = OpenAI.ChatCompletion & {
+    choices: Array<OpenAI.ChatCompletion.Choice & {
+        message: OpenAI.ChatCompletionMessage & {
+            workflowId: string;
+        };
+    }>;
+};
 declare function createClient(baseUrl: string, apiKey: string): {
     fetchGetWorkflows: () => Promise<{
         workflowInfos: {
             status: "Running" | "Completed" | "Failed" | "Paused" | "TimedOut";
+            description: string;
             workflowId: string;
             createdAt: string;
             updatedAt: string;
-            description: string;
             numLeafTasks: number;
             modules?: string[] | undefined;
         }[];
@@ -1467,7 +1514,9 @@ declare function createClient(baseUrl: string, apiKey: string): {
     fetchPostWorkflows: (req: {
         query: string;
         modules?: string[] | undefined;
-        orgId?: string | undefined;
+        opts?: {
+            maxFunctionMatches?: number | undefined;
+        } | undefined;
     }) => Promise<{
         message: string;
         workflowId: string;
@@ -1483,23 +1532,6 @@ declare function createClient(baseUrl: string, apiKey: string): {
         usageExample?: string | undefined;
         returnsExample?: string | undefined;
     }[], module?: string | undefined) => Promise<void>;
-};
-
-declare const DEFAULT_BASE_URL = "https://api.iudex.ai";
-type IudexMessage = ChatTurn;
-type ChatCompletionMessageWithIudex = OpenAI.ChatCompletionMessageParam & ({
-    tool_call_id?: string;
-    workflowId?: string;
-} | {
-    tool_call_id: string;
-    workflowId: string;
-});
-type ChatCompletionWithIudex = OpenAI.ChatCompletion & {
-    choices: Array<OpenAI.ChatCompletion.Choice & {
-        message: OpenAI.ChatCompletionMessage & {
-            workflowId: string;
-        };
-    }>;
 };
 /**
  * Iudex api client.
@@ -1556,4 +1588,4 @@ declare function getFirstTaskByStatus<S extends TaskStatus | TaskStatus[]>(root:
 declare function reversePreOrderTraversal<T>(getChildren: (node: T) => T[], predicate: (node: T) => boolean): (node: T) => T | undefined;
 declare function preOrderTraversal<T>(getChildren: (node: T) => T[], predicate: (node: T) => boolean): (node: T) => T | undefined;
 
-export { type BaseTask, type ChatCompletionMessageWithIudex, type ChatCompletionWithIudex, type ChatError, type ChatFunctionCall, type ChatFunctionReturn, type ChatImage, type ChatList, type ChatText, type ChatTurn, type ChatTurnType, type ChatTurnUnion, DEFAULT_BASE_URL, Feasibility, type FeasibilityCheck, type GetWorkflowByIdReq, type GetWorkflowByIdRes, type GetWorkflowsRes, Iudex, type IudexMessage, type NextMessageRes, type PostWorkflowsReq, type PostWorkflowsRes, Resolution, type ResolutionCheck, type ReturnFunctionCallBody, type ReturnFunctionCallRes, type StartWorkflowRes, type Task, type TaskExecuting, type TaskPending, type TaskPlanning, type TaskResolved, type TaskSequenced, type TaskSequencing, TaskStatus, type TaskStatusToType, type TaskStatusesToType, type Workflow, type WorkflowClient, type WorkflowInfo, WorkflowStatus, baseTaskSchema, chatErrorSchema, chatFunctionCallSchema, chatFunctionReturnSchema, chatImageSchema, chatListSchema, chatTextSchema, chatTurnSchema, createClient, createFunctionClient, createWorkflowClient, extractMessageTextContent, feasibilityCheckSchema, fetchGetWorkflowById, fetchGetWorkflows, fetchPostWorkflows, getFirstTaskByStatus, getLastTaskByStatus, getWorkflowByIdReqSchema, getWorkflowByIdResSchema, getWorkflowsResSchema, mapIudexToOpenAi, nextMessage, postWorkflowsReqSchema, postWorkflowsResSchema, preOrderTraversal, putFunctionJsons, type putFunctionJsonsReq, resolutionCheckSchema, returnFunctionCall, reversePreOrderTraversal, startWorkflow, taskExecutingSchema, taskPendingSchema, taskPlanningSchema, taskResolvedSchema, taskSchema, taskSequencedSchema, taskSequencingSchema, workflowInfoSchema, workflowSchema };
+export { type BaseTask, type ChatCompletionMessageWithIudex, type ChatCompletionWithIudex, type ChatError, type ChatFunctionCall, type ChatFunctionReturn, type ChatImage, type ChatList, type ChatText, type ChatTurn, type ChatTurnType, type ChatTurnUnion, DEFAULT_BASE_URL, Feasibility, type FeasibilityCheck, type GetWorkflowByIdReq, type GetWorkflowByIdRes, type GetWorkflowsRes, Iudex, type IudexMessage, type NextMessageRes, type PostWorkflowsReq, type PostWorkflowsRes, Resolution, type ResolutionCheck, type ReturnFunctionCallBody, type ReturnFunctionCallRes, type StartWorkflowRes, type Task, type TaskExecuting, type TaskPending, type TaskPlanning, type TaskResolved, type TaskSequenced, type TaskSequencing, TaskStatus, type TaskStatusToType, type TaskStatusesToType, type Workflow, type WorkflowClient, type WorkflowInfo, type WorkflowMetadata, WorkflowStatus, baseTaskSchema, chatErrorSchema, chatFunctionCallSchema, chatFunctionReturnSchema, chatImageSchema, chatListSchema, chatTextSchema, chatTurnSchema, createClient, createFunctionClient, createWorkflowClient, extractMessageTextContent, feasibilityCheckSchema, fetchGetWorkflowById, fetchGetWorkflows, fetchPostWorkflows, getFirstTaskByStatus, getLastTaskByStatus, getWorkflowByIdReqSchema, getWorkflowByIdResSchema, getWorkflowsResSchema, mapIudexToOpenAi, nextMessage, postWorkflowsReqSchema, postWorkflowsResSchema, preOrderTraversal, putFunctionJsons, type putFunctionJsonsReq, resolutionCheckSchema, returnFunctionCall, reversePreOrderTraversal, startWorkflow, taskExecutingSchema, taskPendingSchema, taskPlanningSchema, taskResolvedSchema, taskSchema, taskSequencedSchema, taskSequencingSchema, workflowInfoSchema, workflowMetadataSchema, workflowSchema };

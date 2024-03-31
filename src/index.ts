@@ -7,14 +7,6 @@ import { ChatFunctionReturn, ChatText, ChatTurn } from './types/chat-types.js';
 import { createFunctionClient } from './clients/function-client.js';
 import { createWorkflowClient } from './clients/workflow-client.js';
 import { Task, TaskSequenced, TaskStatus, TaskStatusesToType } from './types/task-types.js';
-
-export function createClient(baseUrl: string, apiKey: string) {
-  return {
-    ...createFunctionClient(baseUrl, apiKey),
-    ...createWorkflowClient(baseUrl, apiKey),
-  };
-}
-
 export * from './clients/function-client.js';
 export * from './clients/workflow-client.js';
 export * from './clients/workflow-schemas.js';
@@ -39,6 +31,13 @@ export type ChatCompletionWithIudex = OpenAI.ChatCompletion & {
     message: OpenAI.ChatCompletionMessage & { workflowId: string; };
   }>
 };
+
+export function createClient(baseUrl: string, apiKey: string) {
+  return {
+    ...createFunctionClient(baseUrl, apiKey),
+    ...createWorkflowClient(baseUrl, apiKey),
+  };
+}
 
 /**
  * Iudex api client.

@@ -20,7 +20,9 @@ export type GetWorkflowByIdRes = z.infer<typeof getWorkflowByIdResSchema>;
 export const postWorkflowsReqSchema = z.object({
   query: z.string(),
   modules: z.array(z.string()).optional(),
-  orgId: z.string().optional(),
+  opts: z.object({
+    maxFunctionMatches: z.number().optional(),
+  }).optional(),
 });
 export const postWorkflowsResSchema = z.object({
   message: z.string(),

@@ -411,12 +411,16 @@ var WorkflowStatus = {
   Paused: "Paused",
   TimedOut: "TimedOut"
 };
+var workflowMetadataSchema = z2.object({
+  maxFunctionMatches: z2.number().optional()
+});
 var workflowSchema = z2.object({
   workflowId: z2.string(),
   root: taskSchema,
   modules: z2.array(z2.string()).optional(),
   createdAt: z2.string(),
   updatedAt: z2.string(),
+  metadata: workflowMetadataSchema.optional(),
   orgId: z2.string()
 });
 var workflowInfoSchema = z2.object({
@@ -444,7 +448,9 @@ var getWorkflowByIdResSchema = z3.object({
 var postWorkflowsReqSchema = z3.object({
   query: z3.string(),
   modules: z3.array(z3.string()).optional(),
-  orgId: z3.string().optional()
+  opts: z3.object({
+    maxFunctionMatches: z3.number().optional()
+  }).optional()
 });
 var postWorkflowsResSchema = z3.object({
   message: z3.string(),
@@ -500,13 +506,13 @@ var chatTurnSchema = z4.discriminatedUnion("type", [
 ]);
 
 // src/index.ts
+var DEFAULT_BASE_URL = "https://api.iudex.ai";
 function createClient(baseUrl, apiKey) {
   return {
     ...createFunctionClient(baseUrl, apiKey),
     ...createWorkflowClient(baseUrl, apiKey)
   };
 }
-var DEFAULT_BASE_URL = "https://api.iudex.ai";
 var Iudex = class {
   baseUrl;
   apiKey;
@@ -838,6 +844,7 @@ export {
   taskSequencedSchema,
   taskSequencingSchema,
   workflowInfoSchema,
+  workflowMetadataSchema,
   workflowSchema
 };
 //# sourceMappingURL=index.mjs.map

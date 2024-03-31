@@ -29,7 +29,12 @@ export function poll<Args extends any[], Ret>(
   });
 }
 
-export function deconstructedPromise<T>() {
+export type DeconstructedPromise<T> = {
+  promise: Promise<T>;
+  resolve: (value: T | PromiseLike<T>) => void;
+  reject: (reason?: any) => void;
+};
+export function deconstructedPromise<T>(): DeconstructedPromise<T> {
   // Need the ! because TS doesnt know that
   // the function inside the promise immediately resolves.
   let promiseResolve!: (value: T | PromiseLike<T>) => void;

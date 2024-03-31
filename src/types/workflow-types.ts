@@ -10,12 +10,18 @@ export const WorkflowStatus = {
 } as const;
 export type WorkflowStatus = (typeof WorkflowStatus)[keyof typeof WorkflowStatus];
 
+export const workflowMetadataSchema = z.object({
+  maxFunctionMatches: z.number().optional(),
+});
+export type WorkflowMetadata = z.infer<typeof workflowMetadataSchema>;
+
 export const workflowSchema = z.object({
   workflowId: z.string(),
   root: taskSchema,
   modules: z.array(z.string()).optional(),
   createdAt: z.string(),
   updatedAt: z.string(),
+  metadata: workflowMetadataSchema.optional(),
   orgId: z.string(),
 });
 export type Workflow = z.infer<typeof workflowSchema>;
