@@ -322,9 +322,16 @@ var TaskStatus = {
   // Terminal states
   Resolved: "Resolved",
   // execution resolved task
-  Sequenced: "Sequenced"
+  Sequenced: "Sequenced",
   // no resolution; sequuencer created subtasks
+  Errored: "Errored"
+  // unrecoverable error during processing
 };
+var TerminalTaskStatuses = [
+  TaskStatus.Resolved,
+  TaskStatus.Sequenced,
+  TaskStatus.Errored
+];
 var baseTaskSchema = z.object({
   id: z.string(),
   description: z.string(),
@@ -393,13 +400,20 @@ var taskSequencedSchema = baseTaskSchema.extend({
   usedFunctionNames: z.array(z.string()).optional(),
   resolutionCheck: resolutionCheckSchema.optional()
 });
+var taskErroredSchema = baseTaskSchema.extend({
+  status: z.literal(TaskStatus.Errored),
+  errorMsg: z.string(),
+  errorName: z.string(),
+  errorStack: z.string().optional()
+});
 var taskSchema = z.union([
   taskPendingSchema,
   taskPlanningSchema,
   taskExecutingSchema,
   taskResolvedSchema,
   taskSequencingSchema,
-  taskSequencedSchema
+  taskSequencedSchema,
+  taskErroredSchema
 ]);
 
 // src/types/workflow-types.ts
@@ -447,6 +461,7 @@ var getWorkflowByIdResSchema = z3.object({
 });
 var postWorkflowsReqSchema = z3.object({
   query: z3.string(),
+  // Undefined means use all org modules. [] means use all modules.
   modules: z3.array(z3.string()).optional(),
   opts: z3.object({
     maxFunctionMatches: z3.number().optional()
@@ -547,7 +562,7 @@ var Iudex = class {
    * @returns response as a chat object
    */
   sendChatTurn = async (message, opts = {}) => {
-    const { onChatTurn } = opts;
+    const { onChatTurn, modules } = opts;
     const {
       promise: currentWorkflowId,
       resolve: setCurrentWorkflowId,
@@ -562,7 +577,7 @@ var Iudex = class {
       text: message
     };
     onChatTurn?.(userTurn);
-    const { workflowId } = await this.client.startWorkflow(userTurn.text).catch((e) => {
+    const { workflowId } = await this.client.startWorkflow(userTurn.text, modules).catch((e) => {
       rejectCurrentWorkflowId(e);
       throw e;
     });
@@ -607,8 +622,8 @@ var Iudex = class {
    * @param message message to send
    * @returns response message as a string
    */
-  sendMessage = async (message) => {
-    const chatTurn = await this.sendChatTurn(message);
+  sendMessage = async (message, opts = {}) => {
+    const chatTurn = await this.sendChatTurn(message, opts);
     return chatTurn.text;
   };
   async *streamCurrentTask() {
@@ -631,6 +646,11 @@ var Iudex = class {
       }
       await setTimeoutPromise(1e3);
       rootTask = await this.client.fetchGetWorkflowById({ workflowId }).then((r) => r.workflow);
+      const maybeErroredTask = getLastTaskByStatus(rootTask, "Errored");
+      if (maybeErroredTask) {
+        yield maybeErroredTask;
+        return;
+      }
       processingTask = getFirstTaskByStatus(rootTask, [
         "Pending",
         "Planning",
@@ -804,6 +824,7 @@ export {
   Iudex,
   Resolution,
   TaskStatus,
+  TerminalTaskStatuses,
   WorkflowStatus,
   baseTaskSchema,
   chatErrorSchema,
@@ -836,6 +857,7 @@ export {
   returnFunctionCall,
   reversePreOrderTraversal,
   startWorkflow,
+  taskErroredSchema,
   taskExecutingSchema,
   taskPendingSchema,
   taskPlanningSchema,

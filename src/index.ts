@@ -7,12 +7,14 @@ import { ChatFunctionReturn, ChatText, ChatTurn } from './types/chat-types.js';
 import { createFunctionClient } from './clients/function-client.js';
 import { createWorkflowClient } from './clients/workflow-client.js';
 import { Task, TaskSequenced, TaskStatus, TaskStatusesToType } from './types/task-types.js';
+
 export * from './clients/function-client.js';
 export * from './clients/workflow-client.js';
 export * from './clients/workflow-schemas.js';
 export * from './types/task-types.js';
 export * from './types/workflow-types.js';
 export * from './types/chat-types.js';
+export * from './instrumentation/index.js';
 
 export const DEFAULT_BASE_URL = 'https://api.iudex.ai';
 
@@ -97,9 +99,10 @@ export class Iudex {
     opts: {
       onChatTurn?: (c: ChatTurn) => void,
       initAuth?: string,
+      modules?: string[],
     } = {},
   ): Promise<ChatText> => {
-    const { onChatTurn } = opts;
+    const { onChatTurn, modules } = opts;
     const {
       promise: currentWorkflowId,
       resolve: setCurrentWorkflowId,
@@ -115,7 +118,7 @@ export class Iudex {
       text: message,
     };
     onChatTurn?.(userTurn);
-    const { workflowId } = await this.client.startWorkflow(userTurn.text)
+    const { workflowId } = await this.client.startWorkflow(userTurn.text, modules)
       .catch(e => {
         rejectCurrentWorkflowId(e);
         throw e;
@@ -168,8 +171,15 @@ export class Iudex {
    * @param message message to send
    * @returns response message as a string
    */
-  sendMessage = async (message: string): Promise<string> => {
-    const chatTurn = await this.sendChatTurn(message);
+  sendMessage = async (
+    message: string,
+    opts: {
+      onChatTurn?: (c: ChatTurn) => void,
+      initAuth?: string,
+      modules?: string[],
+    } = {},
+  ): Promise<string> => {
+    const chatTurn = await this.sendChatTurn(message, opts);
     return chatTurn.text;
   };
 
@@ -202,6 +212,12 @@ export class Iudex {
       await setTimeoutPromise(1000);
       // Fetch
       rootTask = await this.client.fetchGetWorkflowById({ workflowId }).then(r => r.workflow);
+      // Error escape hatch
+      const maybeErroredTask = getLastTaskByStatus(rootTask, 'Errored');
+      if (maybeErroredTask) {
+        yield maybeErroredTask;
+        return;
+      }
       // Set
       processingTask = getFirstTaskByStatus(rootTask, [
         'Pending',

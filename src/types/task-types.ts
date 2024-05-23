@@ -10,8 +10,15 @@ export const TaskStatus = {
   // Terminal states
   Resolved: 'Resolved', // execution resolved task
   Sequenced: 'Sequenced', // no resolution; sequuencer created subtasks
+  Errored: 'Errored', // unrecoverable error during processing
 } as const;
 export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus];
+
+export const TerminalTaskStatuses = [
+  TaskStatus.Resolved,
+  TaskStatus.Sequenced,
+  TaskStatus.Errored,
+] as const;
 
 export const baseTaskSchema = z.object({
   id: z.string(),
@@ -23,7 +30,7 @@ export const baseTaskSchema = z.object({
 });
 export type BaseTask = z.infer<typeof baseTaskSchema>;
 
-// Predicate checks
+// Task judgement types
 
 export const Feasibility = {
   Feasible: 'Feasible',
@@ -114,13 +121,24 @@ export const taskSequencedSchema: z.ZodType<TaskSequenced> = baseTaskSchema.exte
   resolutionCheck: resolutionCheckSchema.optional(),
 });
 
+export const taskErroredSchema = baseTaskSchema.extend({
+  status: z.literal(TaskStatus.Errored),
+  errorMsg: z.string(),
+  errorName: z.string(),
+  errorStack: z.string().optional(),
+});
+export type TaskErrored = z.infer<typeof taskErroredSchema>;
+
+// Task union types
+
 export type Task =
   | TaskPending
   | TaskPlanning
   | TaskExecuting
   | TaskSequencing
   | TaskSequenced
-  | TaskResolved;
+  | TaskResolved
+  | TaskErrored;
 export const taskSchema: z.ZodType<Task> = z.union([
   taskPendingSchema,
   taskPlanningSchema,
@@ -128,6 +146,7 @@ export const taskSchema: z.ZodType<Task> = z.union([
   taskResolvedSchema,
   taskSequencingSchema,
   taskSequencedSchema,
+  taskErroredSchema,
 ]);
 
 export type TaskStatusToType = {
@@ -137,6 +156,7 @@ export type TaskStatusToType = {
   [TaskStatus.Sequencing]: TaskSequencing;
   [TaskStatus.Sequenced]: TaskSequenced;
   [TaskStatus.Resolved]: TaskResolved;
+  [TaskStatus.Errored]: TaskErrored;
 };
 
 export type TaskStatusesToType<Statuses> =

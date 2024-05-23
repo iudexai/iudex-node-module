@@ -331,7 +331,7 @@ type StartWorkflowRes = {
     workflowId: string;
     message: string;
 };
-declare function startWorkflow(baseUrl: string, apiKey: string): (query: string, modules?: string) => Promise<StartWorkflowRes>;
+declare function startWorkflow(baseUrl: string, apiKey: string): (query: string, modules?: string[]) => Promise<StartWorkflowRes>;
 type FunctionJson = {
     name: string;
     description?: string;
@@ -353,8 +353,10 @@ declare const TaskStatus: {
     readonly Sequencing: "Sequencing";
     readonly Resolved: "Resolved";
     readonly Sequenced: "Sequenced";
+    readonly Errored: "Errored";
 };
 type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus];
+declare const TerminalTaskStatuses: readonly ["Resolved", "Sequenced", "Errored"];
 declare const baseTaskSchema: z$1.ZodObject<{
     id: z$1.ZodString;
     description: z$1.ZodString;
@@ -365,20 +367,21 @@ declare const baseTaskSchema: z$1.ZodObject<{
         readonly Sequencing: "Sequencing";
         readonly Resolved: "Resolved";
         readonly Sequenced: "Sequenced";
+        readonly Errored: "Errored";
     }>;
     stepIndex: z$1.ZodNumber;
     depth: z$1.ZodNumber;
     numRewrites: z$1.ZodNumber;
 }, "strip", z$1.ZodTypeAny, {
     id: string;
-    status: "Pending" | "Planning" | "Executing" | "Sequencing" | "Resolved" | "Sequenced";
+    status: "Pending" | "Planning" | "Executing" | "Sequencing" | "Resolved" | "Sequenced" | "Errored";
     description: string;
     stepIndex: number;
     depth: number;
     numRewrites: number;
 }, {
     id: string;
-    status: "Pending" | "Planning" | "Executing" | "Sequencing" | "Resolved" | "Sequenced";
+    status: "Pending" | "Planning" | "Executing" | "Sequencing" | "Resolved" | "Sequenced" | "Errored";
     description: string;
     stepIndex: number;
     depth: number;
@@ -767,7 +770,39 @@ type TaskSequenced = z$1.infer<typeof baseTaskSchema> & {
     resolutionCheck?: ResolutionCheck;
 };
 declare const taskSequencedSchema: z$1.ZodType<TaskSequenced>;
-type Task = TaskPending | TaskPlanning | TaskExecuting | TaskSequencing | TaskSequenced | TaskResolved;
+declare const taskErroredSchema: z$1.ZodObject<{
+    id: z$1.ZodString;
+    description: z$1.ZodString;
+    stepIndex: z$1.ZodNumber;
+    depth: z$1.ZodNumber;
+    numRewrites: z$1.ZodNumber;
+    status: z$1.ZodLiteral<"Errored">;
+    errorMsg: z$1.ZodString;
+    errorName: z$1.ZodString;
+    errorStack: z$1.ZodOptional<z$1.ZodString>;
+}, "strip", z$1.ZodTypeAny, {
+    id: string;
+    status: "Errored";
+    description: string;
+    stepIndex: number;
+    depth: number;
+    numRewrites: number;
+    errorMsg: string;
+    errorName: string;
+    errorStack?: string | undefined;
+}, {
+    id: string;
+    status: "Errored";
+    description: string;
+    stepIndex: number;
+    depth: number;
+    numRewrites: number;
+    errorMsg: string;
+    errorName: string;
+    errorStack?: string | undefined;
+}>;
+type TaskErrored = z$1.infer<typeof taskErroredSchema>;
+type Task = TaskPending | TaskPlanning | TaskExecuting | TaskSequencing | TaskSequenced | TaskResolved | TaskErrored;
 declare const taskSchema: z$1.ZodType<Task>;
 type TaskStatusToType = {
     [TaskStatus.Pending]: TaskPending;
@@ -776,6 +811,7 @@ type TaskStatusToType = {
     [TaskStatus.Sequencing]: TaskSequencing;
     [TaskStatus.Sequenced]: TaskSequenced;
     [TaskStatus.Resolved]: TaskResolved;
+    [TaskStatus.Errored]: TaskErrored;
 };
 type TaskStatusesToType<Statuses> = Statuses extends TaskStatus[] ? Statuses[number] extends TaskStatus ? TaskStatusToType[Statuses[number]] : never : Statuses extends TaskStatus ? TaskStatusToType[Statuses] : never;
 
@@ -920,9 +956,19 @@ declare const getWorkflowByIdResSchema: z$1.ZodObject<{
             fix?: string | undefined;
         };
         usedFunctionNames: string[];
+    } | {
+        id: string;
+        status: "Errored";
+        description: string;
+        stepIndex: number;
+        depth: number;
+        numRewrites: number;
+        errorMsg: string;
+        errorName: string;
+        errorStack?: string | undefined;
     } | ({
         id: string;
-        status: "Pending" | "Planning" | "Executing" | "Sequencing" | "Resolved" | "Sequenced";
+        status: "Pending" | "Planning" | "Executing" | "Sequencing" | "Resolved" | "Sequenced" | "Errored";
         description: string;
         stepIndex: number;
         depth: number;
@@ -1021,9 +1067,19 @@ declare const getWorkflowByIdResSchema: z$1.ZodObject<{
             fix?: string | undefined;
         };
         usedFunctionNames: string[];
+    } | {
+        id: string;
+        status: "Errored";
+        description: string;
+        stepIndex: number;
+        depth: number;
+        numRewrites: number;
+        errorMsg: string;
+        errorName: string;
+        errorStack?: string | undefined;
     } | ({
         id: string;
-        status: "Pending" | "Planning" | "Executing" | "Sequencing" | "Resolved" | "Sequenced";
+        status: "Pending" | "Planning" | "Executing" | "Sequencing" | "Resolved" | "Sequenced" | "Errored";
         description: string;
         stepIndex: number;
         depth: number;
@@ -1207,9 +1263,19 @@ declare const workflowSchema: z$1.ZodObject<{
             fix?: string | undefined;
         };
         usedFunctionNames: string[];
+    } | {
+        id: string;
+        status: "Errored";
+        description: string;
+        stepIndex: number;
+        depth: number;
+        numRewrites: number;
+        errorMsg: string;
+        errorName: string;
+        errorStack?: string | undefined;
     } | ({
         id: string;
-        status: "Pending" | "Planning" | "Executing" | "Sequencing" | "Resolved" | "Sequenced";
+        status: "Pending" | "Planning" | "Executing" | "Sequencing" | "Resolved" | "Sequenced" | "Errored";
         description: string;
         stepIndex: number;
         depth: number;
@@ -1316,9 +1382,19 @@ declare const workflowSchema: z$1.ZodObject<{
             fix?: string | undefined;
         };
         usedFunctionNames: string[];
+    } | {
+        id: string;
+        status: "Errored";
+        description: string;
+        stepIndex: number;
+        depth: number;
+        numRewrites: number;
+        errorMsg: string;
+        errorName: string;
+        errorStack?: string | undefined;
     } | ({
         id: string;
-        status: "Pending" | "Planning" | "Executing" | "Sequencing" | "Resolved" | "Sequenced";
+        status: "Pending" | "Planning" | "Executing" | "Sequencing" | "Resolved" | "Sequenced" | "Errored";
         description: string;
         stepIndex: number;
         depth: number;
@@ -1487,9 +1563,19 @@ declare function createClient(baseUrl: string, apiKey: string): {
                 fix?: string | undefined;
             };
             usedFunctionNames: string[];
+        } | {
+            id: string;
+            status: "Errored";
+            description: string;
+            stepIndex: number;
+            depth: number;
+            numRewrites: number;
+            errorMsg: string;
+            errorName: string;
+            errorStack?: string | undefined;
         } | ({
             id: string;
-            status: "Pending" | "Planning" | "Executing" | "Sequencing" | "Resolved" | "Sequenced";
+            status: "Pending" | "Planning" | "Executing" | "Sequencing" | "Resolved" | "Sequenced" | "Errored";
             description: string;
             stepIndex: number;
             depth: number;
@@ -1523,7 +1609,7 @@ declare function createClient(baseUrl: string, apiKey: string): {
     }>;
     returnFunctionCall: (functionCallId: string, functionReturn: string) => Promise<void>;
     nextMessage: (workflowId: string) => Promise<NextMessageRes>;
-    startWorkflow: (query: string, modules?: string | undefined) => Promise<StartWorkflowRes>;
+    startWorkflow: (query: string, modules?: string[] | undefined) => Promise<StartWorkflowRes>;
     putFunctionJsons: (jsons: {
         name: string;
         description?: string | undefined;
@@ -1557,12 +1643,17 @@ declare class Iudex {
     sendChatTurn: (message: string, opts?: {
         onChatTurn?: ((c: ChatTurn) => void) | undefined;
         initAuth?: string | undefined;
+        modules?: string[] | undefined;
     }) => Promise<ChatText>;
     /**
      * @param message message to send
      * @returns response message as a string
      */
-    sendMessage: (message: string) => Promise<string>;
+    sendMessage: (message: string, opts?: {
+        onChatTurn?: ((c: ChatTurn) => void) | undefined;
+        initAuth?: string | undefined;
+        modules?: string[] | undefined;
+    }) => Promise<string>;
     streamCurrentTask(): AsyncGenerator<Task>;
     chatCompletionsCreate: (body: OpenAI.ChatCompletionCreateParamsNonStreaming & {
         messages: Array<ChatCompletionMessageWithIudex>;
@@ -1588,4 +1679,4 @@ declare function getFirstTaskByStatus<S extends TaskStatus | TaskStatus[]>(root:
 declare function reversePreOrderTraversal<T>(getChildren: (node: T) => T[], predicate: (node: T) => boolean): (node: T) => T | undefined;
 declare function preOrderTraversal<T>(getChildren: (node: T) => T[], predicate: (node: T) => boolean): (node: T) => T | undefined;
 
-export { type BaseTask, type ChatCompletionMessageWithIudex, type ChatCompletionWithIudex, type ChatError, type ChatFunctionCall, type ChatFunctionReturn, type ChatImage, type ChatList, type ChatText, type ChatTurn, type ChatTurnType, type ChatTurnUnion, DEFAULT_BASE_URL, Feasibility, type FeasibilityCheck, type GetWorkflowByIdReq, type GetWorkflowByIdRes, type GetWorkflowsRes, Iudex, type IudexMessage, type NextMessageRes, type PostWorkflowsReq, type PostWorkflowsRes, Resolution, type ResolutionCheck, type ReturnFunctionCallBody, type ReturnFunctionCallRes, type StartWorkflowRes, type Task, type TaskExecuting, type TaskPending, type TaskPlanning, type TaskResolved, type TaskSequenced, type TaskSequencing, TaskStatus, type TaskStatusToType, type TaskStatusesToType, type Workflow, type WorkflowClient, type WorkflowInfo, type WorkflowMetadata, WorkflowStatus, baseTaskSchema, chatErrorSchema, chatFunctionCallSchema, chatFunctionReturnSchema, chatImageSchema, chatListSchema, chatTextSchema, chatTurnSchema, createClient, createFunctionClient, createWorkflowClient, extractMessageTextContent, feasibilityCheckSchema, fetchGetWorkflowById, fetchGetWorkflows, fetchPostWorkflows, getFirstTaskByStatus, getLastTaskByStatus, getWorkflowByIdReqSchema, getWorkflowByIdResSchema, getWorkflowsResSchema, mapIudexToOpenAi, nextMessage, postWorkflowsReqSchema, postWorkflowsResSchema, preOrderTraversal, putFunctionJsons, type putFunctionJsonsReq, resolutionCheckSchema, returnFunctionCall, reversePreOrderTraversal, startWorkflow, taskExecutingSchema, taskPendingSchema, taskPlanningSchema, taskResolvedSchema, taskSchema, taskSequencedSchema, taskSequencingSchema, workflowInfoSchema, workflowMetadataSchema, workflowSchema };
+export { type BaseTask, type ChatCompletionMessageWithIudex, type ChatCompletionWithIudex, type ChatError, type ChatFunctionCall, type ChatFunctionReturn, type ChatImage, type ChatList, type ChatText, type ChatTurn, type ChatTurnType, type ChatTurnUnion, DEFAULT_BASE_URL, Feasibility, type FeasibilityCheck, type GetWorkflowByIdReq, type GetWorkflowByIdRes, type GetWorkflowsRes, Iudex, type IudexMessage, type NextMessageRes, type PostWorkflowsReq, type PostWorkflowsRes, Resolution, type ResolutionCheck, type ReturnFunctionCallBody, type ReturnFunctionCallRes, type StartWorkflowRes, type Task, type TaskErrored, type TaskExecuting, type TaskPending, type TaskPlanning, type TaskResolved, type TaskSequenced, type TaskSequencing, TaskStatus, type TaskStatusToType, type TaskStatusesToType, TerminalTaskStatuses, type Workflow, type WorkflowClient, type WorkflowInfo, type WorkflowMetadata, WorkflowStatus, baseTaskSchema, chatErrorSchema, chatFunctionCallSchema, chatFunctionReturnSchema, chatImageSchema, chatListSchema, chatTextSchema, chatTurnSchema, createClient, createFunctionClient, createWorkflowClient, extractMessageTextContent, feasibilityCheckSchema, fetchGetWorkflowById, fetchGetWorkflows, fetchPostWorkflows, getFirstTaskByStatus, getLastTaskByStatus, getWorkflowByIdReqSchema, getWorkflowByIdResSchema, getWorkflowsResSchema, mapIudexToOpenAi, nextMessage, postWorkflowsReqSchema, postWorkflowsResSchema, preOrderTraversal, putFunctionJsons, type putFunctionJsonsReq, resolutionCheckSchema, returnFunctionCall, reversePreOrderTraversal, startWorkflow, taskErroredSchema, taskExecutingSchema, taskPendingSchema, taskPlanningSchema, taskResolvedSchema, taskSchema, taskSequencedSchema, taskSequencingSchema, workflowInfoSchema, workflowMetadataSchema, workflowSchema };

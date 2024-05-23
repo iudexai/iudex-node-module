@@ -28,7 +28,7 @@ async function checkResponseStatus(res: Response) {
   const body = await res.json();
   if (!res.ok) {
     // Unwrap error
-    const error = body.error || res.statusText;
+    const error = body.error || res.statusText || body.message;
     throw new Error(`Request failed with: ${error}`);
   }
   return body;

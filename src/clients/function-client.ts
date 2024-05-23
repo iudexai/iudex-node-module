@@ -89,7 +89,7 @@ export function nextMessage(baseUrl: string, apiKey: string) {
 // TODO change to postWorkflows to better match api def name
 export type StartWorkflowRes = { workflowId: string; message: string; };
 export function startWorkflow(baseUrl: string, apiKey: string) {
-  return function (query: string, modules?: string): Promise<StartWorkflowRes> {
+  return function (query: string, modules?: string[]): Promise<StartWorkflowRes> {
     return fetch(baseUrl + '/workflows', {
       method: 'POST',
       headers: { 'x-api-key': `${apiKey}` },

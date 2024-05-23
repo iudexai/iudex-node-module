@@ -19,6 +19,7 @@ export type GetWorkflowByIdRes = z.infer<typeof getWorkflowByIdResSchema>;
 
 export const postWorkflowsReqSchema = z.object({
   query: z.string(),
+  // Undefined means use all org modules. [] means use all modules.
   modules: z.array(z.string()).optional(),
   opts: z.object({
     maxFunctionMatches: z.number().optional(),

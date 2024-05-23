@@ -36,6 +36,7 @@ __export(src_exports, {
   Iudex: () => Iudex,
   Resolution: () => Resolution,
   TaskStatus: () => TaskStatus,
+  TerminalTaskStatuses: () => TerminalTaskStatuses,
   WorkflowStatus: () => WorkflowStatus,
   baseTaskSchema: () => baseTaskSchema,
   chatErrorSchema: () => chatErrorSchema,
@@ -68,6 +69,7 @@ __export(src_exports, {
   returnFunctionCall: () => returnFunctionCall,
   reversePreOrderTraversal: () => reversePreOrderTraversal,
   startWorkflow: () => startWorkflow,
+  taskErroredSchema: () => taskErroredSchema,
   taskExecutingSchema: () => taskExecutingSchema,
   taskPendingSchema: () => taskPendingSchema,
   taskPlanningSchema: () => taskPlanningSchema,
@@ -403,9 +405,16 @@ var TaskStatus = {
   // Terminal states
   Resolved: "Resolved",
   // execution resolved task
-  Sequenced: "Sequenced"
+  Sequenced: "Sequenced",
   // no resolution; sequuencer created subtasks
+  Errored: "Errored"
+  // unrecoverable error during processing
 };
+var TerminalTaskStatuses = [
+  TaskStatus.Resolved,
+  TaskStatus.Sequenced,
+  TaskStatus.Errored
+];
 var baseTaskSchema = import_zod.default.object({
   id: import_zod.default.string(),
   description: import_zod.default.string(),
@@ -474,13 +483,20 @@ var taskSequencedSchema = baseTaskSchema.extend({
   usedFunctionNames: import_zod.default.array(import_zod.default.string()).optional(),
   resolutionCheck: resolutionCheckSchema.optional()
 });
+var taskErroredSchema = baseTaskSchema.extend({
+  status: import_zod.default.literal(TaskStatus.Errored),
+  errorMsg: import_zod.default.string(),
+  errorName: import_zod.default.string(),
+  errorStack: import_zod.default.string().optional()
+});
 var taskSchema = import_zod.default.union([
   taskPendingSchema,
   taskPlanningSchema,
   taskExecutingSchema,
   taskResolvedSchema,
   taskSequencingSchema,
-  taskSequencedSchema
+  taskSequencedSchema,
+  taskErroredSchema
 ]);
 
 // src/types/workflow-types.ts
@@ -528,6 +544,7 @@ var getWorkflowByIdResSchema = import_zod3.default.object({
 });
 var postWorkflowsReqSchema = import_zod3.default.object({
   query: import_zod3.default.string(),
+  // Undefined means use all org modules. [] means use all modules.
   modules: import_zod3.default.array(import_zod3.default.string()).optional(),
   opts: import_zod3.default.object({
     maxFunctionMatches: import_zod3.default.number().optional()
@@ -628,7 +645,7 @@ var Iudex = class {
    * @returns response as a chat object
    */
   sendChatTurn = async (message, opts = {}) => {
-    const { onChatTurn } = opts;
+    const { onChatTurn, modules } = opts;
     const {
       promise: currentWorkflowId,
       resolve: setCurrentWorkflowId,
@@ -643,7 +660,7 @@ var Iudex = class {
       text: message
     };
     onChatTurn?.(userTurn);
-    const { workflowId } = await this.client.startWorkflow(userTurn.text).catch((e) => {
+    const { workflowId } = await this.client.startWorkflow(userTurn.text, modules).catch((e) => {
       rejectCurrentWorkflowId(e);
       throw e;
     });
@@ -688,8 +705,8 @@ var Iudex = class {
    * @param message message to send
    * @returns response message as a string
    */
-  sendMessage = async (message) => {
-    const chatTurn = await this.sendChatTurn(message);
+  sendMessage = async (message, opts = {}) => {
+    const chatTurn = await this.sendChatTurn(message, opts);
     return chatTurn.text;
   };
   async *streamCurrentTask() {
@@ -712,6 +729,11 @@ var Iudex = class {
       }
       await setTimeoutPromise(1e3);
       rootTask = await this.client.fetchGetWorkflowById({ workflowId }).then((r) => r.workflow);
+      const maybeErroredTask = getLastTaskByStatus(rootTask, "Errored");
+      if (maybeErroredTask) {
+        yield maybeErroredTask;
+        return;
+      }
       processingTask = getFirstTaskByStatus(rootTask, [
         "Pending",
         "Planning",
@@ -886,6 +908,7 @@ function preOrderTraversal(getChildren, predicate) {
   Iudex,
   Resolution,
   TaskStatus,
+  TerminalTaskStatuses,
   WorkflowStatus,
   baseTaskSchema,
   chatErrorSchema,
@@ -918,6 +941,7 @@ function preOrderTraversal(getChildren, predicate) {
   returnFunctionCall,
   reversePreOrderTraversal,
   startWorkflow,
+  taskErroredSchema,
   taskExecutingSchema,
   taskPendingSchema,
   taskPlanningSchema,
