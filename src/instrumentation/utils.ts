@@ -63,7 +63,6 @@ export function getCallerInfo(frameDepth: number): {
   caller?: string;
 } {
   const stack = new Error().stack;
-  console.log('STAAAAAAAAAAAAAACKKKKKKKKKKKKKKK', stack);
   if (!stack) return {};
 
   /*
@@ -75,14 +74,12 @@ export function getCallerInfo(frameDepth: number): {
   */
   const stackLines = stack.split('\n');
   const callerStackLine = stackLines[frameDepth + 1];
-  console.log('LIIIIIIIIIIIINEEEEEEEEEEEEEEEEeee', callerStackLine);
 
   const callerAndPathRegex =
     /at (?<caller>.+?) \((?<filePath>[^:()]+(?::[^:()]+)*):(?<lineNum>\d+):\d+\)/;
   const capMatch = callerStackLine.match(callerAndPathRegex);
   if (capMatch) {
     const { filePath, lineNum, caller } = capMatch.groups as Record<string, string>;
-    console.log('MATCH 1111111111111', capMatch);
     return { filePath, lineNum: Number(lineNum), caller };
   }
 
@@ -90,7 +87,6 @@ export function getCallerInfo(frameDepth: number): {
     /at (?<filePath>[^:()]+(?::[^:()]+)*):(?<lineNum>\d+):\d+/;
   const poMatch = callerStackLine.match(pathOnlyRegex);
   if (poMatch) {
-    console.log('MATCH 2222222222222', poMatch);
     const { filePath, lineNum } = poMatch.groups as Record<string, string>;
     return { filePath, lineNum: Number(lineNum) };
   }

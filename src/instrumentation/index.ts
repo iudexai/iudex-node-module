@@ -18,9 +18,13 @@ import { is } from './utils.js';
 import { DiagConsoleLogger, DiagLogLevel, Span, SpanStatusCode, diag, trace } from '@opentelemetry/api';
 
 export * from './utils.js';
-export * from './pino.js';
+export * as iudexPino from './pino.js';
+export * as iudexFastify from './fastify.js';
 
-// diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
+if (process.env.IUDEX_DEBUG) {
+  console.log('IUDEX_DEBUG on. Setting diag logger to console.');
+  diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
+}
 
 export function instrument({
   baseUrl = process.env.IUDEX_EXPORTER_OTLP_ENDPOINT
@@ -134,6 +138,7 @@ export function withTracing<T extends (...args: any) => any>(
     return tracer.startActiveSpan(String(ctx?.name) || fn.name || '<anonymous>', (span: Span) => {
       try {
         const ret = fn(...args);
+        span.setStatus({ code: SpanStatusCode.OK });
         return ret;
       } catch (err) {
         span.setStatus({

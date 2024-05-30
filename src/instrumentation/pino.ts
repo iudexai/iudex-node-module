@@ -45,8 +45,17 @@ export function mixin() {
   }, _.isNil);
 }
 
-export const iudexDestination: pino.DestinationStream = { write };
+export const destination: pino.DestinationStream = { write };
 
-export const iudexOptions: pino.LoggerOptions<any> = { mixin };
+export const options: pino.LoggerOptions<never> = { mixin };
 
-export const iudexPinoArgs = [iudexOptions, iudexDestination];
+export const args = [options, destination] as const;
+
+export const iudexPino = {
+  write,
+  config,
+  mixin,
+  destination,
+  options,
+  args,
+};

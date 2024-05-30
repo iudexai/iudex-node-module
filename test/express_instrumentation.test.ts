@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { instrument } from '../src/instrumentation/index';
+import { instrument, iudexPino } from '../src/instrumentation/index';
 instrument({
   serviceName: 'test-express-instrumentation',
   githubUrl: 'https://github.com/iudexai/ghost-shell',
@@ -10,9 +10,8 @@ instrument({
 import express, { Request, Express } from 'express';
 import pinoHttp from'pino-http';
 import pino from 'pino';
-import { iudexPinoArgs } from '../src/instrumentation/pino';
 
-const logger = pino(...iudexPinoArgs);
+const logger = pino(...iudexPino.args);
 
 
 /** dice.js **/
@@ -21,7 +20,7 @@ function rollOnce(min: number, max: number) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
-export function rollTheDice(rolls: number, min: number, max: number) {
+function rollTheDice(rolls: number, min: number, max: number) {
   const result: number[] = [];
   for (let i = 0; i < rolls; i++) {
     result.push(rollOnce(min, max));
