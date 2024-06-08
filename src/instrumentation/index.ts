@@ -138,6 +138,24 @@ export function withTracing<T extends (...args: any) => any>(
     return tracer.startActiveSpan(String(ctx?.name) || fn.name || '<anonymous>', (span: Span) => {
       try {
         const ret = fn(...args);
+        // If its a promise, wait for it to resolve, follow async code path
+        if (ret.then) {
+          return (ret as Promise<ReturnType<T>>)
+            .then((res) => {
+              span.setStatus({ code: SpanStatusCode.OK });
+              return res;
+            })
+            .catch((err) => {
+              span.setStatus({
+                code: SpanStatusCode.ERROR,
+                message: (err as Error)?.message,
+              });
+              throw err;
+            })
+            .finally(() => {
+              span.end();
+            });
+        }
         span.setStatus({ code: SpanStatusCode.OK });
         return ret;
       } catch (err) {
