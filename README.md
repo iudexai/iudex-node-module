@@ -1,3 +1,5 @@
+# Table of contents
+- [Table of contents](#table-of-contents)
 - [How it works](#how-it-works)
   - [`instrument`](#instrument)
     - [Options](#options)
@@ -17,9 +19,11 @@ and starts sending trace data to `iudex`. Separately, logs sent via console are 
 logger library, find its instrumentation instructions or manually call `emitOtelLog` to send a log.
 
 ## `instrument`
-`instrument` which automatically attaches to libraries you use and starts sending trace data to `iudex`.
+`instrument` is a function that automatically attaches to libraries you use and starts sending trace data to `iudex`.
 
-[Supported autoinstrumentations](https://github.com/open-telemetry/opentelemetry-js-contrib/blob/main/metapackages/auto-instrumentations-node/README.md#supported-instrumentations) include: console * cassandra-driver * express * http * graphql * ioredis * knex * koa * memcahced * mongodb * mongoose * mysql * mysql2 * nestjs * pg * redis * restify * socket.io * undici. Go to [Autoinstrumentated](#autoinstrumented) for instructions.
+[Supported autoinstrumentations](https://github.com/open-telemetry/opentelemetry-js-contrib/blob/main/metapackages/auto-instrumentations-node/README.md#supported-instrumentations) include: console * cassandra-driver * express * http * graphql * ioredis * knex * koa * memcahced * mongodb * mongoose * mysql * mysql2 * nestjs * pg * redis * restify * socket.io * undici.
+
+Check out the [Autoinstrumentated](#autoinstrumented) section for installation instructions.
 
 For libraries that are not autoinstrumented, follow the instructions from the table of contents for that specific library.
 
@@ -53,20 +57,20 @@ For libraries that are not autoinstrumented, follow the instructions from the ta
     * instrumentConsole
 
 ## `emitOtelLog`
-Send a log to `iudex`.
+Sends a log to `iudex`.
 
 ### Options
 * `level: string;`
-  * Sets level (INFO, WARN, ERROR, FATAL, DEBUG) of the log.
+  * Sets level (`INFO`, `WARN`, `ERROR`, `FATAL`, `DEBUG`) of the log.
 * `body: any`
   * Sets the content of the log.
 * `severityNumber?: number`
   * Sets the severity of the log as a number.
-  * `level` takes overwrites this.
+  * `level` overwrites this.
 * `attributes?: Record<string, any>`
-  * Sets attributes of the log
-    * We highly recommend sending at least userId and requestId
-    * We suggest sending function or file name
+  * Sets attributes of the log.
+    * We highly recommend sending at least userId and requestId.
+    * We suggest sending function or file name.
   * Attributes cannot contain nonserializable objects.
 
 

@@ -1,0 +1,106 @@
+tmp.*
+.env*
+dist/
+.open-next
+.next/
+.sst.*
+service_key.json
+next-env.d.ts
+scripts/langchain
+implementationsjs
+langchainjs
+keys.json
+
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Packages #
+############
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and databases #
+######################
+*.log
+*.sqlite
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE and code editor generated files #
+########################################
+*.suo
+*.ntvs_analysis.dat
+*.user
+*.sln.docstates
+*.pidb
+*.njsproj
+*.cache
+*.bak
+*.swp
+*.swo
+*.psess
+*.tmp
+*.vsp
+.vscode/
+
+# Build generated files #
+#########################
+bin/
+obj/
+*.sln.cache
+*.suo
+*.user
+*.userosscache
+*.diagsession
+*.sym
+*.dll.config
+*.exe.config
+
+# Dependency directories #
+##########################
+node_modules/
+jspm_packages
+
+# SST #
+#######
+.sst/
+
+# Google Cloud Console #
+########################
+credentials.json
+token.json
+keys.json
+
+# CDK-specific ignores #
+########################
+*.swp
+cdk.context.json
+package-lock.json
+yarn.lock
+.cdk.staging
+cdk.out
+
+# python
+__pycache__/
+venv/
+
