@@ -1,5 +1,6 @@
 import * as R from 'ramda';
 import { ChatFunctionCall, ChatText, ChatFunctionReturn } from '../types/chat-types.js';
+import { MappedReturnType } from '../types/utility-types.js';
 
 function checkResponse(r: Response): Promise<unknown> {
   if (!r.ok) {

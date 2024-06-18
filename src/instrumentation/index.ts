@@ -15,11 +15,20 @@ import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-proto';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto';
 import _ from 'lodash';
 import { is } from './utils.js';
-import { DiagConsoleLogger, DiagLogLevel, Span, SpanStatusCode, diag, trace } from '@opentelemetry/api';
+import {
+  DiagConsoleLogger,
+  DiagLogLevel,
+  Span,
+  SpanStatusCode,
+  diag,
+  trace,
+} from '@opentelemetry/api';
+import { instrumentConsole } from './console.js';
 
 export * from './utils.js';
 export * as iudexPino from './pino.js';
 export * as iudexFastify from './fastify.js';
+export * as iudexConsole from './console.js';
 
 if (process.env.IUDEX_DEBUG) {
   console.log('IUDEX_DEBUG on. Setting diag logger to console.');
@@ -37,6 +46,7 @@ export function instrument({
   githubUrl = process.env.GITHUB_URL,
   env = process.env.NODE_ENV,
   headers: configHeaders = {},
+  settings = {},
 }: {
   baseUrl?: string;
   iudexApiKey?: string;
@@ -46,16 +56,18 @@ export function instrument({
   githubUrl?: string;
   env?: string;
   headers?: Record<string, string>;
+  settings?: Partial<{ instrumentConsole: boolean }>;
 } = {}) {
   if (is.instrumented) return;
 
   if (!iudexApiKey) {
-    throw Error(
+    console.warn(
       `The IUDEX_API_KEY environment variable is missing or empty.` +
       ` Provide IUDEX_API_KEY to the environment on load` +
       ` OR instrument with the iudexApiKey option.` +
       ` Example: \`instrument{ iudexApiKey: 'My_API_Key' })\``,
     );
+    return;
   }
 
   const headers: Record<string, string> = {
@@ -105,22 +117,29 @@ export function instrument({
   });
   sdk.start();
 
-  is.instrumented = true;
 
-  function updateResource(newResource: Record<string, any>) {
-    const mergedResource = resource.merge(new Resource(newResource));
+  // Instrumentation settings
 
-    const loggerProvider = new LoggerProvider({ resource: mergedResource });
-    loggerProvider.addLogRecordProcessor(logRecordProcessor);
-    logs.setGlobalLoggerProvider(loggerProvider);
-
-    const tracerProvider = new NodeTracerProvider({ resource: mergedResource });
-    tracerProvider.register();
-    tracerProvider.addSpanProcessor(spanProcessors[0]);
-    trace.setGlobalTracerProvider(tracerProvider);
+  if (settings.instrumentConsole) {
+    instrumentConsole();
   }
 
-  return { updateResource };
+  is.instrumented = true;
+
+  return {
+    updateResource(newResource: Record<string, any>) {
+      const mergedResource = resource.merge(new Resource(newResource));
+
+      const loggerProvider = new LoggerProvider({ resource: mergedResource });
+      loggerProvider.addLogRecordProcessor(logRecordProcessor);
+      logs.setGlobalLoggerProvider(loggerProvider);
+
+      const tracerProvider = new NodeTracerProvider({ resource: mergedResource });
+      tracerProvider.register();
+      tracerProvider.addSpanProcessor(spanProcessors[0]);
+      trace.setGlobalTracerProvider(tracerProvider);
+    },
+  };
 }
 
 /**

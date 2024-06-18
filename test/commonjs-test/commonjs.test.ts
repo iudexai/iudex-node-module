@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { instrument, iudexPino } from '../src/instrumentation/index';
+import { instrument, iudexPino } from 'iudex';
 instrument({
   serviceName: 'test-express-instrumentation',
   githubUrl: 'https://github.com/iudexai/ghost-shell',
@@ -37,8 +37,7 @@ app.use(pinoHttp());
 
 app.get('/', (req, res) => {
   const rolls = req.query.rolls ? parseInt(req.query.rolls.toString()) : 2;
-  logger.info({ testVal: 'pino' }, `pino logger: Rolling the dice ${rolls} times.`);
-  console.log(`console log: Rolling the dice ${rolls} times.`, { ctx: { testVal: 'console' } });
+  logger.info(`Rolling the dice ${rolls} times.`);
   const outcomes = rollTheDice(rolls, 1, 6);
   res.send(JSON.stringify(outcomes));
 });

@@ -5,9 +5,8 @@ import {
 } from '@opentelemetry/semantic-conventions';
 import _ from 'lodash';
 import { getCallerInfo } from './utils.js';
-import { RawServerDefault } from 'fastify';
 import { iudexPino } from './pino.js';
-import { FastifyLoggerOptions, PinoLoggerOptions } from 'fastify/types/logger.js';
+// import type { FastifyLoggerOptions, PinoLoggerOptions } from 'fastify/types/logger.js';
 
 export const stream = iudexPino.destination;
 
@@ -26,7 +25,7 @@ export const config = {
     at wrap (/.../fastify/lib/server.js:137:46)
     at <anonymous> (node:http:29:36)
  */
-export function mixin() {
+export function mixin(): Record<string, string | number | undefined> {
   const { filePath, lineNum, caller } = getCallerInfo(config.mixinStackDepth);
   return _.omitBy({
     [SEMATTRS_CODE_FILEPATH]: filePath,
@@ -35,7 +34,8 @@ export function mixin() {
   }, _.isNil);
 }
 
-export const logger: FastifyLoggerOptions<RawServerDefault> & PinoLoggerOptions = {
+// type: FastifyLoggerOptions<RawServerDefault> & PinoLoggerOptions
+export const logger = {
   level: 'info',
   mixin,
   stream,

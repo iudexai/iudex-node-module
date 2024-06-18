@@ -10,12 +10,10 @@
   "exclude": [
     "node_modules",
     "dist",
+    "test",
   ],
   "include": [
-    "**/*.ts",
-    "**/*.d.ts",
-    "**/*.tsx",
-    "**/*.cjs",
-    "**/*.mjs",
+    "src/**/*.ts",
+    "src/**/*.d.ts",
   ],
 }

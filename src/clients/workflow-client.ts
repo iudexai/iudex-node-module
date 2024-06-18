@@ -7,6 +7,7 @@ import {
   PostWorkflowsReq,
   PostWorkflowsRes,
 } from './workflow-schemas.js';
+import { MappedReturnType } from '../types/utility-types.js';
 
 /**
  * Main client

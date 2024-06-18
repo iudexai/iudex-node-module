@@ -3,7 +3,7 @@ import {
   SEMATTRS_CODE_FILEPATH,
   SEMATTRS_CODE_LINENO,
 } from '@opentelemetry/semantic-conventions';
-import pino, { P } from 'pino';
+import type { DestinationStream, LoggerOptions } from 'pino';
 import _ from 'lodash';
 import { convertSeverityValuesToLevel, emitOtelLog, getCallerInfo, is } from './utils.js';
 
@@ -16,7 +16,8 @@ export function write(str: string) {
 
   try {
     const { level, msg, time, ...rest } = JSON.parse(str);
-    const severityText = convertSeverityValuesToLevel(level);
+    const levelNumber = Number(level);
+    const severityText = convertSeverityValuesToLevel(levelNumber ? levelNumber : undefined, level);
     emitOtelLog({ level: severityText, severityNumber: level, body: msg, attributes: rest });
   } catch {
     emitOtelLog({ level: 'INFO', body: str });
@@ -36,7 +37,7 @@ export const config = {
  *  at Pino.LOG
  *  at ..../test/express_instrumentation.test.ts:43:10
  */
-export function mixin() {
+export function mixin(): Record<string, string | number | undefined> {
   const { filePath, lineNum, caller } = getCallerInfo(config.mixinStackDepth);
   return _.omitBy({
     [SEMATTRS_CODE_FILEPATH]: filePath,
@@ -45,9 +46,9 @@ export function mixin() {
   }, _.isNil);
 }
 
-export const destination: pino.DestinationStream = { write };
+export const destination: DestinationStream = { write };
 
-export const options: pino.LoggerOptions<never> = { mixin };
+export const options: LoggerOptions<never> = { mixin };
 
 export const args = [options, destination] as const;
 
