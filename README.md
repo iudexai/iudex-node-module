@@ -1,25 +1,30 @@
-# Table of contents
-- [Table of contents](#table-of-contents)
-- [How it works](#how-it-works)
-  - [`instrument`](#instrument)
-    - [Options](#options)
-  - [`emitOtelLog`](#emitotellog)
-    - [Options](#options-1)
-- [Autoinstrument](#autoinstrument)
-- [Express](#express)
-- [Fastify](#fastify)
-- [Lambda](#lambda)
-- [Pino](#pino)
-    - [Pino config](#pino-config)
-- [Console](#console)
+# Iudex
 
-# How it works
-The `iudex` package contains the function `instrument` which automatically attaches to libraries you use
-and starts sending trace data to `iudex`. Separately, logs sent via console are also sent. If you use another
-logger library, find its instrumentation instructions or manually call `emitOtelLog` to send a log.
+Next generation observability.
 
-## `instrument`
-`instrument` is a function that automatically attaches to libraries you use and starts sending trace data to `iudex`.
+### Table of contents
+- [Iudex](#iudex)
+    - [Table of contents](#table-of-contents)
+- [Getting Started](#getting-started)
+    - [Autoinstrument](#autoinstrument)
+    - [Express](#express)
+    - [Fastify](#fastify)
+        - [Lambda](#lambda)
+    - [Pino](#pino)
+      - [Multiple Destinations](#multiple-destinations)
+    - [Console](#console)
+    - [Custom logger](#custom-logger)
+    - [Any function](#any-function)
+- [Slack Alerts](#slack-alerts)
+- [API reference](#api-reference)
+    - [instrument](#instrument)
+      - [Options](#options)
+    - [emitOtelLog](#emitotellog)
+      - [Options](#options-1)
+
+
+# Getting Started
+Instrumenting your JavaScript or TypeScript codebase with Iudex just takes a few steps.
 
 [Supported autoinstrumentations](https://github.com/open-telemetry/opentelemetry-js-contrib/blob/main/metapackages/auto-instrumentations-node/README.md#supported-instrumentations) include: console * cassandra-driver * express * http * graphql * ioredis * knex * koa * memcahced * mongodb * mongoose * mysql * mysql2 * nestjs * pg * redis * restify * socket.io * undici.
 
@@ -27,7 +32,157 @@ Check out the [Autoinstrument](#autoinstrument) section for installation instruc
 
 For libraries that are not autoinstrumented, follow the instructions from the table of contents for that specific library.
 
-### Options
+1. Install dependencies.
+```bash
+npm install iudex
+```
+2. Follow the instructions below for your frameworks.
+3. Make sure the app has access to the environment variable `IUDEX_API_KEY`. You can manually add this to `instrument` as well if you use something like a secrets manager.
+4. You should be all set! Go to [https://app.iudex.ai/](https://app.iudex.ai/) and enter your API key.
+5. Go to [https://app.iudex.ai/logs](https://app.iudex.ai/logs) and press `Search` to view your logs.
+
+
+### Autoinstrument
+Add this code snippet to the top your entry point file (likely `index.ts`). Skip this step if you already call `instrument` on your server.
+```typescript
+
+import { instrument, iudexFastify } from 'iudex';
+instrument({
+  serviceName: <your_service_name>,
+});
+```
+
+### Express
+Add this code snippet to the top of your server file (likely `app.ts` or `index.ts`).
+
+```typescript
+import { instrument } from 'iudex';
+instrument({
+  serviceName: <your_service_name>,
+  githubUrl: <your_github_url_here>,  // optionally pulls from process.env.GITHUB_URL
+});
+```
+
+### Fastify
+Add this code snippet to the top of your server file (likely `server.ts`), add `iudexFastify.logger` to the Fastify config.
+
+```typescript
+import { instrument, iudexFastify } from 'iudex';
+instrument({
+  serviceName: <your_service_name>,
+  githubUrl: <your_github_url_here>,  // optionally pulls from process.env.GITHUB_URL
+});
+
+//...
+
+const fastify = Fastify({
+  logger: {
+    ...iudexFastify.logger,
+    level: 'info',
+  },
+});
+```
+
+##### Lambda
+1. Add this code snippet to the top of your handler file.
+
+```typescript
+import { instrument, withTracing } from 'iudex';
+instrument({
+  serviceName: <your_service_name>,
+  githubUrl: <your_github_url_here>,  // optional, also optionally pulls from process.env.GITHUB_URL
+});
+```
+
+2. Wrap all lambda functions you want traced with `withTracing`.
+```typescript
+export const handler = withTracing(
+  // Your handler function goes here
+);
+```
+
+### Pino
+It is required that you call `instrument` before instantiating the pino `logger`. Add Iudex params which will add `iudex` as an output destination for pino.
+```typescript
+import pino from 'pino';
+import { iudexPino } from 'iudex';
+
+const logger = pino(...iudexPino.args);
+```
+
+#### Multiple Destinations
+If you have configured pino options or destinations, use `iudexPino.options` and `iudexPino.destination` for fine-grained control.
+* `iudexPino.options` sets the `mixin` property
+* `iudexPino.destination` sets the `write` property
+
+```typescript
+import pino from 'pino';
+import { iudexPino } from 'iudex';
+
+const write = str => {
+  iudexPino.destination.write(str);
+  console.log(str);
+};
+const logger = pino(iudexPino.options, { write });
+```
+
+
+### Console
+Add this code snippet to the top your entry point file (likely `index.ts`). Skip this step if you already call `instrument` on your server.
+
+```typescript
+import { instrument, iudexFastify } from 'iudex';
+instrument({
+  serviceName: <your_service_name>,
+  githubUrl: <your_github_url_here>,  // optionally pulls from process.env.GITHUB_URL
+});
+```
+
+### Custom logger
+Use `emitOtelLog` to send logs to `iudex`. You have have called `instrument` somewhere before `emitOtelLog`.
+
+```typescript
+import { emitOtelLog } from 'iudex';
+
+/**
+ * Custom logger example
+ */
+function createLogger(level: keyof typeof console) {
+  return function logger(body: string, attributes: Record<string, any>) {
+    console[level](body, attributes);
+    emitOtelLog({ level, body, attributes })
+  };
+}
+```
+
+
+### Any function
+Its recommended that you trace
+
+
+# Slack Alerts
+You can easily configure Slack alerts on a per-log basis.
+
+First visit [https://app.iudex.ai/logs](https://app.iudex.ai/logs) and click on the `Add to Slack` button in the top right.
+
+Once installed to your workspace, tag your logs with the `iudex.slack_channel_id` attribute.
+```python
+logger.info("Hello from Slack!", extra={"iudex.slack_channel_id": "YOUR_SLACK_CHANNEL_ID"})
+```
+Your channel ID can be found by clicking the name of the channel in the top left, then at the bottom of the dialog that pops up.
+
+As long as the channel is public or you've invited the Iudex app, logs will be sent as messages to their tagged channel any time they are logged.
+
+
+# API reference
+The `iudex` package contains the function `instrument` which automatically attaches to libraries you use
+and starts sending trace data to `iudex`. Separately, logs sent via console are also sent. If you use another
+logger library, find its instrumentation instructions or manually call `emitOtelLog` to send a log.
+
+### instrument
+`instrument` is a function that automatically attaches to libraries you use and starts sending trace data to `iudex`.
+
+#### Options
 * `baseUrl?: string`
   * Sets the url to send the trace and log events to.
   * By default this is `api.iudex.ai`.
@@ -56,10 +211,11 @@ For libraries that are not autoinstrumented, follow the instructions from the ta
   * Optionally turn off specified instrumentations by setting it to `false`.
     * instrumentConsole
 
-## `emitOtelLog`
-Sends a log to `iudex`.
 
-### Options
+### emitOtelLog
+`emitOtelLog` is a function that sends a log to `iudex`.
+
+#### Options
 * `level: string;`
   * Sets level (`INFO`, `WARN`, `ERROR`, `FATAL`, `DEBUG`) of the log.
 * `body: any`
@@ -72,132 +228,3 @@ Sends a log to `iudex`.
     * We highly recommend sending at least userId and requestId.
     * We suggest sending function or file name.
   * Attributes cannot contain nonserializable objects.
-
-
-# Autoinstrument
-1. Install dependencies.
-```bash
-npm install iudex
-```
-2. Add this code snippet to the top your entry point file (likely `index.ts`). Skip this step if you already call `instrument` on your server.
-```typescript
-import { instrument, iudexFastify } from 'iudex';
-instrument({
-  serviceName: <your_service_name>,
-  iudexApiKey: <your_api_key>,        // optionally pulls from process.env.IUDEX_API_KEY
-  githubUrl: <your_github_url_here>,  // optionally pulls from process.env.GITHUB_URL
-});
-```
-
-# Express
-1. Install dependencies.
-```bash
-npm install iudex
-```
-2. Add this code snippet to the top of your server file (likely `app.ts` or `index.ts`).
-```typescript
-// Import this before everything else
-// import 'dotenv/config'; // Import dot env here if you use it
-import { instrument } from 'iudex';
-instrument({
-  serviceName: <your_service_name>,
-  iudexApiKey: <your_api_key>,        // optionally pulls from process.env.IUDEX_API_KEY
-  githubUrl: <your_github_url_here>,  // optionally pulls from process.env.GITHUB_URL
-});
-```
-
-
-# Fastify
-1. Install dependencies.
-```bash
-npm install iudex
-```
-2. Add this code snippet to the top of your server file (likely `server.ts`), add `iudexFastify.logger` to the Fastify config.
-```typescript
-import { instrument, iudexFastify } from 'iudex';
-instrument({
-  serviceName: <your_service_name>,
-  iudexApiKey: <your_api_key>,        // optionally pulls from process.env.IUDEX_API_KEY
-  githubUrl: <your_github_url_here>,  // optionally pulls from process.env.GITHUB_URL
-});
-
-//...
-
-const fastify = Fastify({
-  logger: {
-    ...iudexFastify.logger,
-    level: 'info',
-  },
-});
-```
-
-
-# Lambda
-1. Install dependencies.
-```bash
-npm install iudex
-```
-2. At the top of your lambda handler file, add instrumentation.
-```typescript
-import { instrument, withTracing } from 'iudex';
-instrument({
-  serviceName: <your_service_name>,
-  iudexApiKey: <your_api_key>,        // optionally pulls from process.env.IUDEX_API_KEY
-  githubUrl: <your_github_url_here>,  // optional, also optionally pulls from process.env.GITHUB_URL
-});
-```
-1. Wrap all lambda functions you want traced with `withTracing`.
-```typescript
-export const handler = withTracing(() => {
-  // ...
-});
-```
-
-
-# Pino
-1. Install dependencies.
-```bash
-npm install iudex
-```
-2. Add this code snippet to the top your entry point file (likely `index.ts`). Skip this step if you already call `instrument` on your server.
-```typescript
-import { instrument, iudexFastify } from 'iudex';
-instrument({
-  serviceName: <your_service_name>,
-  iudexApiKey: <your_api_key>,        // optionally pulls from process.env.IUDEX_API_KEY
-  githubUrl: <your_github_url_here>,  // optionally pulls from process.env.GITHUB_URL
-});
-1. Find your where you instantiate your pino logger and add Iudex params.
-```typescript
-import pino from 'pino';
-import { iudexPino } from 'iudex';
-
-const logger = pino(...iudexPino.args);
-```
-
-### Pino config
-If you have configured pino, use `iudexPino.options` and `iudexPino.destination` separately.
-* `iudexPino.options` sets the `mixin` property
-* `iudexPino.destination` sets the `write` property
-
-```typescript
-import pino from 'pino';
-import { iudexPino } from 'iudex';
-
-const logger = pino(iudexPino.options, iudexPino.destination);
-```
-
-
-# Console
-1. Install dependencies.
-```bash
-npm install iudex
-```
-2. Add this code snippet to the top your entry point file (likely `index.ts`). Skip this step if you already call `instrument` on your server.
-```typescript
-import { instrument, iudexFastify } from 'iudex';
-instrument({
-  serviceName: <your_service_name>,
-  iudexApiKey: <your_api_key>,        // optionally pulls from process.env.IUDEX_API_KEY
-  githubUrl: <your_github_url_here>,  // optionally pulls from process.env.GITHUB_URL
-});

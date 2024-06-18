@@ -147,15 +147,30 @@ export function instrument({
  */
 export function withTracing<T extends (...args: any) => any>(
   fn: T,
-  ctx?: { name: string | symbol },
+  ctx: {
+    name?: string;
+    trackArgs?: boolean;
+    attributes?: Record<string, any>;
+  } = {},
 ): T {
   if (!is.instrumented) {
     return fn;
   }
+  const { name, trackArgs = true, attributes } = ctx;
   const tracer = trace.getTracer('default');
   return function (...args: Parameters<T>): ReturnType<T> {
-    return tracer.startActiveSpan(String(ctx?.name) || fn.name || '<anonymous>', (span: Span) => {
+    return tracer.startActiveSpan(name || fn.name || '<anonymous>', (span: Span) => {
       try {
+        if (attributes) {
+          span.setAttributes(attributes);
+        }
+        if (trackArgs) {
+          if (args.length === 1) {
+            span.setAttribute('arg', args[0]);
+          } else if (args.length > 1) {
+            span.setAttribute('args', args);
+          }
+        }
         const ret = fn(...args);
         // If its a promise, wait for it to resolve, follow async code path
         if (ret.then) {
@@ -169,6 +184,7 @@ export function withTracing<T extends (...args: any) => any>(
                 code: SpanStatusCode.ERROR,
                 message: (err as Error)?.message,
               });
+              span.recordException(err as Error);
               throw err;
             })
             .finally(() => {
@@ -182,6 +198,7 @@ export function withTracing<T extends (...args: any) => any>(
           code: SpanStatusCode.ERROR,
           message: (err as Error)?.message,
         });
+        span.recordException(err as Error);
         throw err;
       } finally {
         span.end();

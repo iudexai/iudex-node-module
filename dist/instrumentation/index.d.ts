@@ -21,5 +21,7 @@ export declare function instrument({ baseUrl, iudexApiKey, serviceName, instance
  * Trace decorator
  */
 export declare function withTracing<T extends (...args: any) => any>(fn: T, ctx?: {
-    name: string | symbol;
+    name?: string;
+    trackArgs?: boolean;
+    attributes?: Record<string, any>;
 }): T;

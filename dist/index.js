@@ -12424,14 +12424,25 @@ function instrument({
   };
 }
 __name(instrument, "instrument");
-function withTracing(fn, ctx) {
+function withTracing(fn, ctx = {}) {
   if (!is.instrumented) {
     return fn;
   }
+  const { name, trackArgs = true, attributes } = ctx;
   const tracer = import_api19.trace.getTracer("default");
   return function(...args2) {
-    return tracer.startActiveSpan(String(ctx?.name) || fn.name || "<anonymous>", (span) => {
+    return tracer.startActiveSpan(name || fn.name || "<anonymous>", (span) => {
       try {
+        if (attributes) {
+          span.setAttributes(attributes);
+        }
+        if (trackArgs) {
+          if (args2.length === 1) {
+            span.setAttribute("arg", args2[0]);
+          } else if (args2.length > 1) {
+            span.setAttribute("args", args2);
+          }
+        }
         const ret = fn(...args2);
         if (ret.then) {
           return ret.then((res) => {
@@ -12442,6 +12453,7 @@ function withTracing(fn, ctx) {
               code: import_api19.SpanStatusCode.ERROR,
               message: err?.message
             });
+            span.recordException(err);
             throw err;
           }).finally(() => {
             span.end();
@@ -12454,6 +12466,7 @@ function withTracing(fn, ctx) {
           code: import_api19.SpanStatusCode.ERROR,
           message: err?.message
         });
+        span.recordException(err);
         throw err;
       } finally {
         span.end();
