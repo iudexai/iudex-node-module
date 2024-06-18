@@ -1,15 +1,14 @@
 {
   "name": "iudex",
-  "version": "0.13.4",
+  "version": "0.13.7",
   "description": "Iudex client",
   "scripts": {
-    "build": "tsup & tsc --emitDeclarationOnly",
+    "build": "tsup && tsc --declaration --emitDeclarationOnly",
     "test": "jest"
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
-  "type": "module",
   "files": [
     "dist",
     "src/**/*.d.ts"
@@ -17,8 +16,12 @@
   "keywords": [
     "iudex",
     "ai",
-    "client",
     "llm",
+    "client",
+    "logs",
+    "logger",
+    "traces",
+    "observability",
     "openai"
   ],
   "author": "Iudex",

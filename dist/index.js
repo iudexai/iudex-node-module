@@ -1,3 +1,4 @@
+"use strict";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -5,17 +6,10 @@ var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
-var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
-  get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
-}) : x)(function(x) {
-  if (typeof require !== "undefined")
-    return require.apply(this, arguments);
-  throw Error('Dynamic require of "' + x + '" is not supported');
-});
 var __esm = (fn, res) => function __init() {
   return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
 };
-var __commonJS = (cb, mod2) => function __require2() {
+var __commonJS = (cb, mod2) => function __require() {
   return mod2 || (0, cb[__getOwnPropNames(cb)[0]])((mod2 = { exports: {} }).exports, mod2), mod2.exports;
 };
 var __export = (target, all) => {
@@ -30,6 +24,7 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
+var __reExport = (target, mod2, secondTarget) => (__copyProps(target, mod2, "default"), secondTarget && __copyProps(secondTarget, mod2, "default"));
 var __toESM = (mod2, isNodeMode, target) => (target = mod2 != null ? __create(__getProtoOf(mod2)) : {}, __copyProps(
   // If the importer is in node compatibility mode or this is not an ESM
   // file that has been converted to a CommonJS file using a Babel-
@@ -41,15 +36,15 @@ var __toESM = (mod2, isNodeMode, target) => (target = mod2 != null ? __create(__
 var __toCommonJS = (mod2) => __copyProps(__defProp({}, "__esModule", { value: true }), mod2);
 
 // ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/suppress-tracing.js
-import { createContextKey } from "@opentelemetry/api";
 function isTracingSuppressed(context) {
   return context.getValue(SUPPRESS_TRACING_KEY) === true;
 }
-var SUPPRESS_TRACING_KEY;
+var import_api, SUPPRESS_TRACING_KEY;
 var init_suppress_tracing = __esm({
   "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/suppress-tracing.js"() {
     "use strict";
-    SUPPRESS_TRACING_KEY = createContextKey("OpenTelemetry SDK Context Key SUPPRESS_TRACING");
+    import_api = require("@opentelemetry/api");
+    SUPPRESS_TRACING_KEY = (0, import_api.createContextKey)("OpenTelemetry SDK Context Key SUPPRESS_TRACING");
     __name(isTracingSuppressed, "isTracingSuppressed");
   }
 });
@@ -77,7 +72,6 @@ __export(utils_exports, {
   parsePairKeyValue: () => parsePairKeyValue,
   serializeKeyPairs: () => serializeKeyPairs
 });
-import { baggageEntryMetadataFromString } from "@opentelemetry/api";
 function serializeKeyPairs(keyPairs) {
   return keyPairs.reduce(function(hValue, current) {
     var value = "" + hValue + (hValue !== "" ? BAGGAGE_ITEMS_SEPARATOR : "") + current;
@@ -108,7 +102,7 @@ function parsePairKeyValue(entry) {
   var value = decodeURIComponent(keyPairPart.substring(separatorIndex + 1).trim());
   var metadata;
   if (valueProps.length > 0) {
-    metadata = baggageEntryMetadataFromString(valueProps.join(BAGGAGE_PROPERTIES_SEPARATOR));
+    metadata = (0, import_api2.baggageEntryMetadataFromString)(valueProps.join(BAGGAGE_PROPERTIES_SEPARATOR));
   }
   return { key, value, metadata };
 }
@@ -124,10 +118,11 @@ function parseKeyPairsIntoRecord(value) {
     return headers;
   }, {});
 }
-var __read;
+var import_api2, __read;
 var init_utils = __esm({
   "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/baggage/utils.js"() {
     "use strict";
+    import_api2 = require("@opentelemetry/api");
     init_constants();
     __read = function(o, n) {
       var m = typeof Symbol === "function" && o[Symbol.iterator];
@@ -158,11 +153,11 @@ var init_utils = __esm({
 });
 
 // ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/baggage/propagation/W3CBaggagePropagator.js
-import { propagation } from "@opentelemetry/api";
-var W3CBaggagePropagator;
+var import_api3, W3CBaggagePropagator;
 var init_W3CBaggagePropagator = __esm({
   "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/baggage/propagation/W3CBaggagePropagator.js"() {
     "use strict";
+    import_api3 = require("@opentelemetry/api");
     init_suppress_tracing();
     init_constants();
     init_utils();
@@ -172,7 +167,7 @@ var init_W3CBaggagePropagator = __esm({
       }
       __name(W3CBaggagePropagator2, "W3CBaggagePropagator");
       W3CBaggagePropagator2.prototype.inject = function(context, carrier, setter) {
-        var baggage = propagation.getBaggage(context);
+        var baggage = import_api3.propagation.getBaggage(context);
         if (!baggage || isTracingSuppressed(context))
           return;
         var keyPairs = getKeyPairs(baggage).filter(function(pair) {
@@ -206,7 +201,7 @@ var init_W3CBaggagePropagator = __esm({
         if (Object.entries(baggage).length === 0) {
           return context;
         }
-        return propagation.setBaggage(context, propagation.createBaggage(baggage));
+        return import_api3.propagation.setBaggage(context, import_api3.propagation.createBaggage(baggage));
       };
       W3CBaggagePropagator2.prototype.fields = function() {
         return [BAGGAGE_HEADER];
@@ -239,18 +234,18 @@ var init_anchored_clock = __esm({
 });
 
 // ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/common/attributes.js
-import { diag } from "@opentelemetry/api";
+var import_api4;
 var init_attributes = __esm({
   "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/common/attributes.js"() {
     "use strict";
+    import_api4 = require("@opentelemetry/api");
   }
 });
 
 // ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/common/logging-error-handler.js
-import { diag as diag2 } from "@opentelemetry/api";
 function loggingErrorHandler() {
   return function(ex) {
-    diag2.error(stringifyException(ex));
+    import_api5.diag.error(stringifyException(ex));
   };
 }
 function stringifyException(ex) {
@@ -276,9 +271,11 @@ function flattenException(ex) {
   }
   return result;
 }
+var import_api5;
 var init_logging_error_handler = __esm({
   "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/common/logging-error-handler.js"() {
     "use strict";
+    import_api5 = require("@opentelemetry/api");
     __name(loggingErrorHandler, "loggingErrorHandler");
     __name(stringifyException, "stringifyException");
     __name(flattenException, "flattenException");
@@ -319,7 +316,6 @@ var init_sampling = __esm({
 });
 
 // ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/utils/environment.js
-import { DiagLogLevel } from "@opentelemetry/api";
 function isEnvVarABoolean(key) {
   return ENVIRONMENT_BOOLEAN_KEYS.indexOf(key) > -1;
 }
@@ -401,10 +397,11 @@ function parseEnvironment(values) {
   }
   return environment;
 }
-var DEFAULT_LIST_SEPARATOR, ENVIRONMENT_BOOLEAN_KEYS, ENVIRONMENT_NUMBERS_KEYS, ENVIRONMENT_LISTS_KEYS, DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT, DEFAULT_ATTRIBUTE_COUNT_LIMIT, DEFAULT_SPAN_ATTRIBUTE_PER_EVENT_COUNT_LIMIT, DEFAULT_SPAN_ATTRIBUTE_PER_LINK_COUNT_LIMIT, DEFAULT_ENVIRONMENT, logLevelMap;
+var import_api6, DEFAULT_LIST_SEPARATOR, ENVIRONMENT_BOOLEAN_KEYS, ENVIRONMENT_NUMBERS_KEYS, ENVIRONMENT_LISTS_KEYS, DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT, DEFAULT_ATTRIBUTE_COUNT_LIMIT, DEFAULT_SPAN_ATTRIBUTE_PER_EVENT_COUNT_LIMIT, DEFAULT_SPAN_ATTRIBUTE_PER_LINK_COUNT_LIMIT, DEFAULT_ENVIRONMENT, logLevelMap;
 var init_environment = __esm({
   "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/utils/environment.js"() {
     "use strict";
+    import_api6 = require("@opentelemetry/api");
     init_sampling();
     DEFAULT_LIST_SEPARATOR = ",";
     ENVIRONMENT_BOOLEAN_KEYS = ["OTEL_SDK_DISABLED"];
@@ -478,7 +475,7 @@ var init_environment = __esm({
       OTEL_EXPORTER_OTLP_METRICS_TIMEOUT: 1e4,
       OTEL_EXPORTER_OTLP_LOGS_TIMEOUT: 1e4,
       OTEL_EXPORTER_ZIPKIN_ENDPOINT: "http://localhost:9411/api/v2/spans",
-      OTEL_LOG_LEVEL: DiagLogLevel.INFO,
+      OTEL_LOG_LEVEL: import_api6.DiagLogLevel.INFO,
       OTEL_NO_PATCH_MODULES: [],
       OTEL_PROPAGATORS: ["tracecontext", "baggage"],
       OTEL_RESOURCE_ATTRIBUTES: "",
@@ -527,13 +524,13 @@ var init_environment = __esm({
     __name(parseNumber, "parseNumber");
     __name(parseStringList, "parseStringList");
     logLevelMap = {
-      ALL: DiagLogLevel.ALL,
-      VERBOSE: DiagLogLevel.VERBOSE,
-      DEBUG: DiagLogLevel.DEBUG,
-      INFO: DiagLogLevel.INFO,
-      WARN: DiagLogLevel.WARN,
-      ERROR: DiagLogLevel.ERROR,
-      NONE: DiagLogLevel.NONE
+      ALL: import_api6.DiagLogLevel.ALL,
+      VERBOSE: import_api6.DiagLogLevel.VERBOSE,
+      DEBUG: import_api6.DiagLogLevel.DEBUG,
+      INFO: import_api6.DiagLogLevel.INFO,
+      WARN: import_api6.DiagLogLevel.WARN,
+      ERROR: import_api6.DiagLogLevel.ERROR,
+      NONE: import_api6.DiagLogLevel.NONE
     };
     __name(setLogLevelFromEnv, "setLogLevelFromEnv");
     __name(parseEnvironment, "parseEnvironment");
@@ -624,13 +621,13 @@ var init_version = __esm({
 });
 
 // ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/platform/node/sdk-info.js
-import { TelemetrySdkLanguageValues, SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
-var _a, SDK_INFO;
+var import_semantic_conventions, _a, SDK_INFO;
 var init_sdk_info = __esm({
   "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/platform/node/sdk-info.js"() {
     "use strict";
     init_version();
-    SDK_INFO = (_a = {}, _a[SemanticResourceAttributes.TELEMETRY_SDK_NAME] = "opentelemetry", _a[SemanticResourceAttributes.PROCESS_RUNTIME_NAME] = "node", _a[SemanticResourceAttributes.TELEMETRY_SDK_LANGUAGE] = TelemetrySdkLanguageValues.NODEJS, _a[SemanticResourceAttributes.TELEMETRY_SDK_VERSION] = VERSION, _a);
+    import_semantic_conventions = require("@opentelemetry/semantic-conventions");
+    SDK_INFO = (_a = {}, _a[import_semantic_conventions.SemanticResourceAttributes.TELEMETRY_SDK_NAME] = "opentelemetry", _a[import_semantic_conventions.SemanticResourceAttributes.PROCESS_RUNTIME_NAME] = "node", _a[import_semantic_conventions.SemanticResourceAttributes.TELEMETRY_SDK_LANGUAGE] = import_semantic_conventions.TelemetrySdkLanguageValues.NODEJS, _a[import_semantic_conventions.SemanticResourceAttributes.TELEMETRY_SDK_VERSION] = VERSION, _a);
   }
 });
 
@@ -699,11 +696,11 @@ var init_ExportResult = __esm({
 });
 
 // ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/propagation/composite.js
-import { diag as diag3 } from "@opentelemetry/api";
-var __values, CompositePropagator;
+var import_api7, __values, CompositePropagator;
 var init_composite = __esm({
   "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/propagation/composite.js"() {
     "use strict";
+    import_api7 = require("@opentelemetry/api");
     __values = function(o) {
       var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
       if (m)
@@ -741,7 +738,7 @@ var init_composite = __esm({
             try {
               propagator.inject(context, carrier, setter);
             } catch (err) {
-              diag3.warn("Failed to inject with " + propagator.constructor.name + ". Err: " + err.message);
+              import_api7.diag.warn("Failed to inject with " + propagator.constructor.name + ". Err: " + err.message);
             }
           }
         } catch (e_1_1) {
@@ -761,7 +758,7 @@ var init_composite = __esm({
           try {
             return propagator.extract(ctx, carrier, getter);
           } catch (err) {
-            diag3.warn("Failed to inject with " + propagator.constructor.name + ". Err: " + err.message);
+            import_api7.diag.warn("Failed to inject with " + propagator.constructor.name + ". Err: " + err.message);
           }
           return ctx;
         }, context);
@@ -871,7 +868,6 @@ var init_TraceState = __esm({
 });
 
 // ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/W3CTraceContextPropagator.js
-import { isSpanContextValid, trace, TraceFlags } from "@opentelemetry/api";
 function parseTraceParent(traceParent) {
   var match = TRACE_PARENT_REGEX.exec(traceParent);
   if (!match)
@@ -884,10 +880,11 @@ function parseTraceParent(traceParent) {
     traceFlags: parseInt(match[4], 16)
   };
 }
-var TRACE_PARENT_HEADER, TRACE_STATE_HEADER, VERSION2, VERSION_PART, TRACE_ID_PART, PARENT_ID_PART, FLAGS_PART, TRACE_PARENT_REGEX, W3CTraceContextPropagator;
+var import_api8, TRACE_PARENT_HEADER, TRACE_STATE_HEADER, VERSION2, VERSION_PART, TRACE_ID_PART, PARENT_ID_PART, FLAGS_PART, TRACE_PARENT_REGEX, W3CTraceContextPropagator;
 var init_W3CTraceContextPropagator = __esm({
   "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/W3CTraceContextPropagator.js"() {
     "use strict";
+    import_api8 = require("@opentelemetry/api");
     init_suppress_tracing();
     init_TraceState();
     TRACE_PARENT_HEADER = "traceparent";
@@ -905,10 +902,10 @@ var init_W3CTraceContextPropagator = __esm({
       }
       __name(W3CTraceContextPropagator2, "W3CTraceContextPropagator");
       W3CTraceContextPropagator2.prototype.inject = function(context, carrier, setter) {
-        var spanContext = trace.getSpanContext(context);
-        if (!spanContext || isTracingSuppressed(context) || !isSpanContextValid(spanContext))
+        var spanContext = import_api8.trace.getSpanContext(context);
+        if (!spanContext || isTracingSuppressed(context) || !(0, import_api8.isSpanContextValid)(spanContext))
           return;
-        var traceParent = VERSION2 + "-" + spanContext.traceId + "-" + spanContext.spanId + "-0" + Number(spanContext.traceFlags || TraceFlags.NONE).toString(16);
+        var traceParent = VERSION2 + "-" + spanContext.traceId + "-" + spanContext.spanId + "-0" + Number(spanContext.traceFlags || import_api8.TraceFlags.NONE).toString(16);
         setter.set(carrier, TRACE_PARENT_HEADER, traceParent);
         if (spanContext.traceState) {
           setter.set(carrier, TRACE_STATE_HEADER, spanContext.traceState.serialize());
@@ -930,7 +927,7 @@ var init_W3CTraceContextPropagator = __esm({
           var state = Array.isArray(traceStateHeader) ? traceStateHeader.join(",") : traceStateHeader;
           spanContext.traceState = new TraceState(typeof state === "string" ? state : void 0);
         }
-        return trace.setSpanContext(context, spanContext);
+        return import_api8.trace.setSpanContext(context, spanContext);
       };
       W3CTraceContextPropagator2.prototype.fields = function() {
         return [TRACE_PARENT_HEADER, TRACE_STATE_HEADER];
@@ -948,12 +945,12 @@ var init_IdGenerator = __esm({
 });
 
 // ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/rpc-metadata.js
-import { createContextKey as createContextKey2 } from "@opentelemetry/api";
-var RPC_METADATA_KEY, RPCType;
+var import_api9, RPC_METADATA_KEY, RPCType;
 var init_rpc_metadata = __esm({
   "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/rpc-metadata.js"() {
     "use strict";
-    RPC_METADATA_KEY = createContextKey2("OpenTelemetry SDK Context Key RPC_METADATA");
+    import_api9 = require("@opentelemetry/api");
+    RPC_METADATA_KEY = (0, import_api9.createContextKey)("OpenTelemetry SDK Context Key RPC_METADATA");
     (function(RPCType2) {
       RPCType2["HTTP"] = "http";
     })(RPCType || (RPCType = {}));
@@ -961,11 +958,11 @@ var init_rpc_metadata = __esm({
 });
 
 // ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/sampler/AlwaysOffSampler.js
-import { SamplingDecision } from "@opentelemetry/api";
-var AlwaysOffSampler;
+var import_api10, AlwaysOffSampler;
 var init_AlwaysOffSampler = __esm({
   "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/sampler/AlwaysOffSampler.js"() {
     "use strict";
+    import_api10 = require("@opentelemetry/api");
     AlwaysOffSampler = /** @class */
     function() {
       function AlwaysOffSampler2() {
@@ -973,7 +970,7 @@ var init_AlwaysOffSampler = __esm({
       __name(AlwaysOffSampler2, "AlwaysOffSampler");
       AlwaysOffSampler2.prototype.shouldSample = function() {
         return {
-          decision: SamplingDecision.NOT_RECORD
+          decision: import_api10.SamplingDecision.NOT_RECORD
         };
       };
       AlwaysOffSampler2.prototype.toString = function() {
@@ -985,11 +982,11 @@ var init_AlwaysOffSampler = __esm({
 });
 
 // ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/sampler/AlwaysOnSampler.js
-import { SamplingDecision as SamplingDecision2 } from "@opentelemetry/api";
-var AlwaysOnSampler;
+var import_api11, AlwaysOnSampler;
 var init_AlwaysOnSampler = __esm({
   "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/sampler/AlwaysOnSampler.js"() {
     "use strict";
+    import_api11 = require("@opentelemetry/api");
     AlwaysOnSampler = /** @class */
     function() {
       function AlwaysOnSampler2() {
@@ -997,7 +994,7 @@ var init_AlwaysOnSampler = __esm({
       __name(AlwaysOnSampler2, "AlwaysOnSampler");
       AlwaysOnSampler2.prototype.shouldSample = function() {
         return {
-          decision: SamplingDecision2.RECORD_AND_SAMPLED
+          decision: import_api11.SamplingDecision.RECORD_AND_SAMPLED
         };
       };
       AlwaysOnSampler2.prototype.toString = function() {
@@ -1009,11 +1006,11 @@ var init_AlwaysOnSampler = __esm({
 });
 
 // ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/sampler/ParentBasedSampler.js
-import { isSpanContextValid as isSpanContextValid2, TraceFlags as TraceFlags2, trace as trace2 } from "@opentelemetry/api";
-var ParentBasedSampler;
+var import_api12, ParentBasedSampler;
 var init_ParentBasedSampler = __esm({
   "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/sampler/ParentBasedSampler.js"() {
     "use strict";
+    import_api12 = require("@opentelemetry/api");
     init_global_error_handler();
     init_AlwaysOffSampler();
     init_AlwaysOnSampler();
@@ -1033,17 +1030,17 @@ var init_ParentBasedSampler = __esm({
       }
       __name(ParentBasedSampler2, "ParentBasedSampler");
       ParentBasedSampler2.prototype.shouldSample = function(context, traceId, spanName, spanKind, attributes, links) {
-        var parentContext = trace2.getSpanContext(context);
-        if (!parentContext || !isSpanContextValid2(parentContext)) {
+        var parentContext = import_api12.trace.getSpanContext(context);
+        if (!parentContext || !(0, import_api12.isSpanContextValid)(parentContext)) {
           return this._root.shouldSample(context, traceId, spanName, spanKind, attributes, links);
         }
         if (parentContext.isRemote) {
-          if (parentContext.traceFlags & TraceFlags2.SAMPLED) {
+          if (parentContext.traceFlags & import_api12.TraceFlags.SAMPLED) {
             return this._remoteParentSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
           }
           return this._remoteParentNotSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
         }
-        if (parentContext.traceFlags & TraceFlags2.SAMPLED) {
+        if (parentContext.traceFlags & import_api12.TraceFlags.SAMPLED) {
           return this._localParentSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
         }
         return this._localParentNotSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
@@ -1057,11 +1054,11 @@ var init_ParentBasedSampler = __esm({
 });
 
 // ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/sampler/TraceIdRatioBasedSampler.js
-import { SamplingDecision as SamplingDecision3, isValidTraceId } from "@opentelemetry/api";
-var TraceIdRatioBasedSampler;
+var import_api13, TraceIdRatioBasedSampler;
 var init_TraceIdRatioBasedSampler = __esm({
   "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/sampler/TraceIdRatioBasedSampler.js"() {
     "use strict";
+    import_api13 = require("@opentelemetry/api");
     TraceIdRatioBasedSampler = /** @class */
     function() {
       function TraceIdRatioBasedSampler2(_ratio) {
@@ -1075,7 +1072,7 @@ var init_TraceIdRatioBasedSampler = __esm({
       __name(TraceIdRatioBasedSampler2, "TraceIdRatioBasedSampler");
       TraceIdRatioBasedSampler2.prototype.shouldSample = function(context, traceId) {
         return {
-          decision: isValidTraceId(traceId) && this._accumulate(traceId) < this._upperBound ? SamplingDecision3.RECORD_AND_SAMPLED : SamplingDecision3.NOT_RECORD
+          decision: (0, import_api13.isValidTraceId)(traceId) && this._accumulate(traceId) < this._upperBound ? import_api13.SamplingDecision.RECORD_AND_SAMPLED : import_api13.SamplingDecision.NOT_RECORD
         };
       };
       TraceIdRatioBasedSampler2.prototype.toString = function() {
@@ -1319,7 +1316,6 @@ var init_esm = __esm({
 });
 
 // ../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/util.js
-import { diag as diag4 } from "@opentelemetry/api";
 function parseHeaders(partialHeaders) {
   if (partialHeaders === void 0) {
     partialHeaders = {};
@@ -1330,7 +1326,7 @@ function parseHeaders(partialHeaders) {
     if (typeof value !== "undefined") {
       headers[key] = String(value);
     } else {
-      diag4.warn('Header "' + key + '" has invalid value (' + value + ") and will be ignored");
+      import_api14.diag.warn('Header "' + key + '" has invalid value (' + value + ") and will be ignored");
     }
   });
   return headers;
@@ -1349,7 +1345,7 @@ function appendRootPathToUrlIfNeeded(url2) {
     }
     return parsedUrl.toString();
   } catch (_a2) {
-    diag4.warn("Could not parse export URL: '" + url2 + "'");
+    import_api14.diag.warn("Could not parse export URL: '" + url2 + "'");
     return url2;
   }
 }
@@ -1373,7 +1369,7 @@ function getExporterTimeoutFromEnv() {
   }
 }
 function invalidTimeout(timeout, defaultTimeout) {
-  diag4.warn("Timeout must be greater than 0", timeout);
+  import_api14.diag.warn("Timeout must be greater than 0", timeout);
   return defaultTimeout;
 }
 function isExportRetryable(statusCode) {
@@ -1394,10 +1390,11 @@ function parseRetryAfterToMills(retryAfter) {
   }
   return 0;
 }
-var __read3, DEFAULT_TRACE_TIMEOUT, DEFAULT_EXPORT_MAX_ATTEMPTS, DEFAULT_EXPORT_INITIAL_BACKOFF, DEFAULT_EXPORT_MAX_BACKOFF, DEFAULT_EXPORT_BACKOFF_MULTIPLIER;
+var import_api14, __read3, DEFAULT_TRACE_TIMEOUT, DEFAULT_EXPORT_MAX_ATTEMPTS, DEFAULT_EXPORT_INITIAL_BACKOFF, DEFAULT_EXPORT_MAX_BACKOFF, DEFAULT_EXPORT_BACKOFF_MULTIPLIER;
 var init_util = __esm({
   "../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/util.js"() {
     "use strict";
+    import_api14 = require("@opentelemetry/api");
     init_esm();
     __read3 = function(o, n) {
       var m = typeof Symbol === "function" && o[Symbol.iterator];
@@ -1437,11 +1434,11 @@ var init_util = __esm({
 });
 
 // ../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/OTLPExporterBase.js
-import { diag as diag5 } from "@opentelemetry/api";
-var OTLPExporterBase;
+var import_api15, OTLPExporterBase;
 var init_OTLPExporterBase = __esm({
   "../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/OTLPExporterBase.js"() {
     "use strict";
+    import_api15 = require("@opentelemetry/api");
     init_esm();
     init_util();
     OTLPExporterBase = /** @class */
@@ -1487,7 +1484,7 @@ var init_OTLPExporterBase = __esm({
         var _this = this;
         return new Promise(function(resolve, reject) {
           try {
-            diag5.debug("items to be sent", items);
+            import_api15.diag.debug("items to be sent", items);
             _this.send(items, resolve, reject);
           } catch (e) {
             reject(e);
@@ -1502,7 +1499,7 @@ var init_OTLPExporterBase = __esm({
         });
       };
       OTLPExporterBase2.prototype._shutdown = function() {
-        diag5.debug("shutdown started");
+        import_api15.diag.debug("shutdown started");
         this.onShutdown();
         return this.forceFlush();
       };
@@ -1567,12 +1564,6 @@ var init_types3 = __esm({
 });
 
 // ../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/platform/node/util.js
-import * as url from "url";
-import * as http from "http";
-import * as https from "https";
-import * as zlib from "zlib";
-import { Readable } from "stream";
-import { diag as diag6 } from "@opentelemetry/api";
 function sendWithHttp(collector, data, contentType, onSuccess, onError) {
   var exporterTimeout = collector.timeoutMillis;
   var parsedUrl = new url.URL(collector.url);
@@ -1620,7 +1611,7 @@ function sendWithHttp(collector, data, contentType, onSuccess, onError) {
       res.on("end", function() {
         if (reqIsDestroyed === false) {
           if (res.statusCode && res.statusCode < 299) {
-            diag6.debug("statusCode: " + res.statusCode, responseData);
+            import_api16.diag.debug("statusCode: " + res.statusCode, responseData);
             onSuccess();
             clearTimeout(exporterTimer);
             clearTimeout(retryTimer);
@@ -1677,14 +1668,14 @@ function sendWithHttp(collector, data, contentType, onSuccess, onError) {
   sendWithRetry();
 }
 function readableFromBuffer(buff) {
-  var readable = new Readable();
+  var readable = new import_stream.Readable();
   readable.push(buff);
   readable.push(null);
   return readable;
 }
 function createHttpAgent(config3) {
   if (config3.httpAgentOptions && config3.keepAlive === false) {
-    diag6.warn("httpAgentOptions is used only when keepAlive is true");
+    import_api16.diag.warn("httpAgentOptions is used only when keepAlive is true");
     return void 0;
   }
   if (config3.keepAlive === false || !config3.url)
@@ -1694,7 +1685,7 @@ function createHttpAgent(config3) {
     var Agent3 = parsedUrl.protocol === "http:" ? http.Agent : https.Agent;
     return new Agent3(__assign({ keepAlive: true }, config3.httpAgentOptions));
   } catch (err) {
-    diag6.error("collector exporter failed to create http agent. err: " + err.message);
+    import_api16.diag.error("collector exporter failed to create http agent. err: " + err.message);
     return void 0;
   }
 }
@@ -1706,10 +1697,16 @@ function configureCompression(compression) {
     return definedCompression === CompressionAlgorithm.GZIP ? CompressionAlgorithm.GZIP : CompressionAlgorithm.NONE;
   }
 }
-var __assign;
+var url, http, https, zlib, import_stream, import_api16, __assign;
 var init_util2 = __esm({
   "../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/platform/node/util.js"() {
     "use strict";
+    url = __toESM(require("url"));
+    http = __toESM(require("http"));
+    https = __toESM(require("https"));
+    zlib = __toESM(require("zlib"));
+    import_stream = require("stream");
+    import_api16 = require("@opentelemetry/api");
     init_types2();
     init_esm();
     init_types3();
@@ -1734,14 +1731,14 @@ var init_util2 = __esm({
 });
 
 // ../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/platform/node/OTLPExporterNodeBase.js
-import { diag as diag7 } from "@opentelemetry/api";
-var __extends3, OTLPExporterNodeBase;
+var import_api17, __extends3, OTLPExporterNodeBase;
 var init_OTLPExporterNodeBase = __esm({
   "../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/platform/node/OTLPExporterNodeBase.js"() {
     "use strict";
     init_OTLPExporterBase();
     init_util();
     init_util2();
+    import_api17 = require("@opentelemetry/api");
     init_esm();
     __extends3 = /* @__PURE__ */ function() {
       var extendStatics = /* @__PURE__ */ __name(function(d, b) {
@@ -1775,7 +1772,7 @@ var init_OTLPExporterNodeBase = __esm({
         var _this = _super.call(this, config3) || this;
         _this.DEFAULT_HEADERS = {};
         if (config3.metadata) {
-          diag7.warn("Metadata cannot be set when using http");
+          import_api17.diag.warn("Metadata cannot be set when using http");
         }
         _this.headers = Object.assign(_this.DEFAULT_HEADERS, parseHeaders(config3.headers), utils_exports.parseKeyPairsIntoRecord(getEnv().OTEL_EXPORTER_OTLP_HEADERS));
         _this.agent = createHttpAgent(config3);
@@ -1788,7 +1785,7 @@ var init_OTLPExporterNodeBase = __esm({
       OTLPExporterNodeBase2.prototype.send = function(objects, onSuccess, onError) {
         var _this = this;
         if (this._shutdownOnce.isCalled) {
-          diag7.debug("Shutdown already started. Cannot send objects");
+          import_api17.diag.debug("Shutdown already started. Cannot send objects");
           return;
         }
         var serviceRequest = this.convert(objects);
@@ -11077,7 +11074,70 @@ var init_util4 = __esm({
 });
 
 // src/index.ts
-export * from "function-json-schema";
+var src_exports = {};
+__export(src_exports, {
+  DEFAULT_BASE_URL: () => DEFAULT_BASE_URL,
+  Feasibility: () => Feasibility,
+  Iudex: () => Iudex,
+  Resolution: () => Resolution,
+  TaskStatus: () => TaskStatus,
+  TerminalTaskStatuses: () => TerminalTaskStatuses,
+  WorkflowStatus: () => WorkflowStatus,
+  baseTaskSchema: () => baseTaskSchema,
+  chatErrorSchema: () => chatErrorSchema,
+  chatFunctionCallSchema: () => chatFunctionCallSchema,
+  chatFunctionReturnSchema: () => chatFunctionReturnSchema,
+  chatImageSchema: () => chatImageSchema,
+  chatListSchema: () => chatListSchema,
+  chatTextSchema: () => chatTextSchema,
+  chatTurnSchema: () => chatTurnSchema,
+  convertSeverityTextToNumber: () => convertSeverityTextToNumber,
+  convertSeverityValuesToLevel: () => convertSeverityValuesToLevel,
+  createClient: () => createClient,
+  createFunctionClient: () => createFunctionClient,
+  createWorkflowClient: () => createWorkflowClient,
+  emitOtelLog: () => emitOtelLog,
+  extractMessageTextContent: () => extractMessageTextContent,
+  feasibilityCheckSchema: () => feasibilityCheckSchema,
+  fetchGetWorkflowById: () => fetchGetWorkflowById,
+  fetchGetWorkflows: () => fetchGetWorkflows,
+  fetchPostWorkflows: () => fetchPostWorkflows,
+  getCallerInfo: () => getCallerInfo,
+  getFirstTaskByStatus: () => getFirstTaskByStatus,
+  getLastTaskByStatus: () => getLastTaskByStatus,
+  getWorkflowByIdReqSchema: () => getWorkflowByIdReqSchema,
+  getWorkflowByIdResSchema: () => getWorkflowByIdResSchema,
+  getWorkflowsResSchema: () => getWorkflowsResSchema,
+  instrument: () => instrument,
+  is: () => is,
+  iudexConsole: () => console_exports,
+  iudexFastify: () => fastify_exports,
+  iudexPino: () => pino_exports,
+  mapIudexToOpenAi: () => mapIudexToOpenAi,
+  nextMessage: () => nextMessage,
+  postWorkflowsReqSchema: () => postWorkflowsReqSchema,
+  postWorkflowsResSchema: () => postWorkflowsResSchema,
+  preOrderTraversal: () => preOrderTraversal,
+  putFunctionJsons: () => putFunctionJsons,
+  resolutionCheckSchema: () => resolutionCheckSchema,
+  returnFunctionCall: () => returnFunctionCall,
+  reversePreOrderTraversal: () => reversePreOrderTraversal,
+  startWorkflow: () => startWorkflow,
+  taskErroredSchema: () => taskErroredSchema,
+  taskExecutingSchema: () => taskExecutingSchema,
+  taskPendingSchema: () => taskPendingSchema,
+  taskPlanningSchema: () => taskPlanningSchema,
+  taskResolvedSchema: () => taskResolvedSchema,
+  taskSchema: () => taskSchema,
+  taskSequencedSchema: () => taskSequencedSchema,
+  taskSequencingSchema: () => taskSequencingSchema,
+  withTracing: () => withTracing,
+  workflowInfoSchema: () => workflowInfoSchema,
+  workflowMetadataSchema: () => workflowMetadataSchema,
+  workflowSchema: () => workflowSchema
+});
+module.exports = __toCommonJS(src_exports);
+__reExport(src_exports, require("function-json-schema"), module.exports);
 
 // src/utils.ts
 function setTimeoutPromise(ms) {
@@ -11434,10 +11494,10 @@ function fetchPostWorkflows(baseUrl, apiKey) {
 __name(fetchPostWorkflows, "fetchPostWorkflows");
 
 // src/clients/workflow-schemas.ts
-import z3 from "zod";
+var import_zod3 = __toESM(require("zod"));
 
 // src/types/task-types.ts
-import z from "zod";
+var import_zod = __toESM(require("zod"));
 var TaskStatus = {
   // Queued state
   Pending: "Pending",
@@ -11462,81 +11522,81 @@ var TerminalTaskStatuses = [
   TaskStatus.Sequenced,
   TaskStatus.Errored
 ];
-var baseTaskSchema = z.object({
-  id: z.string(),
-  description: z.string(),
-  status: z.nativeEnum(TaskStatus),
-  stepIndex: z.number(),
-  depth: z.number(),
-  numRewrites: z.number()
+var baseTaskSchema = import_zod.default.object({
+  id: import_zod.default.string(),
+  description: import_zod.default.string(),
+  status: import_zod.default.nativeEnum(TaskStatus),
+  stepIndex: import_zod.default.number(),
+  depth: import_zod.default.number(),
+  numRewrites: import_zod.default.number()
 });
 var Feasibility = {
   Feasible: "Feasible",
   Rewritable: "Rewritable",
   Infeasible: "Infeasible"
 };
-var feasibilityCheckSchema = z.object({
-  feasibility: z.nativeEnum(Feasibility),
-  reason: z.coerce.string(),
-  fix: z.string().optional()
+var feasibilityCheckSchema = import_zod.default.object({
+  feasibility: import_zod.default.nativeEnum(Feasibility),
+  reason: import_zod.default.coerce.string(),
+  fix: import_zod.default.string().optional()
 });
 var Resolution = {
   Resolved: "Resolved",
   Rewritable: "Rewritable",
   Infeasible: "Infeasible"
 };
-var resolutionCheckSchema = z.object({
-  resolution: z.nativeEnum(Resolution),
-  reason: z.coerce.string(),
-  fix: z.string().optional()
+var resolutionCheckSchema = import_zod.default.object({
+  resolution: import_zod.default.nativeEnum(Resolution),
+  reason: import_zod.default.coerce.string(),
+  fix: import_zod.default.string().optional()
 });
 var taskPendingSchema = baseTaskSchema.extend({
-  status: z.literal(TaskStatus.Pending)
+  status: import_zod.default.literal(TaskStatus.Pending)
 });
 var taskPlanningSchema = baseTaskSchema.extend({
-  status: z.literal(TaskStatus.Planning),
+  status: import_zod.default.literal(TaskStatus.Planning),
   // present if rewriting
-  program: z.string().optional(),
+  program: import_zod.default.string().optional(),
   feasibilityCheck: feasibilityCheckSchema.optional(),
   // present if rewriting from executor
   resolutionCheck: resolutionCheckSchema.optional()
 });
 var taskExecutingSchema = baseTaskSchema.extend({
-  status: z.literal(TaskStatus.Executing),
-  program: z.string(),
-  usedFunctionNames: z.array(z.string()),
+  status: import_zod.default.literal(TaskStatus.Executing),
+  program: import_zod.default.string(),
+  usedFunctionNames: import_zod.default.array(import_zod.default.string()),
   feasibilityCheck: feasibilityCheckSchema
 });
 var taskResolvedSchema = baseTaskSchema.extend({
-  status: z.literal(TaskStatus.Resolved),
-  program: z.string(),
-  usedFunctionNames: z.array(z.string()),
+  status: import_zod.default.literal(TaskStatus.Resolved),
+  program: import_zod.default.string(),
+  usedFunctionNames: import_zod.default.array(import_zod.default.string()),
   feasibilityCheck: feasibilityCheckSchema,
   resolutionCheck: resolutionCheckSchema
 });
 var taskSequencingSchema = baseTaskSchema.extend({
-  status: z.literal(TaskStatus.Sequencing),
-  program: z.string(),
+  status: import_zod.default.literal(TaskStatus.Sequencing),
+  program: import_zod.default.string(),
   feasibilityCheck: feasibilityCheckSchema,
   // present if sequencing from executor
-  usedFunctionNames: z.array(z.string()).optional(),
+  usedFunctionNames: import_zod.default.array(import_zod.default.string()).optional(),
   resolutionCheck: resolutionCheckSchema.optional()
 });
 var taskSequencedSchema = baseTaskSchema.extend({
-  status: z.literal(TaskStatus.Sequenced),
-  program: z.string(),
-  subtasks: z.lazy(() => taskSchema.array()),
+  status: import_zod.default.literal(TaskStatus.Sequenced),
+  program: import_zod.default.string(),
+  subtasks: import_zod.default.lazy(() => taskSchema.array()),
   feasibilityCheck: feasibilityCheckSchema,
-  usedFunctionNames: z.array(z.string()).optional(),
+  usedFunctionNames: import_zod.default.array(import_zod.default.string()).optional(),
   resolutionCheck: resolutionCheckSchema.optional()
 });
 var taskErroredSchema = baseTaskSchema.extend({
-  status: z.literal(TaskStatus.Errored),
-  errorMsg: z.string(),
-  errorName: z.string(),
-  errorStack: z.string().optional()
+  status: import_zod.default.literal(TaskStatus.Errored),
+  errorMsg: import_zod.default.string(),
+  errorName: import_zod.default.string(),
+  errorStack: import_zod.default.string().optional()
 });
-var taskSchema = z.union([
+var taskSchema = import_zod.default.union([
   taskPendingSchema,
   taskPlanningSchema,
   taskExecutingSchema,
@@ -11547,7 +11607,7 @@ var taskSchema = z.union([
 ]);
 
 // src/types/workflow-types.ts
-import z2 from "zod";
+var import_zod2 = __toESM(require("zod"));
 var WorkflowStatus = {
   Running: "Running",
   Completed: "Completed",
@@ -11555,93 +11615,93 @@ var WorkflowStatus = {
   Paused: "Paused",
   TimedOut: "TimedOut"
 };
-var workflowMetadataSchema = z2.object({
-  maxFunctionMatches: z2.number().optional()
+var workflowMetadataSchema = import_zod2.default.object({
+  maxFunctionMatches: import_zod2.default.number().optional()
 });
-var workflowSchema = z2.object({
-  workflowId: z2.string(),
+var workflowSchema = import_zod2.default.object({
+  workflowId: import_zod2.default.string(),
   root: taskSchema,
-  modules: z2.array(z2.string()).optional(),
-  createdAt: z2.string(),
-  updatedAt: z2.string(),
+  modules: import_zod2.default.array(import_zod2.default.string()).optional(),
+  createdAt: import_zod2.default.string(),
+  updatedAt: import_zod2.default.string(),
   metadata: workflowMetadataSchema.optional(),
-  orgId: z2.string()
+  orgId: import_zod2.default.string()
 });
-var workflowInfoSchema = z2.object({
-  workflowId: z2.string(),
-  modules: z2.array(z2.string()).optional(),
-  createdAt: z2.string(),
-  updatedAt: z2.string(),
+var workflowInfoSchema = import_zod2.default.object({
+  workflowId: import_zod2.default.string(),
+  modules: import_zod2.default.array(import_zod2.default.string()).optional(),
+  createdAt: import_zod2.default.string(),
+  updatedAt: import_zod2.default.string(),
   // Task summary
-  description: z2.string(),
-  status: z2.nativeEnum(WorkflowStatus),
-  numLeafTasks: z2.number()
+  description: import_zod2.default.string(),
+  status: import_zod2.default.nativeEnum(WorkflowStatus),
+  numLeafTasks: import_zod2.default.number()
 });
 
 // src/clients/workflow-schemas.ts
-var getWorkflowsResSchema = z3.object({
-  workflowInfos: z3.array(workflowInfoSchema)
+var getWorkflowsResSchema = import_zod3.default.object({
+  workflowInfos: import_zod3.default.array(workflowInfoSchema)
 });
-var getWorkflowByIdReqSchema = z3.object({
-  workflowId: z3.string()
+var getWorkflowByIdReqSchema = import_zod3.default.object({
+  workflowId: import_zod3.default.string()
 });
-var getWorkflowByIdResSchema = z3.object({
+var getWorkflowByIdResSchema = import_zod3.default.object({
   workflow: taskSchema
   // root task
 });
-var postWorkflowsReqSchema = z3.object({
-  query: z3.string(),
+var postWorkflowsReqSchema = import_zod3.default.object({
+  query: import_zod3.default.string(),
   // Undefined means use all org modules. [] means use all modules.
-  modules: z3.array(z3.string()).optional(),
-  opts: z3.object({
-    maxFunctionMatches: z3.number().optional()
+  modules: import_zod3.default.array(import_zod3.default.string()).optional(),
+  opts: import_zod3.default.object({
+    maxFunctionMatches: import_zod3.default.number().optional()
   }).optional()
 });
-var postWorkflowsResSchema = z3.object({
-  message: z3.string(),
-  workflowId: z3.string()
+var postWorkflowsResSchema = import_zod3.default.object({
+  message: import_zod3.default.string(),
+  workflowId: import_zod3.default.string()
 });
 
 // src/types/chat-types.ts
-import { z as z4 } from "zod";
-var chatTurnBaseSchema = z4.object({
-  id: z4.string(),
-  type: z4.string(),
-  sender: z4.string(),
-  timestamp: z4.string()
+var import_zod4 = require("zod");
+var chatTurnBaseSchema = import_zod4.z.object({
+  id: import_zod4.z.string(),
+  type: import_zod4.z.string(),
+  sender: import_zod4.z.string(),
+  timestamp: import_zod4.z.string()
 });
 var chatTextSchema = chatTurnBaseSchema.extend({
-  type: z4.literal("text"),
-  text: z4.string()
+  type: import_zod4.z.literal("text"),
+  text: import_zod4.z.string()
 });
 var chatErrorSchema = chatTurnBaseSchema.extend({
-  type: z4.literal("error"),
-  name: z4.string(),
-  message: z4.string(),
-  cause: z4.string().optional(),
-  stack: z4.string().optional()
+  type: import_zod4.z.literal("error"),
+  name: import_zod4.z.string(),
+  message: import_zod4.z.string(),
+  cause: import_zod4.z.string().optional(),
+  stack: import_zod4.z.string().optional()
 });
 var chatImageSchema = chatTurnBaseSchema.extend({
-  type: z4.literal("image"),
-  image: z4.string(),
-  description: z4.string()
+  type: import_zod4.z.literal("image"),
+  image: import_zod4.z.string(),
+  description: import_zod4.z.string()
 });
 var chatListSchema = chatTurnBaseSchema.extend({
-  type: z4.literal("list"),
-  list: z4.array(z4.string())
+  type: import_zod4.z.literal("list"),
+  list: import_zod4.z.array(import_zod4.z.string())
 });
 var chatFunctionCallSchema = chatTurnBaseSchema.extend({
-  type: z4.literal("functionCall"),
-  functionCallId: z4.string(),
-  functionName: z4.string(),
-  functionArgs: z4.record(z4.unknown())
+  type: import_zod4.z.literal("functionCall"),
+  functionCallId: import_zod4.z.string(),
+  functionName: import_zod4.z.string(),
+  functionArgs: import_zod4.z.record(import_zod4.z.unknown())
 });
 var chatFunctionReturnSchema = chatTurnBaseSchema.extend({
-  type: z4.literal("functionReturn"),
-  functionCallId: z4.string(),
-  functionReturn: z4.string()
+  type: import_zod4.z.literal("functionReturn"),
+  functionCallId: import_zod4.z.string(),
+  functionReturn: import_zod4.z.string()
 });
-var chatTurnSchema = z4.discriminatedUnion("type", [
+var chatTurnSchema = import_zod4.z.discriminatedUnion("type", [
   chatTextSchema,
   chatErrorSchema,
   chatImageSchema,
@@ -11651,27 +11711,21 @@ var chatTurnSchema = z4.discriminatedUnion("type", [
 ]);
 
 // src/instrumentation/index.ts
-import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
-import { NodeSDK } from "@opentelemetry/sdk-node";
-import { BatchSpanProcessor, NodeTracerProvider } from "@opentelemetry/sdk-trace-node";
-import { Resource } from "@opentelemetry/resources";
-import {
-  SEMRESATTRS_SERVICE_INSTANCE_ID,
-  SEMRESATTRS_SERVICE_NAME
-} from "@opentelemetry/semantic-conventions";
-import { logs as logs2 } from "@opentelemetry/api-logs";
-import {
-  LoggerProvider,
-  BatchLogRecordProcessor
-} from "@opentelemetry/sdk-logs";
+var import_auto_instrumentations_node = require("@opentelemetry/auto-instrumentations-node");
+var import_sdk_node = require("@opentelemetry/sdk-node");
+var import_sdk_trace_node = require("@opentelemetry/sdk-trace-node");
+var import_resources = require("@opentelemetry/resources");
+var import_semantic_conventions5 = require("@opentelemetry/semantic-conventions");
+var import_api_logs2 = require("@opentelemetry/api-logs");
+var import_sdk_logs = require("@opentelemetry/sdk-logs");
 
 // ../../node_modules/.pnpm/@opentelemetry+exporter-logs-otlp-proto@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/exporter-logs-otlp-proto/build/esm/platform/node/OTLPLogExporter.js
 init_esm();
 init_esm2();
 
 // ../../node_modules/.pnpm/@opentelemetry+otlp-proto-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-proto-exporter-base/build/esm/platform/node/OTLPProtoExporterNodeBase.js
+var import_api18 = require("@opentelemetry/api");
 init_esm2();
-import { diag as diag8 } from "@opentelemetry/api";
 var __extends4 = /* @__PURE__ */ function() {
   var extendStatics = /* @__PURE__ */ __name(function(d, b) {
     extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(d2, b2) {
@@ -11720,7 +11774,7 @@ var OTLPProtoExporterNodeBase = (
     OTLPProtoExporterNodeBase2.prototype.send = function(objects, onSuccess, onError) {
       var _this = this;
       if (this._shutdownOnce.isCalled) {
-        diag8.debug("Shutdown already started. Cannot send objects");
+        import_api18.diag.debug("Shutdown already started. Cannot send objects");
         return;
       }
       if (!this._send) {
@@ -12068,17 +12122,13 @@ var OTLPLogExporter = (
 );
 
 // src/instrumentation/index.ts
-import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto";
-import _4 from "lodash";
+var import_exporter_trace_otlp_proto = require("@opentelemetry/exporter-trace-otlp-proto");
+var import_lodash4 = __toESM(require("lodash"));
 
 // src/instrumentation/utils.ts
-import {
-  SEMATTRS_CODE_FILEPATH,
-  SEMATTRS_CODE_FUNCTION,
-  SEMATTRS_CODE_LINENO
-} from "@opentelemetry/semantic-conventions";
-import { logs } from "@opentelemetry/api-logs";
-import _ from "lodash";
+var import_semantic_conventions2 = require("@opentelemetry/semantic-conventions");
+var import_api_logs = require("@opentelemetry/api-logs");
+var import_lodash = __toESM(require("lodash"));
 var is = { instrumented: false };
 function convertSeverityTextToNumber(severityText) {
   if (severityText == void 0) {
@@ -12155,29 +12205,23 @@ function emitOtelLog({
   if (stackDepth != null) {
     const { filePath, lineNum, caller } = getCallerInfo(stackDepth + 1);
     Object.assign(attrs, {
-      [SEMATTRS_CODE_FILEPATH]: filePath,
-      [SEMATTRS_CODE_LINENO]: lineNum,
-      [SEMATTRS_CODE_FUNCTION]: caller
+      [import_semantic_conventions2.SEMATTRS_CODE_FILEPATH]: filePath,
+      [import_semantic_conventions2.SEMATTRS_CODE_LINENO]: lineNum,
+      [import_semantic_conventions2.SEMATTRS_CODE_FUNCTION]: caller
     });
   }
-  const otelLogger = logs.getLogger("default");
+  const otelLogger = import_api_logs.logs.getLogger("default");
   otelLogger.emit({
     severityNumber: severityNumber || convertSeverityTextToNumber(level.toUpperCase()),
     severityText: level.toUpperCase(),
     body,
-    attributes: _.omitBy(attrs, _.isNil)
+    attributes: import_lodash.default.omitBy(attrs, import_lodash.default.isNil)
   });
 }
 __name(emitOtelLog, "emitOtelLog");
 
 // src/instrumentation/index.ts
-import {
-  DiagConsoleLogger,
-  DiagLogLevel as DiagLogLevel2,
-  SpanStatusCode,
-  diag as diag9,
-  trace as trace3
-} from "@opentelemetry/api";
+var import_api19 = require("@opentelemetry/api");
 
 // src/instrumentation/console.ts
 var console_exports = {};
@@ -12226,12 +12270,8 @@ __export(pino_exports, {
   options: () => options,
   write: () => write
 });
-import {
-  SEMATTRS_CODE_FUNCTION as SEMATTRS_CODE_FUNCTION2,
-  SEMATTRS_CODE_FILEPATH as SEMATTRS_CODE_FILEPATH2,
-  SEMATTRS_CODE_LINENO as SEMATTRS_CODE_LINENO2
-} from "@opentelemetry/semantic-conventions";
-import _2 from "lodash";
+var import_semantic_conventions3 = require("@opentelemetry/semantic-conventions");
+var import_lodash2 = __toESM(require("lodash"));
 function write(str) {
   if (!is.instrumented)
     return;
@@ -12250,11 +12290,11 @@ var config = {
 };
 function mixin() {
   const { filePath, lineNum, caller } = getCallerInfo(config.mixinStackDepth);
-  return _2.omitBy({
-    [SEMATTRS_CODE_FILEPATH2]: filePath,
-    [SEMATTRS_CODE_LINENO2]: lineNum,
-    [SEMATTRS_CODE_FUNCTION2]: caller
-  }, _2.isNil);
+  return import_lodash2.default.omitBy({
+    [import_semantic_conventions3.SEMATTRS_CODE_FILEPATH]: filePath,
+    [import_semantic_conventions3.SEMATTRS_CODE_LINENO]: lineNum,
+    [import_semantic_conventions3.SEMATTRS_CODE_FUNCTION]: caller
+  }, import_lodash2.default.isNil);
 }
 __name(mixin, "mixin");
 var destination = { write };
@@ -12278,23 +12318,19 @@ __export(fastify_exports, {
   mixin: () => mixin2,
   stream: () => stream
 });
-import {
-  SEMATTRS_CODE_FUNCTION as SEMATTRS_CODE_FUNCTION3,
-  SEMATTRS_CODE_FILEPATH as SEMATTRS_CODE_FILEPATH3,
-  SEMATTRS_CODE_LINENO as SEMATTRS_CODE_LINENO3
-} from "@opentelemetry/semantic-conventions";
-import _3 from "lodash";
+var import_semantic_conventions4 = require("@opentelemetry/semantic-conventions");
+var import_lodash3 = __toESM(require("lodash"));
 var stream = iudexPino.destination;
 var config2 = {
   mixinStackDepth: 5
 };
 function mixin2() {
   const { filePath, lineNum, caller } = getCallerInfo(config2.mixinStackDepth);
-  return _3.omitBy({
-    [SEMATTRS_CODE_FILEPATH3]: filePath,
-    [SEMATTRS_CODE_LINENO3]: lineNum,
-    [SEMATTRS_CODE_FUNCTION3]: caller
-  }, _3.isNil);
+  return import_lodash3.default.omitBy({
+    [import_semantic_conventions4.SEMATTRS_CODE_FILEPATH]: filePath,
+    [import_semantic_conventions4.SEMATTRS_CODE_LINENO]: lineNum,
+    [import_semantic_conventions4.SEMATTRS_CODE_FUNCTION]: caller
+  }, import_lodash3.default.isNil);
 }
 __name(mixin2, "mixin");
 var logger = {
@@ -12311,7 +12347,7 @@ var iudexFastify = {
 // src/instrumentation/index.ts
 if (process.env.IUDEX_DEBUG) {
   console.log("IUDEX_DEBUG on. Setting diag logger to console.");
-  diag9.setLogger(new DiagConsoleLogger(), DiagLogLevel2.DEBUG);
+  import_api19.diag.setLogger(new import_api19.DiagConsoleLogger(), import_api19.DiagLogLevel.DEBUG);
 }
 function instrument({
   baseUrl = process.env.IUDEX_EXPORTER_OTLP_ENDPOINT || process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "https://api.iudex.ai",
@@ -12338,32 +12374,32 @@ function instrument({
   };
   if (!gitCommit) {
     try {
-      const { execSync } = __require("child_process");
+      const { execSync } = require("child_process");
       gitCommit = execSync("git rev-parse HEAD").toString().trim();
     } catch (e) {
     }
   }
-  const resource = new Resource(_4.omitBy({
-    [SEMRESATTRS_SERVICE_NAME]: serviceName,
-    [SEMRESATTRS_SERVICE_INSTANCE_ID]: instanceId,
+  const resource = new import_resources.Resource(import_lodash4.default.omitBy({
+    [import_semantic_conventions5.SEMRESATTRS_SERVICE_NAME]: serviceName,
+    [import_semantic_conventions5.SEMRESATTRS_SERVICE_INSTANCE_ID]: instanceId,
     "git.commit": gitCommit,
     "github.url": githubUrl,
     "env": env
-  }, _4.isNil));
+  }, import_lodash4.default.isNil));
   const logExporter = new OTLPLogExporter({ url: baseUrl + "/v1/logs", headers });
-  const logRecordProcessor = new BatchLogRecordProcessor(logExporter);
-  const loggerProvider = new LoggerProvider({ resource });
+  const logRecordProcessor = new import_sdk_logs.BatchLogRecordProcessor(logExporter);
+  const loggerProvider = new import_sdk_logs.LoggerProvider({ resource });
   loggerProvider.addLogRecordProcessor(logRecordProcessor);
-  logs2.setGlobalLoggerProvider(loggerProvider);
-  const traceExporter = new OTLPTraceExporter({ url: baseUrl + "/v1/traces", headers });
-  const spanProcessors = [new BatchSpanProcessor(traceExporter)];
-  const sdk = new NodeSDK({
+  import_api_logs2.logs.setGlobalLoggerProvider(loggerProvider);
+  const traceExporter = new import_exporter_trace_otlp_proto.OTLPTraceExporter({ url: baseUrl + "/v1/traces", headers });
+  const spanProcessors = [new import_sdk_trace_node.BatchSpanProcessor(traceExporter)];
+  const sdk = new import_sdk_node.NodeSDK({
     serviceName,
     resource,
     logRecordProcessor,
     spanProcessors,
     instrumentations: [
-      getNodeAutoInstrumentations({
+      (0, import_auto_instrumentations_node.getNodeAutoInstrumentations)({
         "@opentelemetry/instrumentation-fs": { enabled: false }
       })
     ],
@@ -12376,14 +12412,14 @@ function instrument({
   is.instrumented = true;
   return {
     updateResource(newResource) {
-      const mergedResource = resource.merge(new Resource(newResource));
-      const loggerProvider2 = new LoggerProvider({ resource: mergedResource });
+      const mergedResource = resource.merge(new import_resources.Resource(newResource));
+      const loggerProvider2 = new import_sdk_logs.LoggerProvider({ resource: mergedResource });
       loggerProvider2.addLogRecordProcessor(logRecordProcessor);
-      logs2.setGlobalLoggerProvider(loggerProvider2);
-      const tracerProvider = new NodeTracerProvider({ resource: mergedResource });
+      import_api_logs2.logs.setGlobalLoggerProvider(loggerProvider2);
+      const tracerProvider = new import_sdk_trace_node.NodeTracerProvider({ resource: mergedResource });
       tracerProvider.register();
       tracerProvider.addSpanProcessor(spanProcessors[0]);
-      trace3.setGlobalTracerProvider(tracerProvider);
+      import_api19.trace.setGlobalTracerProvider(tracerProvider);
     }
   };
 }
@@ -12392,18 +12428,18 @@ function withTracing(fn, ctx) {
   if (!is.instrumented) {
     return fn;
   }
-  const tracer = trace3.getTracer("default");
+  const tracer = import_api19.trace.getTracer("default");
   return function(...args2) {
     return tracer.startActiveSpan(String(ctx?.name) || fn.name || "<anonymous>", (span) => {
       try {
         const ret = fn(...args2);
         if (ret.then) {
           return ret.then((res) => {
-            span.setStatus({ code: SpanStatusCode.OK });
+            span.setStatus({ code: import_api19.SpanStatusCode.OK });
             return res;
           }).catch((err) => {
             span.setStatus({
-              code: SpanStatusCode.ERROR,
+              code: import_api19.SpanStatusCode.ERROR,
               message: err?.message
             });
             throw err;
@@ -12411,11 +12447,11 @@ function withTracing(fn, ctx) {
             span.end();
           });
         }
-        span.setStatus({ code: SpanStatusCode.OK });
+        span.setStatus({ code: import_api19.SpanStatusCode.OK });
         return ret;
       } catch (err) {
         span.setStatus({
-          code: SpanStatusCode.ERROR,
+          code: import_api19.SpanStatusCode.ERROR,
           message: err?.message
         });
         throw err;
@@ -12735,7 +12771,8 @@ function preOrderTraversal(getChildren, predicate) {
   }, "traverse");
 }
 __name(preOrderTraversal, "preOrderTraversal");
-export {
+// Annotate the CommonJS export names for ESM import in node:
+0 && (module.exports = {
   DEFAULT_BASE_URL,
   Feasibility,
   Iudex,
@@ -12770,9 +12807,9 @@ export {
   getWorkflowsResSchema,
   instrument,
   is,
-  console_exports as iudexConsole,
-  fastify_exports as iudexFastify,
-  pino_exports as iudexPino,
+  iudexConsole,
+  iudexFastify,
+  iudexPino,
   mapIudexToOpenAi,
   nextMessage,
   postWorkflowsReqSchema,
@@ -12794,6 +12831,7 @@ export {
   withTracing,
   workflowInfoSchema,
   workflowMetadataSchema,
-  workflowSchema
-};
+  workflowSchema,
+  ...require("function-json-schema")
+});
 //# sourceMappingURL=index.js.map

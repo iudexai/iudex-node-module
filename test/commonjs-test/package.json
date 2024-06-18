@@ -9,7 +9,7 @@
   "keywords": [],
   "author": "",
   "dependencies": {
-    "iudex": "0.12.2"
+    "iudex": "0.13.5"
   },
   "devDependencies": {
     "dotenv": "^16.4.5",
