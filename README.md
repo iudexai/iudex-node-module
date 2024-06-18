@@ -9,7 +9,7 @@ Next generation observability.
     - [Autoinstrument](#autoinstrument)
     - [Express](#express)
     - [Fastify](#fastify)
-        - [Lambda](#lambda)
+    - [Lambda](#lambda)
     - [Pino](#pino)
       - [Multiple Destinations](#multiple-destinations)
     - [Console](#console)
@@ -83,7 +83,7 @@ const fastify = Fastify({
 });
 ```
 
-##### Lambda
+### Lambda
 1. Add this code snippet to the top of your handler file.
 
 ```typescript
