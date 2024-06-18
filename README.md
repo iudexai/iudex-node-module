@@ -5,7 +5,7 @@
     - [Options](#options)
   - [`emitOtelLog`](#emitotellog)
     - [Options](#options-1)
-- [Autoinstrumented](#autoinstrumented)
+- [Autoinstrument](#autoinstrument)
 - [Express](#express)
 - [Fastify](#fastify)
 - [Lambda](#lambda)
@@ -23,7 +23,7 @@ logger library, find its instrumentation instructions or manually call `emitOtel
 
 [Supported autoinstrumentations](https://github.com/open-telemetry/opentelemetry-js-contrib/blob/main/metapackages/auto-instrumentations-node/README.md#supported-instrumentations) include: console * cassandra-driver * express * http * graphql * ioredis * knex * koa * memcahced * mongodb * mongoose * mysql * mysql2 * nestjs * pg * redis * restify * socket.io * undici.
 
-Check out the [Autoinstrumentated](#autoinstrumented) section for installation instructions.
+Check out the [Autoinstrument](#autoinstrument) section for installation instructions.
 
 For libraries that are not autoinstrumented, follow the instructions from the table of contents for that specific library.
 
@@ -74,7 +74,7 @@ Sends a log to `iudex`.
   * Attributes cannot contain nonserializable objects.
 
 
-# Autoinstrumented
+# Autoinstrument
 1. Install dependencies.
 ```bash
 npm install iudex
