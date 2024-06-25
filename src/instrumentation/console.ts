@@ -2,13 +2,15 @@ import * as R from 'ramda';
 import { emitOtelLog } from './utils.js';
 
 export function instrumentConsole() {
-  const { log, error, warn, info, debug } = console;
+  const { log, error, warn, info, debug, timeLog, timeEnd } = console;
   ([
     { name: 'log', logger: log, level: 'INFO' },
     { name: 'error', logger: error, level: 'ERROR' },
     { name: 'warn', logger: warn, level: 'WARN' },
     { name: 'info', logger: info, level: 'INFO' },
     { name: 'debug', logger: debug, level: 'DEBUG'},
+    { name: 'timeLog', logger: timeLog, level: 'INFO' },
+    { name: 'timeEnd', logger: timeEnd, level: 'INFO' },
   ] as const).forEach(({ name, logger, level }) => {
 
     console[name] = function (...content: any[]) {
@@ -27,7 +29,7 @@ export function instrumentConsole() {
       if (contentWoCtx.length === 1) {
         emitOtelLog({ level, body: contentWoCtx[0], attributes: contentCtx });
       } else {
-        emitOtelLog({ level, body: contentWoCtx, attributes: contentCtx });
+        emitOtelLog({ level, body: contentWoCtx.join(' '), attributes: contentCtx });
       }
     };
   });

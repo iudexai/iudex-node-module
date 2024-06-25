@@ -1,6 +1,6 @@
 import type { DestinationStream, LoggerOptions } from 'pino';
 /**
- * Pino write stream to send logs to OpenTelemetry
+ * Pino write stream to send logs to OpenTelemetry and to default pino destination.
  */
 export declare function write(str: string): void;
 export declare const config: {

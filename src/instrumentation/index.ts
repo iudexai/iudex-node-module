@@ -14,7 +14,7 @@ import {
 import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-proto';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto';
 import _ from 'lodash';
-import { is } from './utils.js';
+import { config } from './utils.js';
 import {
   DiagConsoleLogger,
   DiagLogLevel,
@@ -24,11 +24,15 @@ import {
   trace,
 } from '@opentelemetry/api';
 import { instrumentConsole } from './console.js';
+import { PinoHttpInstrumentation } from './pino-http.js';
+import * as traceloop from '@traceloop/node-server-sdk';
 
 export * from './utils.js';
 export * as iudexPino from './pino.js';
+export * as iudexPinoHttp from './pino-http.js';
 export * as iudexFastify from './fastify.js';
 export * as iudexConsole from './console.js';
+export * as iudexTrpc from './trpc.js';
 
 if (process.env.IUDEX_DEBUG) {
   console.log('IUDEX_DEBUG on. Setting diag logger to console.');
@@ -58,7 +62,7 @@ export function instrument({
   headers?: Record<string, string>;
   settings?: Partial<{ instrumentConsole: boolean }>;
 } = {}) {
-  if (is.instrumented) return;
+  if (config.isInstrumented) return;
 
   if (!iudexApiKey) {
     console.warn(
@@ -103,12 +107,15 @@ export function instrument({
   const traceExporter = new OTLPTraceExporter({ url: baseUrl + '/v1/traces', headers });
   const spanProcessors = [new BatchSpanProcessor(traceExporter)];
 
+
+  // Instrument OTel auto
   const sdk = new NodeSDK({
     serviceName,
     resource,
     logRecordProcessor,
     spanProcessors,
     instrumentations: [
+      // new PinoHttpInstrumentation(),
       getNodeAutoInstrumentations({
         '@opentelemetry/instrumentation-fs': { enabled: false },
       }),
@@ -117,14 +124,23 @@ export function instrument({
   });
   sdk.start();
 
-
-  // Instrumentation settings
-
-  if (settings.instrumentConsole) {
+  // Instrument console
+  if (settings.instrumentConsole || settings.instrumentConsole == undefined) {
     instrumentConsole();
   }
 
-  is.instrumented = true;
+  // Instrument ai stuff
+  traceloop.initialize({
+    appName: serviceName,
+    baseUrl: baseUrl + '/v1',
+    logLevel: 'info',
+    exporter: traceExporter,
+    traceloopSyncEnabled: false,
+  });
+
+
+  // Set global flag
+  config.isInstrumented = true;
 
   return {
     updateResource(newResource: Record<string, any>) {
@@ -153,7 +169,7 @@ export function withTracing<T extends (...args: any) => any>(
     attributes?: Record<string, any>;
   } = {},
 ): T {
-  if (!is.instrumented) {
+  if (!config.isInstrumented) {
     return fn;
   }
   const { name, trackArgs = true, attributes } = ctx;

@@ -1,7 +1,9 @@
 export * from './utils.js';
 export * as iudexPino from './pino.js';
+export * as iudexPinoHttp from './pino-http.js';
 export * as iudexFastify from './fastify.js';
 export * as iudexConsole from './console.js';
+export * as iudexTrpc from './trpc.js';
 export declare function instrument({ baseUrl, iudexApiKey, serviceName, instanceId, gitCommit, githubUrl, env, headers: configHeaders, settings, }?: {
     baseUrl?: string;
     iudexApiKey?: string;

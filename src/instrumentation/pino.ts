@@ -4,24 +4,34 @@ import {
   SEMATTRS_CODE_LINENO,
 } from '@opentelemetry/semantic-conventions';
 import type { DestinationStream, LoggerOptions } from 'pino';
+import pino from 'pino';
 import _ from 'lodash';
-import { convertSeverityValuesToLevel, emitOtelLog, getCallerInfo, is } from './utils.js';
+import {
+  convertSeverityValuesToLevel,
+  emitOtelLog,
+  getCallerInfo,
+  config as iconfig,
+} from './utils.js';
+import { PinoInstrumentation } from '@opentelemetry/instrumentation-pino';
 
 
 /**
- * Pino write stream to send logs to OpenTelemetry
+ * Pino write stream to send logs to OpenTelemetry and to default pino destination.
  */
 export function write(str: string) {
-  if (!is.instrumented) return;
+  if (iconfig.isInstrumented) {
+    try {
+      const { level, msg, time, ...rest } = JSON.parse(str);
+      const levelNumber = Number(level);
+      const severityText = convertSeverityValuesToLevel(levelNumber || undefined, level);
 
-  try {
-    const { level, msg, time, ...rest } = JSON.parse(str);
-    const levelNumber = Number(level);
-    const severityText = convertSeverityValuesToLevel(levelNumber ? levelNumber : undefined, level);
-    emitOtelLog({ level: severityText, severityNumber: level, body: msg, attributes: rest });
-  } catch {
-    emitOtelLog({ level: 'INFO', body: str });
+      emitOtelLog({ level: severityText, severityNumber: level, body: msg, attributes: rest });
+    } catch {
+      emitOtelLog({ level: 'INFO', body: str });
+    }
   }
+
+  pino.destination(1).write(str);
 }
 
 export const config = {

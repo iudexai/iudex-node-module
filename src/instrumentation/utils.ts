@@ -7,7 +7,7 @@ import { logs } from '@opentelemetry/api-logs';
 
 import _ from 'lodash';
 
-export const is = { instrumented: false };
+export const config = { isInstrumented: false, oldConsole: { ...console } };
 
 export function convertSeverityTextToNumber(severityText: string | undefined) {
   if (severityText == undefined) {
@@ -118,7 +118,7 @@ export function emitOtelLog({
   attributes?: Record<string, any>;
   stackDepth?: number,
 }) {
-  if (!is.instrumented) return;
+  if (!config.isInstrumented) return;
 
   const attrs = { ...attributes };
 

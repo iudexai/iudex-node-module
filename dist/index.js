@@ -717,12 +717,12 @@ var init_composite = __esm({
     };
     CompositePropagator = /** @class */
     function() {
-      function CompositePropagator2(config3) {
-        if (config3 === void 0) {
-          config3 = {};
+      function CompositePropagator2(config5) {
+        if (config5 === void 0) {
+          config5 = {};
         }
         var _a2;
-        this._propagators = (_a2 = config3.propagators) !== null && _a2 !== void 0 ? _a2 : [];
+        this._propagators = (_a2 = config5.propagators) !== null && _a2 !== void 0 ? _a2 : [];
         this._fields = Array.from(new Set(this._propagators.map(function(p) {
           return typeof p.fields === "function" ? p.fields() : [];
         }).reduce(function(x, y) {
@@ -1016,17 +1016,17 @@ var init_ParentBasedSampler = __esm({
     init_AlwaysOnSampler();
     ParentBasedSampler = /** @class */
     function() {
-      function ParentBasedSampler2(config3) {
+      function ParentBasedSampler2(config5) {
         var _a2, _b, _c, _d;
-        this._root = config3.root;
+        this._root = config5.root;
         if (!this._root) {
           globalErrorHandler(new Error("ParentBasedSampler must have a root sampler configured"));
           this._root = new AlwaysOnSampler();
         }
-        this._remoteParentSampled = (_a2 = config3.remoteParentSampled) !== null && _a2 !== void 0 ? _a2 : new AlwaysOnSampler();
-        this._remoteParentNotSampled = (_b = config3.remoteParentNotSampled) !== null && _b !== void 0 ? _b : new AlwaysOffSampler();
-        this._localParentSampled = (_c = config3.localParentSampled) !== null && _c !== void 0 ? _c : new AlwaysOnSampler();
-        this._localParentNotSampled = (_d = config3.localParentNotSampled) !== null && _d !== void 0 ? _d : new AlwaysOffSampler();
+        this._remoteParentSampled = (_a2 = config5.remoteParentSampled) !== null && _a2 !== void 0 ? _a2 : new AlwaysOnSampler();
+        this._remoteParentNotSampled = (_b = config5.remoteParentNotSampled) !== null && _b !== void 0 ? _b : new AlwaysOffSampler();
+        this._localParentSampled = (_c = config5.localParentSampled) !== null && _c !== void 0 ? _c : new AlwaysOnSampler();
+        this._localParentNotSampled = (_d = config5.localParentNotSampled) !== null && _d !== void 0 ? _d : new AlwaysOffSampler();
       }
       __name(ParentBasedSampler2, "ParentBasedSampler");
       ParentBasedSampler2.prototype.shouldSample = function(context, traceId, spanName, spanKind, attributes, links) {
@@ -1443,20 +1443,20 @@ var init_OTLPExporterBase = __esm({
     init_util();
     OTLPExporterBase = /** @class */
     function() {
-      function OTLPExporterBase2(config3) {
-        if (config3 === void 0) {
-          config3 = {};
+      function OTLPExporterBase2(config5) {
+        if (config5 === void 0) {
+          config5 = {};
         }
         this._sendingPromises = [];
-        this.url = this.getDefaultUrl(config3);
-        if (typeof config3.hostname === "string") {
-          this.hostname = config3.hostname;
+        this.url = this.getDefaultUrl(config5);
+        if (typeof config5.hostname === "string") {
+          this.hostname = config5.hostname;
         }
         this.shutdown = this.shutdown.bind(this);
         this._shutdownOnce = new BindOnceFuture(this._shutdown, this);
-        this._concurrencyLimit = typeof config3.concurrencyLimit === "number" ? config3.concurrencyLimit : 30;
-        this.timeoutMillis = configureExporterTimeout(config3.timeoutMillis);
-        this.onInit(config3);
+        this._concurrencyLimit = typeof config5.concurrencyLimit === "number" ? config5.concurrencyLimit : 30;
+        this.timeoutMillis = configureExporterTimeout(config5.timeoutMillis);
+        this.onInit(config5);
       }
       __name(OTLPExporterBase2, "OTLPExporterBase");
       OTLPExporterBase2.prototype.export = function(items, resultCallback) {
@@ -1581,7 +1581,7 @@ function sendWithHttp(collector, data, contentType, onSuccess, onError) {
       nodeVersion >= 14 ? req.destroy() : req.abort();
     }
   }, exporterTimeout);
-  var options2 = {
+  var options3 = {
     hostname: parsedUrl.hostname,
     port: parsedUrl.port,
     path: parsedUrl.pathname,
@@ -1597,7 +1597,7 @@ function sendWithHttp(collector, data, contentType, onSuccess, onError) {
     if (minDelay === void 0) {
       minDelay = DEFAULT_EXPORT_INITIAL_BACKOFF;
     }
-    req = request3(options2, function(res) {
+    req = request3(options3, function(res) {
       var responseData = "";
       res.on("data", function(chunk) {
         return responseData += chunk;
@@ -1673,17 +1673,17 @@ function readableFromBuffer(buff) {
   readable.push(null);
   return readable;
 }
-function createHttpAgent(config3) {
-  if (config3.httpAgentOptions && config3.keepAlive === false) {
+function createHttpAgent(config5) {
+  if (config5.httpAgentOptions && config5.keepAlive === false) {
     import_api16.diag.warn("httpAgentOptions is used only when keepAlive is true");
     return void 0;
   }
-  if (config3.keepAlive === false || !config3.url)
+  if (config5.keepAlive === false || !config5.url)
     return void 0;
   try {
-    var parsedUrl = new url.URL(config3.url);
+    var parsedUrl = new url.URL(config5.url);
     var Agent3 = parsedUrl.protocol === "http:" ? http.Agent : https.Agent;
-    return new Agent3(__assign({ keepAlive: true }, config3.httpAgentOptions));
+    return new Agent3(__assign({ keepAlive: true }, config5.httpAgentOptions));
   } catch (err) {
     import_api16.diag.error("collector exporter failed to create http agent. err: " + err.message);
     return void 0;
@@ -1765,18 +1765,18 @@ var init_OTLPExporterNodeBase = __esm({
     OTLPExporterNodeBase = /** @class */
     function(_super) {
       __extends3(OTLPExporterNodeBase2, _super);
-      function OTLPExporterNodeBase2(config3) {
-        if (config3 === void 0) {
-          config3 = {};
+      function OTLPExporterNodeBase2(config5) {
+        if (config5 === void 0) {
+          config5 = {};
         }
-        var _this = _super.call(this, config3) || this;
+        var _this = _super.call(this, config5) || this;
         _this.DEFAULT_HEADERS = {};
-        if (config3.metadata) {
+        if (config5.metadata) {
           import_api17.diag.warn("Metadata cannot be set when using http");
         }
-        _this.headers = Object.assign(_this.DEFAULT_HEADERS, parseHeaders(config3.headers), utils_exports.parseKeyPairsIntoRecord(getEnv().OTEL_EXPORTER_OTLP_HEADERS));
-        _this.agent = createHttpAgent(config3);
-        _this.compression = configureCompression(config3.compression);
+        _this.headers = Object.assign(_this.DEFAULT_HEADERS, parseHeaders(config5.headers), utils_exports.parseKeyPairsIntoRecord(getEnv().OTEL_EXPORTER_OTLP_HEADERS));
+        _this.agent = createHttpAgent(config5);
+        _this.compression = configureCompression(config5.compression);
         return _this;
       }
       __name(OTLPExporterNodeBase2, "OTLPExporterNodeBase");
@@ -2487,7 +2487,7 @@ var require_minimal = __commonJS({
     util.isString = /* @__PURE__ */ __name(function isString(value) {
       return typeof value === "string" || value instanceof String;
     }, "isString");
-    util.isObject = /* @__PURE__ */ __name(function isObject(value) {
+    util.isObject = /* @__PURE__ */ __name(function isObject2(value) {
       return value && typeof value === "object";
     }, "isObject");
     util.isset = /**
@@ -3498,46 +3498,46 @@ var require_root = __commonJS({
                 }
                 return message;
               }, "fromObject");
-              AnyValue.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              AnyValue.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
                 if (message.stringValue != null && message.hasOwnProperty("stringValue")) {
                   object.stringValue = message.stringValue;
-                  if (options2.oneofs)
+                  if (options3.oneofs)
                     object.value = "stringValue";
                 }
                 if (message.boolValue != null && message.hasOwnProperty("boolValue")) {
                   object.boolValue = message.boolValue;
-                  if (options2.oneofs)
+                  if (options3.oneofs)
                     object.value = "boolValue";
                 }
                 if (message.intValue != null && message.hasOwnProperty("intValue")) {
                   if (typeof message.intValue === "number")
-                    object.intValue = options2.longs === String ? String(message.intValue) : message.intValue;
+                    object.intValue = options3.longs === String ? String(message.intValue) : message.intValue;
                   else
-                    object.intValue = options2.longs === String ? $util.Long.prototype.toString.call(message.intValue) : options2.longs === Number ? new $util.LongBits(message.intValue.low >>> 0, message.intValue.high >>> 0).toNumber() : message.intValue;
-                  if (options2.oneofs)
+                    object.intValue = options3.longs === String ? $util.Long.prototype.toString.call(message.intValue) : options3.longs === Number ? new $util.LongBits(message.intValue.low >>> 0, message.intValue.high >>> 0).toNumber() : message.intValue;
+                  if (options3.oneofs)
                     object.value = "intValue";
                 }
                 if (message.doubleValue != null && message.hasOwnProperty("doubleValue")) {
-                  object.doubleValue = options2.json && !isFinite(message.doubleValue) ? String(message.doubleValue) : message.doubleValue;
-                  if (options2.oneofs)
+                  object.doubleValue = options3.json && !isFinite(message.doubleValue) ? String(message.doubleValue) : message.doubleValue;
+                  if (options3.oneofs)
                     object.value = "doubleValue";
                 }
                 if (message.arrayValue != null && message.hasOwnProperty("arrayValue")) {
-                  object.arrayValue = $root.opentelemetry.proto.common.v1.ArrayValue.toObject(message.arrayValue, options2);
-                  if (options2.oneofs)
+                  object.arrayValue = $root.opentelemetry.proto.common.v1.ArrayValue.toObject(message.arrayValue, options3);
+                  if (options3.oneofs)
                     object.value = "arrayValue";
                 }
                 if (message.kvlistValue != null && message.hasOwnProperty("kvlistValue")) {
-                  object.kvlistValue = $root.opentelemetry.proto.common.v1.KeyValueList.toObject(message.kvlistValue, options2);
-                  if (options2.oneofs)
+                  object.kvlistValue = $root.opentelemetry.proto.common.v1.KeyValueList.toObject(message.kvlistValue, options3);
+                  if (options3.oneofs)
                     object.value = "kvlistValue";
                 }
                 if (message.bytesValue != null && message.hasOwnProperty("bytesValue")) {
-                  object.bytesValue = options2.bytes === String ? $util.base64.encode(message.bytesValue, 0, message.bytesValue.length) : options2.bytes === Array ? Array.prototype.slice.call(message.bytesValue) : message.bytesValue;
-                  if (options2.oneofs)
+                  object.bytesValue = options3.bytes === String ? $util.base64.encode(message.bytesValue, 0, message.bytesValue.length) : options3.bytes === Array ? Array.prototype.slice.call(message.bytesValue) : message.bytesValue;
+                  if (options3.oneofs)
                     object.value = "bytesValue";
                 }
                 return object;
@@ -3636,16 +3636,16 @@ var require_root = __commonJS({
                 }
                 return message;
               }, "fromObject");
-              ArrayValue.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              ArrayValue.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults)
+                if (options3.arrays || options3.defaults)
                   object.values = [];
                 if (message.values && message.values.length) {
                   object.values = [];
                   for (var j = 0; j < message.values.length; ++j)
-                    object.values[j] = $root.opentelemetry.proto.common.v1.AnyValue.toObject(message.values[j], options2);
+                    object.values[j] = $root.opentelemetry.proto.common.v1.AnyValue.toObject(message.values[j], options3);
                 }
                 return object;
               }, "toObject");
@@ -3743,16 +3743,16 @@ var require_root = __commonJS({
                 }
                 return message;
               }, "fromObject");
-              KeyValueList.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              KeyValueList.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults)
+                if (options3.arrays || options3.defaults)
                   object.values = [];
                 if (message.values && message.values.length) {
                   object.values = [];
                   for (var j = 0; j < message.values.length; ++j)
-                    object.values[j] = $root.opentelemetry.proto.common.v1.KeyValue.toObject(message.values[j], options2);
+                    object.values[j] = $root.opentelemetry.proto.common.v1.KeyValue.toObject(message.values[j], options3);
                 }
                 return object;
               }, "toObject");
@@ -3853,18 +3853,18 @@ var require_root = __commonJS({
                 }
                 return message;
               }, "fromObject");
-              KeyValue.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              KeyValue.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.defaults) {
+                if (options3.defaults) {
                   object.key = "";
                   object.value = null;
                 }
                 if (message.key != null && message.hasOwnProperty("key"))
                   object.key = message.key;
                 if (message.value != null && message.hasOwnProperty("value"))
-                  object.value = $root.opentelemetry.proto.common.v1.AnyValue.toObject(message.value, options2);
+                  object.value = $root.opentelemetry.proto.common.v1.AnyValue.toObject(message.value, options3);
                 return object;
               }, "toObject");
               KeyValue.prototype.toJSON = /* @__PURE__ */ __name(function toJSON() {
@@ -4009,13 +4009,13 @@ var require_root = __commonJS({
                   message.droppedAttributesCount = object.droppedAttributesCount >>> 0;
                 return message;
               }, "fromObject");
-              InstrumentationScope.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              InstrumentationScope.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults)
+                if (options3.arrays || options3.defaults)
                   object.attributes = [];
-                if (options2.defaults) {
+                if (options3.defaults) {
                   object.name = "";
                   object.version = "";
                   object.droppedAttributesCount = 0;
@@ -4027,7 +4027,7 @@ var require_root = __commonJS({
                 if (message.attributes && message.attributes.length) {
                   object.attributes = [];
                   for (var j = 0; j < message.attributes.length; ++j)
-                    object.attributes[j] = $root.opentelemetry.proto.common.v1.KeyValue.toObject(message.attributes[j], options2);
+                    object.attributes[j] = $root.opentelemetry.proto.common.v1.KeyValue.toObject(message.attributes[j], options3);
                 }
                 if (message.droppedAttributesCount != null && message.hasOwnProperty("droppedAttributesCount"))
                   object.droppedAttributesCount = message.droppedAttributesCount;
@@ -4151,18 +4151,18 @@ var require_root = __commonJS({
                   message.droppedAttributesCount = object.droppedAttributesCount >>> 0;
                 return message;
               }, "fromObject");
-              Resource2.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              Resource2.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults)
+                if (options3.arrays || options3.defaults)
                   object.attributes = [];
-                if (options2.defaults)
+                if (options3.defaults)
                   object.droppedAttributesCount = 0;
                 if (message.attributes && message.attributes.length) {
                   object.attributes = [];
                   for (var j = 0; j < message.attributes.length; ++j)
-                    object.attributes[j] = $root.opentelemetry.proto.common.v1.KeyValue.toObject(message.attributes[j], options2);
+                    object.attributes[j] = $root.opentelemetry.proto.common.v1.KeyValue.toObject(message.attributes[j], options3);
                 }
                 if (message.droppedAttributesCount != null && message.hasOwnProperty("droppedAttributesCount"))
                   object.droppedAttributesCount = message.droppedAttributesCount;
@@ -4270,16 +4270,16 @@ var require_root = __commonJS({
                 }
                 return message;
               }, "fromObject");
-              TracesData.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              TracesData.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults)
+                if (options3.arrays || options3.defaults)
                   object.resourceSpans = [];
                 if (message.resourceSpans && message.resourceSpans.length) {
                   object.resourceSpans = [];
                   for (var j = 0; j < message.resourceSpans.length; ++j)
-                    object.resourceSpans[j] = $root.opentelemetry.proto.trace.v1.ResourceSpans.toObject(message.resourceSpans[j], options2);
+                    object.resourceSpans[j] = $root.opentelemetry.proto.trace.v1.ResourceSpans.toObject(message.resourceSpans[j], options3);
                 }
                 return object;
               }, "toObject");
@@ -4413,22 +4413,22 @@ var require_root = __commonJS({
                   message.schemaUrl = String(object.schemaUrl);
                 return message;
               }, "fromObject");
-              ResourceSpans.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              ResourceSpans.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults)
+                if (options3.arrays || options3.defaults)
                   object.scopeSpans = [];
-                if (options2.defaults) {
+                if (options3.defaults) {
                   object.resource = null;
                   object.schemaUrl = "";
                 }
                 if (message.resource != null && message.hasOwnProperty("resource"))
-                  object.resource = $root.opentelemetry.proto.resource.v1.Resource.toObject(message.resource, options2);
+                  object.resource = $root.opentelemetry.proto.resource.v1.Resource.toObject(message.resource, options3);
                 if (message.scopeSpans && message.scopeSpans.length) {
                   object.scopeSpans = [];
                   for (var j = 0; j < message.scopeSpans.length; ++j)
-                    object.scopeSpans[j] = $root.opentelemetry.proto.trace.v1.ScopeSpans.toObject(message.scopeSpans[j], options2);
+                    object.scopeSpans[j] = $root.opentelemetry.proto.trace.v1.ScopeSpans.toObject(message.scopeSpans[j], options3);
                 }
                 if (message.schemaUrl != null && message.hasOwnProperty("schemaUrl"))
                   object.schemaUrl = message.schemaUrl;
@@ -4564,22 +4564,22 @@ var require_root = __commonJS({
                   message.schemaUrl = String(object.schemaUrl);
                 return message;
               }, "fromObject");
-              ScopeSpans.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              ScopeSpans.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults)
+                if (options3.arrays || options3.defaults)
                   object.spans = [];
-                if (options2.defaults) {
+                if (options3.defaults) {
                   object.scope = null;
                   object.schemaUrl = "";
                 }
                 if (message.scope != null && message.hasOwnProperty("scope"))
-                  object.scope = $root.opentelemetry.proto.common.v1.InstrumentationScope.toObject(message.scope, options2);
+                  object.scope = $root.opentelemetry.proto.common.v1.InstrumentationScope.toObject(message.scope, options3);
                 if (message.spans && message.spans.length) {
                   object.spans = [];
                   for (var j = 0; j < message.spans.length; ++j)
-                    object.spans[j] = $root.opentelemetry.proto.trace.v1.Span.toObject(message.spans[j], options2);
+                    object.spans[j] = $root.opentelemetry.proto.trace.v1.Span.toObject(message.spans[j], options3);
                 }
                 if (message.schemaUrl != null && message.hasOwnProperty("schemaUrl"))
                   object.schemaUrl = message.schemaUrl;
@@ -5007,100 +5007,100 @@ var require_root = __commonJS({
                 }
                 return message;
               }, "fromObject");
-              Span2.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              Span2.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults) {
+                if (options3.arrays || options3.defaults) {
                   object.attributes = [];
                   object.events = [];
                   object.links = [];
                 }
-                if (options2.defaults) {
-                  if (options2.bytes === String)
+                if (options3.defaults) {
+                  if (options3.bytes === String)
                     object.traceId = "";
                   else {
                     object.traceId = [];
-                    if (options2.bytes !== Array)
+                    if (options3.bytes !== Array)
                       object.traceId = $util.newBuffer(object.traceId);
                   }
-                  if (options2.bytes === String)
+                  if (options3.bytes === String)
                     object.spanId = "";
                   else {
                     object.spanId = [];
-                    if (options2.bytes !== Array)
+                    if (options3.bytes !== Array)
                       object.spanId = $util.newBuffer(object.spanId);
                   }
                   object.traceState = "";
-                  if (options2.bytes === String)
+                  if (options3.bytes === String)
                     object.parentSpanId = "";
                   else {
                     object.parentSpanId = [];
-                    if (options2.bytes !== Array)
+                    if (options3.bytes !== Array)
                       object.parentSpanId = $util.newBuffer(object.parentSpanId);
                   }
                   object.name = "";
-                  object.kind = options2.enums === String ? "SPAN_KIND_UNSPECIFIED" : 0;
+                  object.kind = options3.enums === String ? "SPAN_KIND_UNSPECIFIED" : 0;
                   if ($util.Long) {
                     var long = new $util.Long(0, 0, false);
-                    object.startTimeUnixNano = options2.longs === String ? long.toString() : options2.longs === Number ? long.toNumber() : long;
+                    object.startTimeUnixNano = options3.longs === String ? long.toString() : options3.longs === Number ? long.toNumber() : long;
                   } else
-                    object.startTimeUnixNano = options2.longs === String ? "0" : 0;
+                    object.startTimeUnixNano = options3.longs === String ? "0" : 0;
                   if ($util.Long) {
                     var long = new $util.Long(0, 0, false);
-                    object.endTimeUnixNano = options2.longs === String ? long.toString() : options2.longs === Number ? long.toNumber() : long;
+                    object.endTimeUnixNano = options3.longs === String ? long.toString() : options3.longs === Number ? long.toNumber() : long;
                   } else
-                    object.endTimeUnixNano = options2.longs === String ? "0" : 0;
+                    object.endTimeUnixNano = options3.longs === String ? "0" : 0;
                   object.droppedAttributesCount = 0;
                   object.droppedEventsCount = 0;
                   object.droppedLinksCount = 0;
                   object.status = null;
                 }
                 if (message.traceId != null && message.hasOwnProperty("traceId"))
-                  object.traceId = options2.bytes === String ? $util.base64.encode(message.traceId, 0, message.traceId.length) : options2.bytes === Array ? Array.prototype.slice.call(message.traceId) : message.traceId;
+                  object.traceId = options3.bytes === String ? $util.base64.encode(message.traceId, 0, message.traceId.length) : options3.bytes === Array ? Array.prototype.slice.call(message.traceId) : message.traceId;
                 if (message.spanId != null && message.hasOwnProperty("spanId"))
-                  object.spanId = options2.bytes === String ? $util.base64.encode(message.spanId, 0, message.spanId.length) : options2.bytes === Array ? Array.prototype.slice.call(message.spanId) : message.spanId;
+                  object.spanId = options3.bytes === String ? $util.base64.encode(message.spanId, 0, message.spanId.length) : options3.bytes === Array ? Array.prototype.slice.call(message.spanId) : message.spanId;
                 if (message.traceState != null && message.hasOwnProperty("traceState"))
                   object.traceState = message.traceState;
                 if (message.parentSpanId != null && message.hasOwnProperty("parentSpanId"))
-                  object.parentSpanId = options2.bytes === String ? $util.base64.encode(message.parentSpanId, 0, message.parentSpanId.length) : options2.bytes === Array ? Array.prototype.slice.call(message.parentSpanId) : message.parentSpanId;
+                  object.parentSpanId = options3.bytes === String ? $util.base64.encode(message.parentSpanId, 0, message.parentSpanId.length) : options3.bytes === Array ? Array.prototype.slice.call(message.parentSpanId) : message.parentSpanId;
                 if (message.name != null && message.hasOwnProperty("name"))
                   object.name = message.name;
                 if (message.kind != null && message.hasOwnProperty("kind"))
-                  object.kind = options2.enums === String ? $root.opentelemetry.proto.trace.v1.Span.SpanKind[message.kind] === void 0 ? message.kind : $root.opentelemetry.proto.trace.v1.Span.SpanKind[message.kind] : message.kind;
+                  object.kind = options3.enums === String ? $root.opentelemetry.proto.trace.v1.Span.SpanKind[message.kind] === void 0 ? message.kind : $root.opentelemetry.proto.trace.v1.Span.SpanKind[message.kind] : message.kind;
                 if (message.startTimeUnixNano != null && message.hasOwnProperty("startTimeUnixNano"))
                   if (typeof message.startTimeUnixNano === "number")
-                    object.startTimeUnixNano = options2.longs === String ? String(message.startTimeUnixNano) : message.startTimeUnixNano;
+                    object.startTimeUnixNano = options3.longs === String ? String(message.startTimeUnixNano) : message.startTimeUnixNano;
                   else
-                    object.startTimeUnixNano = options2.longs === String ? $util.Long.prototype.toString.call(message.startTimeUnixNano) : options2.longs === Number ? new $util.LongBits(message.startTimeUnixNano.low >>> 0, message.startTimeUnixNano.high >>> 0).toNumber() : message.startTimeUnixNano;
+                    object.startTimeUnixNano = options3.longs === String ? $util.Long.prototype.toString.call(message.startTimeUnixNano) : options3.longs === Number ? new $util.LongBits(message.startTimeUnixNano.low >>> 0, message.startTimeUnixNano.high >>> 0).toNumber() : message.startTimeUnixNano;
                 if (message.endTimeUnixNano != null && message.hasOwnProperty("endTimeUnixNano"))
                   if (typeof message.endTimeUnixNano === "number")
-                    object.endTimeUnixNano = options2.longs === String ? String(message.endTimeUnixNano) : message.endTimeUnixNano;
+                    object.endTimeUnixNano = options3.longs === String ? String(message.endTimeUnixNano) : message.endTimeUnixNano;
                   else
-                    object.endTimeUnixNano = options2.longs === String ? $util.Long.prototype.toString.call(message.endTimeUnixNano) : options2.longs === Number ? new $util.LongBits(message.endTimeUnixNano.low >>> 0, message.endTimeUnixNano.high >>> 0).toNumber() : message.endTimeUnixNano;
+                    object.endTimeUnixNano = options3.longs === String ? $util.Long.prototype.toString.call(message.endTimeUnixNano) : options3.longs === Number ? new $util.LongBits(message.endTimeUnixNano.low >>> 0, message.endTimeUnixNano.high >>> 0).toNumber() : message.endTimeUnixNano;
                 if (message.attributes && message.attributes.length) {
                   object.attributes = [];
                   for (var j = 0; j < message.attributes.length; ++j)
-                    object.attributes[j] = $root.opentelemetry.proto.common.v1.KeyValue.toObject(message.attributes[j], options2);
+                    object.attributes[j] = $root.opentelemetry.proto.common.v1.KeyValue.toObject(message.attributes[j], options3);
                 }
                 if (message.droppedAttributesCount != null && message.hasOwnProperty("droppedAttributesCount"))
                   object.droppedAttributesCount = message.droppedAttributesCount;
                 if (message.events && message.events.length) {
                   object.events = [];
                   for (var j = 0; j < message.events.length; ++j)
-                    object.events[j] = $root.opentelemetry.proto.trace.v1.Span.Event.toObject(message.events[j], options2);
+                    object.events[j] = $root.opentelemetry.proto.trace.v1.Span.Event.toObject(message.events[j], options3);
                 }
                 if (message.droppedEventsCount != null && message.hasOwnProperty("droppedEventsCount"))
                   object.droppedEventsCount = message.droppedEventsCount;
                 if (message.links && message.links.length) {
                   object.links = [];
                   for (var j = 0; j < message.links.length; ++j)
-                    object.links[j] = $root.opentelemetry.proto.trace.v1.Span.Link.toObject(message.links[j], options2);
+                    object.links[j] = $root.opentelemetry.proto.trace.v1.Span.Link.toObject(message.links[j], options3);
                 }
                 if (message.droppedLinksCount != null && message.hasOwnProperty("droppedLinksCount"))
                   object.droppedLinksCount = message.droppedLinksCount;
                 if (message.status != null && message.hasOwnProperty("status"))
-                  object.status = $root.opentelemetry.proto.trace.v1.Status.toObject(message.status, options2);
+                  object.status = $root.opentelemetry.proto.trace.v1.Status.toObject(message.status, options3);
                 return object;
               }, "toObject");
               Span2.prototype.toJSON = /* @__PURE__ */ __name(function toJSON() {
@@ -5261,32 +5261,32 @@ var require_root = __commonJS({
                     message.droppedAttributesCount = object.droppedAttributesCount >>> 0;
                   return message;
                 }, "fromObject");
-                Event.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                  if (!options2)
-                    options2 = {};
+                Event.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                  if (!options3)
+                    options3 = {};
                   var object = {};
-                  if (options2.arrays || options2.defaults)
+                  if (options3.arrays || options3.defaults)
                     object.attributes = [];
-                  if (options2.defaults) {
+                  if (options3.defaults) {
                     if ($util.Long) {
                       var long = new $util.Long(0, 0, false);
-                      object.timeUnixNano = options2.longs === String ? long.toString() : options2.longs === Number ? long.toNumber() : long;
+                      object.timeUnixNano = options3.longs === String ? long.toString() : options3.longs === Number ? long.toNumber() : long;
                     } else
-                      object.timeUnixNano = options2.longs === String ? "0" : 0;
+                      object.timeUnixNano = options3.longs === String ? "0" : 0;
                     object.name = "";
                     object.droppedAttributesCount = 0;
                   }
                   if (message.timeUnixNano != null && message.hasOwnProperty("timeUnixNano"))
                     if (typeof message.timeUnixNano === "number")
-                      object.timeUnixNano = options2.longs === String ? String(message.timeUnixNano) : message.timeUnixNano;
+                      object.timeUnixNano = options3.longs === String ? String(message.timeUnixNano) : message.timeUnixNano;
                     else
-                      object.timeUnixNano = options2.longs === String ? $util.Long.prototype.toString.call(message.timeUnixNano) : options2.longs === Number ? new $util.LongBits(message.timeUnixNano.low >>> 0, message.timeUnixNano.high >>> 0).toNumber() : message.timeUnixNano;
+                      object.timeUnixNano = options3.longs === String ? $util.Long.prototype.toString.call(message.timeUnixNano) : options3.longs === Number ? new $util.LongBits(message.timeUnixNano.low >>> 0, message.timeUnixNano.high >>> 0).toNumber() : message.timeUnixNano;
                   if (message.name != null && message.hasOwnProperty("name"))
                     object.name = message.name;
                   if (message.attributes && message.attributes.length) {
                     object.attributes = [];
                     for (var j = 0; j < message.attributes.length; ++j)
-                      object.attributes[j] = $root.opentelemetry.proto.common.v1.KeyValue.toObject(message.attributes[j], options2);
+                      object.attributes[j] = $root.opentelemetry.proto.common.v1.KeyValue.toObject(message.attributes[j], options3);
                   }
                   if (message.droppedAttributesCount != null && message.hasOwnProperty("droppedAttributesCount"))
                     object.droppedAttributesCount = message.droppedAttributesCount;
@@ -5458,40 +5458,40 @@ var require_root = __commonJS({
                     message.droppedAttributesCount = object.droppedAttributesCount >>> 0;
                   return message;
                 }, "fromObject");
-                Link.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                  if (!options2)
-                    options2 = {};
+                Link.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                  if (!options3)
+                    options3 = {};
                   var object = {};
-                  if (options2.arrays || options2.defaults)
+                  if (options3.arrays || options3.defaults)
                     object.attributes = [];
-                  if (options2.defaults) {
-                    if (options2.bytes === String)
+                  if (options3.defaults) {
+                    if (options3.bytes === String)
                       object.traceId = "";
                     else {
                       object.traceId = [];
-                      if (options2.bytes !== Array)
+                      if (options3.bytes !== Array)
                         object.traceId = $util.newBuffer(object.traceId);
                     }
-                    if (options2.bytes === String)
+                    if (options3.bytes === String)
                       object.spanId = "";
                     else {
                       object.spanId = [];
-                      if (options2.bytes !== Array)
+                      if (options3.bytes !== Array)
                         object.spanId = $util.newBuffer(object.spanId);
                     }
                     object.traceState = "";
                     object.droppedAttributesCount = 0;
                   }
                   if (message.traceId != null && message.hasOwnProperty("traceId"))
-                    object.traceId = options2.bytes === String ? $util.base64.encode(message.traceId, 0, message.traceId.length) : options2.bytes === Array ? Array.prototype.slice.call(message.traceId) : message.traceId;
+                    object.traceId = options3.bytes === String ? $util.base64.encode(message.traceId, 0, message.traceId.length) : options3.bytes === Array ? Array.prototype.slice.call(message.traceId) : message.traceId;
                   if (message.spanId != null && message.hasOwnProperty("spanId"))
-                    object.spanId = options2.bytes === String ? $util.base64.encode(message.spanId, 0, message.spanId.length) : options2.bytes === Array ? Array.prototype.slice.call(message.spanId) : message.spanId;
+                    object.spanId = options3.bytes === String ? $util.base64.encode(message.spanId, 0, message.spanId.length) : options3.bytes === Array ? Array.prototype.slice.call(message.spanId) : message.spanId;
                   if (message.traceState != null && message.hasOwnProperty("traceState"))
                     object.traceState = message.traceState;
                   if (message.attributes && message.attributes.length) {
                     object.attributes = [];
                     for (var j = 0; j < message.attributes.length; ++j)
-                      object.attributes[j] = $root.opentelemetry.proto.common.v1.KeyValue.toObject(message.attributes[j], options2);
+                      object.attributes[j] = $root.opentelemetry.proto.common.v1.KeyValue.toObject(message.attributes[j], options3);
                   }
                   if (message.droppedAttributesCount != null && message.hasOwnProperty("droppedAttributesCount"))
                     object.droppedAttributesCount = message.droppedAttributesCount;
@@ -5615,18 +5615,18 @@ var require_root = __commonJS({
                 }
                 return message;
               }, "fromObject");
-              Status.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              Status.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.defaults) {
+                if (options3.defaults) {
                   object.message = "";
-                  object.code = options2.enums === String ? "STATUS_CODE_UNSET" : 0;
+                  object.code = options3.enums === String ? "STATUS_CODE_UNSET" : 0;
                 }
                 if (message.message != null && message.hasOwnProperty("message"))
                   object.message = message.message;
                 if (message.code != null && message.hasOwnProperty("code"))
-                  object.code = options2.enums === String ? $root.opentelemetry.proto.trace.v1.Status.StatusCode[message.code] === void 0 ? message.code : $root.opentelemetry.proto.trace.v1.Status.StatusCode[message.code] : message.code;
+                  object.code = options3.enums === String ? $root.opentelemetry.proto.trace.v1.Status.StatusCode[message.code] === void 0 ? message.code : $root.opentelemetry.proto.trace.v1.Status.StatusCode[message.code] : message.code;
                 return object;
               }, "toObject");
               Status.prototype.toJSON = /* @__PURE__ */ __name(function toJSON() {
@@ -5754,16 +5754,16 @@ var require_root = __commonJS({
                   }
                   return message;
                 }, "fromObject");
-                ExportTraceServiceRequest.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                  if (!options2)
-                    options2 = {};
+                ExportTraceServiceRequest.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                  if (!options3)
+                    options3 = {};
                   var object = {};
-                  if (options2.arrays || options2.defaults)
+                  if (options3.arrays || options3.defaults)
                     object.resourceSpans = [];
                   if (message.resourceSpans && message.resourceSpans.length) {
                     object.resourceSpans = [];
                     for (var j = 0; j < message.resourceSpans.length; ++j)
-                      object.resourceSpans[j] = $root.opentelemetry.proto.trace.v1.ResourceSpans.toObject(message.resourceSpans[j], options2);
+                      object.resourceSpans[j] = $root.opentelemetry.proto.trace.v1.ResourceSpans.toObject(message.resourceSpans[j], options3);
                   }
                   return object;
                 }, "toObject");
@@ -5848,14 +5848,14 @@ var require_root = __commonJS({
                   }
                   return message;
                 }, "fromObject");
-                ExportTraceServiceResponse.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                  if (!options2)
-                    options2 = {};
+                ExportTraceServiceResponse.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                  if (!options3)
+                    options3 = {};
                   var object = {};
-                  if (options2.defaults)
+                  if (options3.defaults)
                     object.partialSuccess = null;
                   if (message.partialSuccess != null && message.hasOwnProperty("partialSuccess"))
-                    object.partialSuccess = $root.opentelemetry.proto.collector.trace.v1.ExportTracePartialSuccess.toObject(message.partialSuccess, options2);
+                    object.partialSuccess = $root.opentelemetry.proto.collector.trace.v1.ExportTracePartialSuccess.toObject(message.partialSuccess, options3);
                   return object;
                 }, "toObject");
                 ExportTraceServiceResponse.prototype.toJSON = /* @__PURE__ */ __name(function toJSON() {
@@ -5959,23 +5959,23 @@ var require_root = __commonJS({
                     message.errorMessage = String(object.errorMessage);
                   return message;
                 }, "fromObject");
-                ExportTracePartialSuccess.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                  if (!options2)
-                    options2 = {};
+                ExportTracePartialSuccess.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                  if (!options3)
+                    options3 = {};
                   var object = {};
-                  if (options2.defaults) {
+                  if (options3.defaults) {
                     if ($util.Long) {
                       var long = new $util.Long(0, 0, false);
-                      object.rejectedSpans = options2.longs === String ? long.toString() : options2.longs === Number ? long.toNumber() : long;
+                      object.rejectedSpans = options3.longs === String ? long.toString() : options3.longs === Number ? long.toNumber() : long;
                     } else
-                      object.rejectedSpans = options2.longs === String ? "0" : 0;
+                      object.rejectedSpans = options3.longs === String ? "0" : 0;
                     object.errorMessage = "";
                   }
                   if (message.rejectedSpans != null && message.hasOwnProperty("rejectedSpans"))
                     if (typeof message.rejectedSpans === "number")
-                      object.rejectedSpans = options2.longs === String ? String(message.rejectedSpans) : message.rejectedSpans;
+                      object.rejectedSpans = options3.longs === String ? String(message.rejectedSpans) : message.rejectedSpans;
                     else
-                      object.rejectedSpans = options2.longs === String ? $util.Long.prototype.toString.call(message.rejectedSpans) : options2.longs === Number ? new $util.LongBits(message.rejectedSpans.low >>> 0, message.rejectedSpans.high >>> 0).toNumber() : message.rejectedSpans;
+                      object.rejectedSpans = options3.longs === String ? $util.Long.prototype.toString.call(message.rejectedSpans) : options3.longs === Number ? new $util.LongBits(message.rejectedSpans.low >>> 0, message.rejectedSpans.high >>> 0).toNumber() : message.rejectedSpans;
                   if (message.errorMessage != null && message.hasOwnProperty("errorMessage"))
                     object.errorMessage = message.errorMessage;
                   return object;
@@ -6096,16 +6096,16 @@ var require_root = __commonJS({
                   }
                   return message;
                 }, "fromObject");
-                ExportMetricsServiceRequest.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                  if (!options2)
-                    options2 = {};
+                ExportMetricsServiceRequest.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                  if (!options3)
+                    options3 = {};
                   var object = {};
-                  if (options2.arrays || options2.defaults)
+                  if (options3.arrays || options3.defaults)
                     object.resourceMetrics = [];
                   if (message.resourceMetrics && message.resourceMetrics.length) {
                     object.resourceMetrics = [];
                     for (var j = 0; j < message.resourceMetrics.length; ++j)
-                      object.resourceMetrics[j] = $root.opentelemetry.proto.metrics.v1.ResourceMetrics.toObject(message.resourceMetrics[j], options2);
+                      object.resourceMetrics[j] = $root.opentelemetry.proto.metrics.v1.ResourceMetrics.toObject(message.resourceMetrics[j], options3);
                   }
                   return object;
                 }, "toObject");
@@ -6190,14 +6190,14 @@ var require_root = __commonJS({
                   }
                   return message;
                 }, "fromObject");
-                ExportMetricsServiceResponse.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                  if (!options2)
-                    options2 = {};
+                ExportMetricsServiceResponse.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                  if (!options3)
+                    options3 = {};
                   var object = {};
-                  if (options2.defaults)
+                  if (options3.defaults)
                     object.partialSuccess = null;
                   if (message.partialSuccess != null && message.hasOwnProperty("partialSuccess"))
-                    object.partialSuccess = $root.opentelemetry.proto.collector.metrics.v1.ExportMetricsPartialSuccess.toObject(message.partialSuccess, options2);
+                    object.partialSuccess = $root.opentelemetry.proto.collector.metrics.v1.ExportMetricsPartialSuccess.toObject(message.partialSuccess, options3);
                   return object;
                 }, "toObject");
                 ExportMetricsServiceResponse.prototype.toJSON = /* @__PURE__ */ __name(function toJSON() {
@@ -6301,23 +6301,23 @@ var require_root = __commonJS({
                     message.errorMessage = String(object.errorMessage);
                   return message;
                 }, "fromObject");
-                ExportMetricsPartialSuccess.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                  if (!options2)
-                    options2 = {};
+                ExportMetricsPartialSuccess.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                  if (!options3)
+                    options3 = {};
                   var object = {};
-                  if (options2.defaults) {
+                  if (options3.defaults) {
                     if ($util.Long) {
                       var long = new $util.Long(0, 0, false);
-                      object.rejectedDataPoints = options2.longs === String ? long.toString() : options2.longs === Number ? long.toNumber() : long;
+                      object.rejectedDataPoints = options3.longs === String ? long.toString() : options3.longs === Number ? long.toNumber() : long;
                     } else
-                      object.rejectedDataPoints = options2.longs === String ? "0" : 0;
+                      object.rejectedDataPoints = options3.longs === String ? "0" : 0;
                     object.errorMessage = "";
                   }
                   if (message.rejectedDataPoints != null && message.hasOwnProperty("rejectedDataPoints"))
                     if (typeof message.rejectedDataPoints === "number")
-                      object.rejectedDataPoints = options2.longs === String ? String(message.rejectedDataPoints) : message.rejectedDataPoints;
+                      object.rejectedDataPoints = options3.longs === String ? String(message.rejectedDataPoints) : message.rejectedDataPoints;
                     else
-                      object.rejectedDataPoints = options2.longs === String ? $util.Long.prototype.toString.call(message.rejectedDataPoints) : options2.longs === Number ? new $util.LongBits(message.rejectedDataPoints.low >>> 0, message.rejectedDataPoints.high >>> 0).toNumber() : message.rejectedDataPoints;
+                      object.rejectedDataPoints = options3.longs === String ? $util.Long.prototype.toString.call(message.rejectedDataPoints) : options3.longs === Number ? new $util.LongBits(message.rejectedDataPoints.low >>> 0, message.rejectedDataPoints.high >>> 0).toNumber() : message.rejectedDataPoints;
                   if (message.errorMessage != null && message.hasOwnProperty("errorMessage"))
                     object.errorMessage = message.errorMessage;
                   return object;
@@ -6438,16 +6438,16 @@ var require_root = __commonJS({
                   }
                   return message;
                 }, "fromObject");
-                ExportLogsServiceRequest.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                  if (!options2)
-                    options2 = {};
+                ExportLogsServiceRequest.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                  if (!options3)
+                    options3 = {};
                   var object = {};
-                  if (options2.arrays || options2.defaults)
+                  if (options3.arrays || options3.defaults)
                     object.resourceLogs = [];
                   if (message.resourceLogs && message.resourceLogs.length) {
                     object.resourceLogs = [];
                     for (var j = 0; j < message.resourceLogs.length; ++j)
-                      object.resourceLogs[j] = $root.opentelemetry.proto.logs.v1.ResourceLogs.toObject(message.resourceLogs[j], options2);
+                      object.resourceLogs[j] = $root.opentelemetry.proto.logs.v1.ResourceLogs.toObject(message.resourceLogs[j], options3);
                   }
                   return object;
                 }, "toObject");
@@ -6532,14 +6532,14 @@ var require_root = __commonJS({
                   }
                   return message;
                 }, "fromObject");
-                ExportLogsServiceResponse.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                  if (!options2)
-                    options2 = {};
+                ExportLogsServiceResponse.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                  if (!options3)
+                    options3 = {};
                   var object = {};
-                  if (options2.defaults)
+                  if (options3.defaults)
                     object.partialSuccess = null;
                   if (message.partialSuccess != null && message.hasOwnProperty("partialSuccess"))
-                    object.partialSuccess = $root.opentelemetry.proto.collector.logs.v1.ExportLogsPartialSuccess.toObject(message.partialSuccess, options2);
+                    object.partialSuccess = $root.opentelemetry.proto.collector.logs.v1.ExportLogsPartialSuccess.toObject(message.partialSuccess, options3);
                   return object;
                 }, "toObject");
                 ExportLogsServiceResponse.prototype.toJSON = /* @__PURE__ */ __name(function toJSON() {
@@ -6643,23 +6643,23 @@ var require_root = __commonJS({
                     message.errorMessage = String(object.errorMessage);
                   return message;
                 }, "fromObject");
-                ExportLogsPartialSuccess.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                  if (!options2)
-                    options2 = {};
+                ExportLogsPartialSuccess.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                  if (!options3)
+                    options3 = {};
                   var object = {};
-                  if (options2.defaults) {
+                  if (options3.defaults) {
                     if ($util.Long) {
                       var long = new $util.Long(0, 0, false);
-                      object.rejectedLogRecords = options2.longs === String ? long.toString() : options2.longs === Number ? long.toNumber() : long;
+                      object.rejectedLogRecords = options3.longs === String ? long.toString() : options3.longs === Number ? long.toNumber() : long;
                     } else
-                      object.rejectedLogRecords = options2.longs === String ? "0" : 0;
+                      object.rejectedLogRecords = options3.longs === String ? "0" : 0;
                     object.errorMessage = "";
                   }
                   if (message.rejectedLogRecords != null && message.hasOwnProperty("rejectedLogRecords"))
                     if (typeof message.rejectedLogRecords === "number")
-                      object.rejectedLogRecords = options2.longs === String ? String(message.rejectedLogRecords) : message.rejectedLogRecords;
+                      object.rejectedLogRecords = options3.longs === String ? String(message.rejectedLogRecords) : message.rejectedLogRecords;
                     else
-                      object.rejectedLogRecords = options2.longs === String ? $util.Long.prototype.toString.call(message.rejectedLogRecords) : options2.longs === Number ? new $util.LongBits(message.rejectedLogRecords.low >>> 0, message.rejectedLogRecords.high >>> 0).toNumber() : message.rejectedLogRecords;
+                      object.rejectedLogRecords = options3.longs === String ? $util.Long.prototype.toString.call(message.rejectedLogRecords) : options3.longs === Number ? new $util.LongBits(message.rejectedLogRecords.low >>> 0, message.rejectedLogRecords.high >>> 0).toNumber() : message.rejectedLogRecords;
                   if (message.errorMessage != null && message.hasOwnProperty("errorMessage"))
                     object.errorMessage = message.errorMessage;
                   return object;
@@ -6768,16 +6768,16 @@ var require_root = __commonJS({
                 }
                 return message;
               }, "fromObject");
-              MetricsData.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              MetricsData.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults)
+                if (options3.arrays || options3.defaults)
                   object.resourceMetrics = [];
                 if (message.resourceMetrics && message.resourceMetrics.length) {
                   object.resourceMetrics = [];
                   for (var j = 0; j < message.resourceMetrics.length; ++j)
-                    object.resourceMetrics[j] = $root.opentelemetry.proto.metrics.v1.ResourceMetrics.toObject(message.resourceMetrics[j], options2);
+                    object.resourceMetrics[j] = $root.opentelemetry.proto.metrics.v1.ResourceMetrics.toObject(message.resourceMetrics[j], options3);
                 }
                 return object;
               }, "toObject");
@@ -6911,22 +6911,22 @@ var require_root = __commonJS({
                   message.schemaUrl = String(object.schemaUrl);
                 return message;
               }, "fromObject");
-              ResourceMetrics.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              ResourceMetrics.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults)
+                if (options3.arrays || options3.defaults)
                   object.scopeMetrics = [];
-                if (options2.defaults) {
+                if (options3.defaults) {
                   object.resource = null;
                   object.schemaUrl = "";
                 }
                 if (message.resource != null && message.hasOwnProperty("resource"))
-                  object.resource = $root.opentelemetry.proto.resource.v1.Resource.toObject(message.resource, options2);
+                  object.resource = $root.opentelemetry.proto.resource.v1.Resource.toObject(message.resource, options3);
                 if (message.scopeMetrics && message.scopeMetrics.length) {
                   object.scopeMetrics = [];
                   for (var j = 0; j < message.scopeMetrics.length; ++j)
-                    object.scopeMetrics[j] = $root.opentelemetry.proto.metrics.v1.ScopeMetrics.toObject(message.scopeMetrics[j], options2);
+                    object.scopeMetrics[j] = $root.opentelemetry.proto.metrics.v1.ScopeMetrics.toObject(message.scopeMetrics[j], options3);
                 }
                 if (message.schemaUrl != null && message.hasOwnProperty("schemaUrl"))
                   object.schemaUrl = message.schemaUrl;
@@ -7062,22 +7062,22 @@ var require_root = __commonJS({
                   message.schemaUrl = String(object.schemaUrl);
                 return message;
               }, "fromObject");
-              ScopeMetrics.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              ScopeMetrics.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults)
+                if (options3.arrays || options3.defaults)
                   object.metrics = [];
-                if (options2.defaults) {
+                if (options3.defaults) {
                   object.scope = null;
                   object.schemaUrl = "";
                 }
                 if (message.scope != null && message.hasOwnProperty("scope"))
-                  object.scope = $root.opentelemetry.proto.common.v1.InstrumentationScope.toObject(message.scope, options2);
+                  object.scope = $root.opentelemetry.proto.common.v1.InstrumentationScope.toObject(message.scope, options3);
                 if (message.metrics && message.metrics.length) {
                   object.metrics = [];
                   for (var j = 0; j < message.metrics.length; ++j)
-                    object.metrics[j] = $root.opentelemetry.proto.metrics.v1.Metric.toObject(message.metrics[j], options2);
+                    object.metrics[j] = $root.opentelemetry.proto.metrics.v1.Metric.toObject(message.metrics[j], options3);
                 }
                 if (message.schemaUrl != null && message.hasOwnProperty("schemaUrl"))
                   object.schemaUrl = message.schemaUrl;
@@ -7321,11 +7321,11 @@ var require_root = __commonJS({
                 }
                 return message;
               }, "fromObject");
-              Metric.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              Metric.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.defaults) {
+                if (options3.defaults) {
                   object.name = "";
                   object.description = "";
                   object.unit = "";
@@ -7337,28 +7337,28 @@ var require_root = __commonJS({
                 if (message.unit != null && message.hasOwnProperty("unit"))
                   object.unit = message.unit;
                 if (message.gauge != null && message.hasOwnProperty("gauge")) {
-                  object.gauge = $root.opentelemetry.proto.metrics.v1.Gauge.toObject(message.gauge, options2);
-                  if (options2.oneofs)
+                  object.gauge = $root.opentelemetry.proto.metrics.v1.Gauge.toObject(message.gauge, options3);
+                  if (options3.oneofs)
                     object.data = "gauge";
                 }
                 if (message.sum != null && message.hasOwnProperty("sum")) {
-                  object.sum = $root.opentelemetry.proto.metrics.v1.Sum.toObject(message.sum, options2);
-                  if (options2.oneofs)
+                  object.sum = $root.opentelemetry.proto.metrics.v1.Sum.toObject(message.sum, options3);
+                  if (options3.oneofs)
                     object.data = "sum";
                 }
                 if (message.histogram != null && message.hasOwnProperty("histogram")) {
-                  object.histogram = $root.opentelemetry.proto.metrics.v1.Histogram.toObject(message.histogram, options2);
-                  if (options2.oneofs)
+                  object.histogram = $root.opentelemetry.proto.metrics.v1.Histogram.toObject(message.histogram, options3);
+                  if (options3.oneofs)
                     object.data = "histogram";
                 }
                 if (message.exponentialHistogram != null && message.hasOwnProperty("exponentialHistogram")) {
-                  object.exponentialHistogram = $root.opentelemetry.proto.metrics.v1.ExponentialHistogram.toObject(message.exponentialHistogram, options2);
-                  if (options2.oneofs)
+                  object.exponentialHistogram = $root.opentelemetry.proto.metrics.v1.ExponentialHistogram.toObject(message.exponentialHistogram, options3);
+                  if (options3.oneofs)
                     object.data = "exponentialHistogram";
                 }
                 if (message.summary != null && message.hasOwnProperty("summary")) {
-                  object.summary = $root.opentelemetry.proto.metrics.v1.Summary.toObject(message.summary, options2);
-                  if (options2.oneofs)
+                  object.summary = $root.opentelemetry.proto.metrics.v1.Summary.toObject(message.summary, options3);
+                  if (options3.oneofs)
                     object.data = "summary";
                 }
                 return object;
@@ -7457,16 +7457,16 @@ var require_root = __commonJS({
                 }
                 return message;
               }, "fromObject");
-              Gauge.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              Gauge.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults)
+                if (options3.arrays || options3.defaults)
                   object.dataPoints = [];
                 if (message.dataPoints && message.dataPoints.length) {
                   object.dataPoints = [];
                   for (var j = 0; j < message.dataPoints.length; ++j)
-                    object.dataPoints[j] = $root.opentelemetry.proto.metrics.v1.NumberDataPoint.toObject(message.dataPoints[j], options2);
+                    object.dataPoints[j] = $root.opentelemetry.proto.metrics.v1.NumberDataPoint.toObject(message.dataPoints[j], options3);
                 }
                 return object;
               }, "toObject");
@@ -7619,23 +7619,23 @@ var require_root = __commonJS({
                   message.isMonotonic = Boolean(object.isMonotonic);
                 return message;
               }, "fromObject");
-              Sum.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              Sum.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults)
+                if (options3.arrays || options3.defaults)
                   object.dataPoints = [];
-                if (options2.defaults) {
-                  object.aggregationTemporality = options2.enums === String ? "AGGREGATION_TEMPORALITY_UNSPECIFIED" : 0;
+                if (options3.defaults) {
+                  object.aggregationTemporality = options3.enums === String ? "AGGREGATION_TEMPORALITY_UNSPECIFIED" : 0;
                   object.isMonotonic = false;
                 }
                 if (message.dataPoints && message.dataPoints.length) {
                   object.dataPoints = [];
                   for (var j = 0; j < message.dataPoints.length; ++j)
-                    object.dataPoints[j] = $root.opentelemetry.proto.metrics.v1.NumberDataPoint.toObject(message.dataPoints[j], options2);
+                    object.dataPoints[j] = $root.opentelemetry.proto.metrics.v1.NumberDataPoint.toObject(message.dataPoints[j], options3);
                 }
                 if (message.aggregationTemporality != null && message.hasOwnProperty("aggregationTemporality"))
-                  object.aggregationTemporality = options2.enums === String ? $root.opentelemetry.proto.metrics.v1.AggregationTemporality[message.aggregationTemporality] === void 0 ? message.aggregationTemporality : $root.opentelemetry.proto.metrics.v1.AggregationTemporality[message.aggregationTemporality] : message.aggregationTemporality;
+                  object.aggregationTemporality = options3.enums === String ? $root.opentelemetry.proto.metrics.v1.AggregationTemporality[message.aggregationTemporality] === void 0 ? message.aggregationTemporality : $root.opentelemetry.proto.metrics.v1.AggregationTemporality[message.aggregationTemporality] : message.aggregationTemporality;
                 if (message.isMonotonic != null && message.hasOwnProperty("isMonotonic"))
                   object.isMonotonic = message.isMonotonic;
                 return object;
@@ -7773,21 +7773,21 @@ var require_root = __commonJS({
                 }
                 return message;
               }, "fromObject");
-              Histogram.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              Histogram.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults)
+                if (options3.arrays || options3.defaults)
                   object.dataPoints = [];
-                if (options2.defaults)
-                  object.aggregationTemporality = options2.enums === String ? "AGGREGATION_TEMPORALITY_UNSPECIFIED" : 0;
+                if (options3.defaults)
+                  object.aggregationTemporality = options3.enums === String ? "AGGREGATION_TEMPORALITY_UNSPECIFIED" : 0;
                 if (message.dataPoints && message.dataPoints.length) {
                   object.dataPoints = [];
                   for (var j = 0; j < message.dataPoints.length; ++j)
-                    object.dataPoints[j] = $root.opentelemetry.proto.metrics.v1.HistogramDataPoint.toObject(message.dataPoints[j], options2);
+                    object.dataPoints[j] = $root.opentelemetry.proto.metrics.v1.HistogramDataPoint.toObject(message.dataPoints[j], options3);
                 }
                 if (message.aggregationTemporality != null && message.hasOwnProperty("aggregationTemporality"))
-                  object.aggregationTemporality = options2.enums === String ? $root.opentelemetry.proto.metrics.v1.AggregationTemporality[message.aggregationTemporality] === void 0 ? message.aggregationTemporality : $root.opentelemetry.proto.metrics.v1.AggregationTemporality[message.aggregationTemporality] : message.aggregationTemporality;
+                  object.aggregationTemporality = options3.enums === String ? $root.opentelemetry.proto.metrics.v1.AggregationTemporality[message.aggregationTemporality] === void 0 ? message.aggregationTemporality : $root.opentelemetry.proto.metrics.v1.AggregationTemporality[message.aggregationTemporality] : message.aggregationTemporality;
                 return object;
               }, "toObject");
               Histogram.prototype.toJSON = /* @__PURE__ */ __name(function toJSON() {
@@ -7923,21 +7923,21 @@ var require_root = __commonJS({
                 }
                 return message;
               }, "fromObject");
-              ExponentialHistogram.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              ExponentialHistogram.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults)
+                if (options3.arrays || options3.defaults)
                   object.dataPoints = [];
-                if (options2.defaults)
-                  object.aggregationTemporality = options2.enums === String ? "AGGREGATION_TEMPORALITY_UNSPECIFIED" : 0;
+                if (options3.defaults)
+                  object.aggregationTemporality = options3.enums === String ? "AGGREGATION_TEMPORALITY_UNSPECIFIED" : 0;
                 if (message.dataPoints && message.dataPoints.length) {
                   object.dataPoints = [];
                   for (var j = 0; j < message.dataPoints.length; ++j)
-                    object.dataPoints[j] = $root.opentelemetry.proto.metrics.v1.ExponentialHistogramDataPoint.toObject(message.dataPoints[j], options2);
+                    object.dataPoints[j] = $root.opentelemetry.proto.metrics.v1.ExponentialHistogramDataPoint.toObject(message.dataPoints[j], options3);
                 }
                 if (message.aggregationTemporality != null && message.hasOwnProperty("aggregationTemporality"))
-                  object.aggregationTemporality = options2.enums === String ? $root.opentelemetry.proto.metrics.v1.AggregationTemporality[message.aggregationTemporality] === void 0 ? message.aggregationTemporality : $root.opentelemetry.proto.metrics.v1.AggregationTemporality[message.aggregationTemporality] : message.aggregationTemporality;
+                  object.aggregationTemporality = options3.enums === String ? $root.opentelemetry.proto.metrics.v1.AggregationTemporality[message.aggregationTemporality] === void 0 ? message.aggregationTemporality : $root.opentelemetry.proto.metrics.v1.AggregationTemporality[message.aggregationTemporality] : message.aggregationTemporality;
                 return object;
               }, "toObject");
               ExponentialHistogram.prototype.toJSON = /* @__PURE__ */ __name(function toJSON() {
@@ -8034,16 +8034,16 @@ var require_root = __commonJS({
                 }
                 return message;
               }, "fromObject");
-              Summary.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              Summary.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults)
+                if (options3.arrays || options3.defaults)
                   object.dataPoints = [];
                 if (message.dataPoints && message.dataPoints.length) {
                   object.dataPoints = [];
                   for (var j = 0; j < message.dataPoints.length; ++j)
-                    object.dataPoints[j] = $root.opentelemetry.proto.metrics.v1.SummaryDataPoint.toObject(message.dataPoints[j], options2);
+                    object.dataPoints[j] = $root.opentelemetry.proto.metrics.v1.SummaryDataPoint.toObject(message.dataPoints[j], options3);
                 }
                 return object;
               }, "toObject");
@@ -8301,59 +8301,59 @@ var require_root = __commonJS({
                   message.flags = object.flags >>> 0;
                 return message;
               }, "fromObject");
-              NumberDataPoint.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              NumberDataPoint.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults) {
+                if (options3.arrays || options3.defaults) {
                   object.exemplars = [];
                   object.attributes = [];
                 }
-                if (options2.defaults) {
+                if (options3.defaults) {
                   if ($util.Long) {
                     var long = new $util.Long(0, 0, false);
-                    object.startTimeUnixNano = options2.longs === String ? long.toString() : options2.longs === Number ? long.toNumber() : long;
+                    object.startTimeUnixNano = options3.longs === String ? long.toString() : options3.longs === Number ? long.toNumber() : long;
                   } else
-                    object.startTimeUnixNano = options2.longs === String ? "0" : 0;
+                    object.startTimeUnixNano = options3.longs === String ? "0" : 0;
                   if ($util.Long) {
                     var long = new $util.Long(0, 0, false);
-                    object.timeUnixNano = options2.longs === String ? long.toString() : options2.longs === Number ? long.toNumber() : long;
+                    object.timeUnixNano = options3.longs === String ? long.toString() : options3.longs === Number ? long.toNumber() : long;
                   } else
-                    object.timeUnixNano = options2.longs === String ? "0" : 0;
+                    object.timeUnixNano = options3.longs === String ? "0" : 0;
                   object.flags = 0;
                 }
                 if (message.startTimeUnixNano != null && message.hasOwnProperty("startTimeUnixNano"))
                   if (typeof message.startTimeUnixNano === "number")
-                    object.startTimeUnixNano = options2.longs === String ? String(message.startTimeUnixNano) : message.startTimeUnixNano;
+                    object.startTimeUnixNano = options3.longs === String ? String(message.startTimeUnixNano) : message.startTimeUnixNano;
                   else
-                    object.startTimeUnixNano = options2.longs === String ? $util.Long.prototype.toString.call(message.startTimeUnixNano) : options2.longs === Number ? new $util.LongBits(message.startTimeUnixNano.low >>> 0, message.startTimeUnixNano.high >>> 0).toNumber() : message.startTimeUnixNano;
+                    object.startTimeUnixNano = options3.longs === String ? $util.Long.prototype.toString.call(message.startTimeUnixNano) : options3.longs === Number ? new $util.LongBits(message.startTimeUnixNano.low >>> 0, message.startTimeUnixNano.high >>> 0).toNumber() : message.startTimeUnixNano;
                 if (message.timeUnixNano != null && message.hasOwnProperty("timeUnixNano"))
                   if (typeof message.timeUnixNano === "number")
-                    object.timeUnixNano = options2.longs === String ? String(message.timeUnixNano) : message.timeUnixNano;
+                    object.timeUnixNano = options3.longs === String ? String(message.timeUnixNano) : message.timeUnixNano;
                   else
-                    object.timeUnixNano = options2.longs === String ? $util.Long.prototype.toString.call(message.timeUnixNano) : options2.longs === Number ? new $util.LongBits(message.timeUnixNano.low >>> 0, message.timeUnixNano.high >>> 0).toNumber() : message.timeUnixNano;
+                    object.timeUnixNano = options3.longs === String ? $util.Long.prototype.toString.call(message.timeUnixNano) : options3.longs === Number ? new $util.LongBits(message.timeUnixNano.low >>> 0, message.timeUnixNano.high >>> 0).toNumber() : message.timeUnixNano;
                 if (message.asDouble != null && message.hasOwnProperty("asDouble")) {
-                  object.asDouble = options2.json && !isFinite(message.asDouble) ? String(message.asDouble) : message.asDouble;
-                  if (options2.oneofs)
+                  object.asDouble = options3.json && !isFinite(message.asDouble) ? String(message.asDouble) : message.asDouble;
+                  if (options3.oneofs)
                     object.value = "asDouble";
                 }
                 if (message.exemplars && message.exemplars.length) {
                   object.exemplars = [];
                   for (var j = 0; j < message.exemplars.length; ++j)
-                    object.exemplars[j] = $root.opentelemetry.proto.metrics.v1.Exemplar.toObject(message.exemplars[j], options2);
+                    object.exemplars[j] = $root.opentelemetry.proto.metrics.v1.Exemplar.toObject(message.exemplars[j], options3);
                 }
                 if (message.asInt != null && message.hasOwnProperty("asInt")) {
                   if (typeof message.asInt === "number")
-                    object.asInt = options2.longs === String ? String(message.asInt) : message.asInt;
+                    object.asInt = options3.longs === String ? String(message.asInt) : message.asInt;
                   else
-                    object.asInt = options2.longs === String ? $util.Long.prototype.toString.call(message.asInt) : options2.longs === Number ? new $util.LongBits(message.asInt.low >>> 0, message.asInt.high >>> 0).toNumber() : message.asInt;
-                  if (options2.oneofs)
+                    object.asInt = options3.longs === String ? $util.Long.prototype.toString.call(message.asInt) : options3.longs === Number ? new $util.LongBits(message.asInt.low >>> 0, message.asInt.high >>> 0).toNumber() : message.asInt;
+                  if (options3.oneofs)
                     object.value = "asInt";
                 }
                 if (message.attributes && message.attributes.length) {
                   object.attributes = [];
                   for (var j = 0; j < message.attributes.length; ++j)
-                    object.attributes[j] = $root.opentelemetry.proto.common.v1.KeyValue.toObject(message.attributes[j], options2);
+                    object.attributes[j] = $root.opentelemetry.proto.common.v1.KeyValue.toObject(message.attributes[j], options3);
                 }
                 if (message.flags != null && message.hasOwnProperty("flags"))
                   object.flags = message.flags;
@@ -8718,87 +8718,87 @@ var require_root = __commonJS({
                   message.max = Number(object.max);
                 return message;
               }, "fromObject");
-              HistogramDataPoint.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              HistogramDataPoint.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults) {
+                if (options3.arrays || options3.defaults) {
                   object.bucketCounts = [];
                   object.explicitBounds = [];
                   object.exemplars = [];
                   object.attributes = [];
                 }
-                if (options2.defaults) {
+                if (options3.defaults) {
                   if ($util.Long) {
                     var long = new $util.Long(0, 0, false);
-                    object.startTimeUnixNano = options2.longs === String ? long.toString() : options2.longs === Number ? long.toNumber() : long;
+                    object.startTimeUnixNano = options3.longs === String ? long.toString() : options3.longs === Number ? long.toNumber() : long;
                   } else
-                    object.startTimeUnixNano = options2.longs === String ? "0" : 0;
+                    object.startTimeUnixNano = options3.longs === String ? "0" : 0;
                   if ($util.Long) {
                     var long = new $util.Long(0, 0, false);
-                    object.timeUnixNano = options2.longs === String ? long.toString() : options2.longs === Number ? long.toNumber() : long;
+                    object.timeUnixNano = options3.longs === String ? long.toString() : options3.longs === Number ? long.toNumber() : long;
                   } else
-                    object.timeUnixNano = options2.longs === String ? "0" : 0;
+                    object.timeUnixNano = options3.longs === String ? "0" : 0;
                   if ($util.Long) {
                     var long = new $util.Long(0, 0, false);
-                    object.count = options2.longs === String ? long.toString() : options2.longs === Number ? long.toNumber() : long;
+                    object.count = options3.longs === String ? long.toString() : options3.longs === Number ? long.toNumber() : long;
                   } else
-                    object.count = options2.longs === String ? "0" : 0;
+                    object.count = options3.longs === String ? "0" : 0;
                   object.flags = 0;
                 }
                 if (message.startTimeUnixNano != null && message.hasOwnProperty("startTimeUnixNano"))
                   if (typeof message.startTimeUnixNano === "number")
-                    object.startTimeUnixNano = options2.longs === String ? String(message.startTimeUnixNano) : message.startTimeUnixNano;
+                    object.startTimeUnixNano = options3.longs === String ? String(message.startTimeUnixNano) : message.startTimeUnixNano;
                   else
-                    object.startTimeUnixNano = options2.longs === String ? $util.Long.prototype.toString.call(message.startTimeUnixNano) : options2.longs === Number ? new $util.LongBits(message.startTimeUnixNano.low >>> 0, message.startTimeUnixNano.high >>> 0).toNumber() : message.startTimeUnixNano;
+                    object.startTimeUnixNano = options3.longs === String ? $util.Long.prototype.toString.call(message.startTimeUnixNano) : options3.longs === Number ? new $util.LongBits(message.startTimeUnixNano.low >>> 0, message.startTimeUnixNano.high >>> 0).toNumber() : message.startTimeUnixNano;
                 if (message.timeUnixNano != null && message.hasOwnProperty("timeUnixNano"))
                   if (typeof message.timeUnixNano === "number")
-                    object.timeUnixNano = options2.longs === String ? String(message.timeUnixNano) : message.timeUnixNano;
+                    object.timeUnixNano = options3.longs === String ? String(message.timeUnixNano) : message.timeUnixNano;
                   else
-                    object.timeUnixNano = options2.longs === String ? $util.Long.prototype.toString.call(message.timeUnixNano) : options2.longs === Number ? new $util.LongBits(message.timeUnixNano.low >>> 0, message.timeUnixNano.high >>> 0).toNumber() : message.timeUnixNano;
+                    object.timeUnixNano = options3.longs === String ? $util.Long.prototype.toString.call(message.timeUnixNano) : options3.longs === Number ? new $util.LongBits(message.timeUnixNano.low >>> 0, message.timeUnixNano.high >>> 0).toNumber() : message.timeUnixNano;
                 if (message.count != null && message.hasOwnProperty("count"))
                   if (typeof message.count === "number")
-                    object.count = options2.longs === String ? String(message.count) : message.count;
+                    object.count = options3.longs === String ? String(message.count) : message.count;
                   else
-                    object.count = options2.longs === String ? $util.Long.prototype.toString.call(message.count) : options2.longs === Number ? new $util.LongBits(message.count.low >>> 0, message.count.high >>> 0).toNumber() : message.count;
+                    object.count = options3.longs === String ? $util.Long.prototype.toString.call(message.count) : options3.longs === Number ? new $util.LongBits(message.count.low >>> 0, message.count.high >>> 0).toNumber() : message.count;
                 if (message.sum != null && message.hasOwnProperty("sum")) {
-                  object.sum = options2.json && !isFinite(message.sum) ? String(message.sum) : message.sum;
-                  if (options2.oneofs)
+                  object.sum = options3.json && !isFinite(message.sum) ? String(message.sum) : message.sum;
+                  if (options3.oneofs)
                     object._sum = "sum";
                 }
                 if (message.bucketCounts && message.bucketCounts.length) {
                   object.bucketCounts = [];
                   for (var j = 0; j < message.bucketCounts.length; ++j)
                     if (typeof message.bucketCounts[j] === "number")
-                      object.bucketCounts[j] = options2.longs === String ? String(message.bucketCounts[j]) : message.bucketCounts[j];
+                      object.bucketCounts[j] = options3.longs === String ? String(message.bucketCounts[j]) : message.bucketCounts[j];
                     else
-                      object.bucketCounts[j] = options2.longs === String ? $util.Long.prototype.toString.call(message.bucketCounts[j]) : options2.longs === Number ? new $util.LongBits(message.bucketCounts[j].low >>> 0, message.bucketCounts[j].high >>> 0).toNumber() : message.bucketCounts[j];
+                      object.bucketCounts[j] = options3.longs === String ? $util.Long.prototype.toString.call(message.bucketCounts[j]) : options3.longs === Number ? new $util.LongBits(message.bucketCounts[j].low >>> 0, message.bucketCounts[j].high >>> 0).toNumber() : message.bucketCounts[j];
                 }
                 if (message.explicitBounds && message.explicitBounds.length) {
                   object.explicitBounds = [];
                   for (var j = 0; j < message.explicitBounds.length; ++j)
-                    object.explicitBounds[j] = options2.json && !isFinite(message.explicitBounds[j]) ? String(message.explicitBounds[j]) : message.explicitBounds[j];
+                    object.explicitBounds[j] = options3.json && !isFinite(message.explicitBounds[j]) ? String(message.explicitBounds[j]) : message.explicitBounds[j];
                 }
                 if (message.exemplars && message.exemplars.length) {
                   object.exemplars = [];
                   for (var j = 0; j < message.exemplars.length; ++j)
-                    object.exemplars[j] = $root.opentelemetry.proto.metrics.v1.Exemplar.toObject(message.exemplars[j], options2);
+                    object.exemplars[j] = $root.opentelemetry.proto.metrics.v1.Exemplar.toObject(message.exemplars[j], options3);
                 }
                 if (message.attributes && message.attributes.length) {
                   object.attributes = [];
                   for (var j = 0; j < message.attributes.length; ++j)
-                    object.attributes[j] = $root.opentelemetry.proto.common.v1.KeyValue.toObject(message.attributes[j], options2);
+                    object.attributes[j] = $root.opentelemetry.proto.common.v1.KeyValue.toObject(message.attributes[j], options3);
                 }
                 if (message.flags != null && message.hasOwnProperty("flags"))
                   object.flags = message.flags;
                 if (message.min != null && message.hasOwnProperty("min")) {
-                  object.min = options2.json && !isFinite(message.min) ? String(message.min) : message.min;
-                  if (options2.oneofs)
+                  object.min = options3.json && !isFinite(message.min) ? String(message.min) : message.min;
+                  if (options3.oneofs)
                     object._min = "min";
                 }
                 if (message.max != null && message.hasOwnProperty("max")) {
-                  object.max = options2.json && !isFinite(message.max) ? String(message.max) : message.max;
-                  if (options2.oneofs)
+                  object.max = options3.json && !isFinite(message.max) ? String(message.max) : message.max;
+                  if (options3.oneofs)
                     object._max = "max";
                 }
                 return object;
@@ -9179,36 +9179,36 @@ var require_root = __commonJS({
                   message.zeroThreshold = Number(object.zeroThreshold);
                 return message;
               }, "fromObject");
-              ExponentialHistogramDataPoint.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              ExponentialHistogramDataPoint.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults) {
+                if (options3.arrays || options3.defaults) {
                   object.attributes = [];
                   object.exemplars = [];
                 }
-                if (options2.defaults) {
+                if (options3.defaults) {
                   if ($util.Long) {
                     var long = new $util.Long(0, 0, false);
-                    object.startTimeUnixNano = options2.longs === String ? long.toString() : options2.longs === Number ? long.toNumber() : long;
+                    object.startTimeUnixNano = options3.longs === String ? long.toString() : options3.longs === Number ? long.toNumber() : long;
                   } else
-                    object.startTimeUnixNano = options2.longs === String ? "0" : 0;
+                    object.startTimeUnixNano = options3.longs === String ? "0" : 0;
                   if ($util.Long) {
                     var long = new $util.Long(0, 0, false);
-                    object.timeUnixNano = options2.longs === String ? long.toString() : options2.longs === Number ? long.toNumber() : long;
+                    object.timeUnixNano = options3.longs === String ? long.toString() : options3.longs === Number ? long.toNumber() : long;
                   } else
-                    object.timeUnixNano = options2.longs === String ? "0" : 0;
+                    object.timeUnixNano = options3.longs === String ? "0" : 0;
                   if ($util.Long) {
                     var long = new $util.Long(0, 0, false);
-                    object.count = options2.longs === String ? long.toString() : options2.longs === Number ? long.toNumber() : long;
+                    object.count = options3.longs === String ? long.toString() : options3.longs === Number ? long.toNumber() : long;
                   } else
-                    object.count = options2.longs === String ? "0" : 0;
+                    object.count = options3.longs === String ? "0" : 0;
                   object.scale = 0;
                   if ($util.Long) {
                     var long = new $util.Long(0, 0, false);
-                    object.zeroCount = options2.longs === String ? long.toString() : options2.longs === Number ? long.toNumber() : long;
+                    object.zeroCount = options3.longs === String ? long.toString() : options3.longs === Number ? long.toNumber() : long;
                   } else
-                    object.zeroCount = options2.longs === String ? "0" : 0;
+                    object.zeroCount = options3.longs === String ? "0" : 0;
                   object.positive = null;
                   object.negative = null;
                   object.flags = 0;
@@ -9217,58 +9217,58 @@ var require_root = __commonJS({
                 if (message.attributes && message.attributes.length) {
                   object.attributes = [];
                   for (var j = 0; j < message.attributes.length; ++j)
-                    object.attributes[j] = $root.opentelemetry.proto.common.v1.KeyValue.toObject(message.attributes[j], options2);
+                    object.attributes[j] = $root.opentelemetry.proto.common.v1.KeyValue.toObject(message.attributes[j], options3);
                 }
                 if (message.startTimeUnixNano != null && message.hasOwnProperty("startTimeUnixNano"))
                   if (typeof message.startTimeUnixNano === "number")
-                    object.startTimeUnixNano = options2.longs === String ? String(message.startTimeUnixNano) : message.startTimeUnixNano;
+                    object.startTimeUnixNano = options3.longs === String ? String(message.startTimeUnixNano) : message.startTimeUnixNano;
                   else
-                    object.startTimeUnixNano = options2.longs === String ? $util.Long.prototype.toString.call(message.startTimeUnixNano) : options2.longs === Number ? new $util.LongBits(message.startTimeUnixNano.low >>> 0, message.startTimeUnixNano.high >>> 0).toNumber() : message.startTimeUnixNano;
+                    object.startTimeUnixNano = options3.longs === String ? $util.Long.prototype.toString.call(message.startTimeUnixNano) : options3.longs === Number ? new $util.LongBits(message.startTimeUnixNano.low >>> 0, message.startTimeUnixNano.high >>> 0).toNumber() : message.startTimeUnixNano;
                 if (message.timeUnixNano != null && message.hasOwnProperty("timeUnixNano"))
                   if (typeof message.timeUnixNano === "number")
-                    object.timeUnixNano = options2.longs === String ? String(message.timeUnixNano) : message.timeUnixNano;
+                    object.timeUnixNano = options3.longs === String ? String(message.timeUnixNano) : message.timeUnixNano;
                   else
-                    object.timeUnixNano = options2.longs === String ? $util.Long.prototype.toString.call(message.timeUnixNano) : options2.longs === Number ? new $util.LongBits(message.timeUnixNano.low >>> 0, message.timeUnixNano.high >>> 0).toNumber() : message.timeUnixNano;
+                    object.timeUnixNano = options3.longs === String ? $util.Long.prototype.toString.call(message.timeUnixNano) : options3.longs === Number ? new $util.LongBits(message.timeUnixNano.low >>> 0, message.timeUnixNano.high >>> 0).toNumber() : message.timeUnixNano;
                 if (message.count != null && message.hasOwnProperty("count"))
                   if (typeof message.count === "number")
-                    object.count = options2.longs === String ? String(message.count) : message.count;
+                    object.count = options3.longs === String ? String(message.count) : message.count;
                   else
-                    object.count = options2.longs === String ? $util.Long.prototype.toString.call(message.count) : options2.longs === Number ? new $util.LongBits(message.count.low >>> 0, message.count.high >>> 0).toNumber() : message.count;
+                    object.count = options3.longs === String ? $util.Long.prototype.toString.call(message.count) : options3.longs === Number ? new $util.LongBits(message.count.low >>> 0, message.count.high >>> 0).toNumber() : message.count;
                 if (message.sum != null && message.hasOwnProperty("sum")) {
-                  object.sum = options2.json && !isFinite(message.sum) ? String(message.sum) : message.sum;
-                  if (options2.oneofs)
+                  object.sum = options3.json && !isFinite(message.sum) ? String(message.sum) : message.sum;
+                  if (options3.oneofs)
                     object._sum = "sum";
                 }
                 if (message.scale != null && message.hasOwnProperty("scale"))
                   object.scale = message.scale;
                 if (message.zeroCount != null && message.hasOwnProperty("zeroCount"))
                   if (typeof message.zeroCount === "number")
-                    object.zeroCount = options2.longs === String ? String(message.zeroCount) : message.zeroCount;
+                    object.zeroCount = options3.longs === String ? String(message.zeroCount) : message.zeroCount;
                   else
-                    object.zeroCount = options2.longs === String ? $util.Long.prototype.toString.call(message.zeroCount) : options2.longs === Number ? new $util.LongBits(message.zeroCount.low >>> 0, message.zeroCount.high >>> 0).toNumber() : message.zeroCount;
+                    object.zeroCount = options3.longs === String ? $util.Long.prototype.toString.call(message.zeroCount) : options3.longs === Number ? new $util.LongBits(message.zeroCount.low >>> 0, message.zeroCount.high >>> 0).toNumber() : message.zeroCount;
                 if (message.positive != null && message.hasOwnProperty("positive"))
-                  object.positive = $root.opentelemetry.proto.metrics.v1.ExponentialHistogramDataPoint.Buckets.toObject(message.positive, options2);
+                  object.positive = $root.opentelemetry.proto.metrics.v1.ExponentialHistogramDataPoint.Buckets.toObject(message.positive, options3);
                 if (message.negative != null && message.hasOwnProperty("negative"))
-                  object.negative = $root.opentelemetry.proto.metrics.v1.ExponentialHistogramDataPoint.Buckets.toObject(message.negative, options2);
+                  object.negative = $root.opentelemetry.proto.metrics.v1.ExponentialHistogramDataPoint.Buckets.toObject(message.negative, options3);
                 if (message.flags != null && message.hasOwnProperty("flags"))
                   object.flags = message.flags;
                 if (message.exemplars && message.exemplars.length) {
                   object.exemplars = [];
                   for (var j = 0; j < message.exemplars.length; ++j)
-                    object.exemplars[j] = $root.opentelemetry.proto.metrics.v1.Exemplar.toObject(message.exemplars[j], options2);
+                    object.exemplars[j] = $root.opentelemetry.proto.metrics.v1.Exemplar.toObject(message.exemplars[j], options3);
                 }
                 if (message.min != null && message.hasOwnProperty("min")) {
-                  object.min = options2.json && !isFinite(message.min) ? String(message.min) : message.min;
-                  if (options2.oneofs)
+                  object.min = options3.json && !isFinite(message.min) ? String(message.min) : message.min;
+                  if (options3.oneofs)
                     object._min = "min";
                 }
                 if (message.max != null && message.hasOwnProperty("max")) {
-                  object.max = options2.json && !isFinite(message.max) ? String(message.max) : message.max;
-                  if (options2.oneofs)
+                  object.max = options3.json && !isFinite(message.max) ? String(message.max) : message.max;
+                  if (options3.oneofs)
                     object._max = "max";
                 }
                 if (message.zeroThreshold != null && message.hasOwnProperty("zeroThreshold"))
-                  object.zeroThreshold = options2.json && !isFinite(message.zeroThreshold) ? String(message.zeroThreshold) : message.zeroThreshold;
+                  object.zeroThreshold = options3.json && !isFinite(message.zeroThreshold) ? String(message.zeroThreshold) : message.zeroThreshold;
                 return object;
               }, "toObject");
               ExponentialHistogramDataPoint.prototype.toJSON = /* @__PURE__ */ __name(function toJSON() {
@@ -9389,13 +9389,13 @@ var require_root = __commonJS({
                   }
                   return message;
                 }, "fromObject");
-                Buckets.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                  if (!options2)
-                    options2 = {};
+                Buckets.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                  if (!options3)
+                    options3 = {};
                   var object = {};
-                  if (options2.arrays || options2.defaults)
+                  if (options3.arrays || options3.defaults)
                     object.bucketCounts = [];
-                  if (options2.defaults)
+                  if (options3.defaults)
                     object.offset = 0;
                   if (message.offset != null && message.hasOwnProperty("offset"))
                     object.offset = message.offset;
@@ -9403,9 +9403,9 @@ var require_root = __commonJS({
                     object.bucketCounts = [];
                     for (var j = 0; j < message.bucketCounts.length; ++j)
                       if (typeof message.bucketCounts[j] === "number")
-                        object.bucketCounts[j] = options2.longs === String ? String(message.bucketCounts[j]) : message.bucketCounts[j];
+                        object.bucketCounts[j] = options3.longs === String ? String(message.bucketCounts[j]) : message.bucketCounts[j];
                       else
-                        object.bucketCounts[j] = options2.longs === String ? $util.Long.prototype.toString.call(message.bucketCounts[j]) : options2.longs === Number ? new $util.LongBits(message.bucketCounts[j].low >>> 0, message.bucketCounts[j].high >>> 0).toNumber(true) : message.bucketCounts[j];
+                        object.bucketCounts[j] = options3.longs === String ? $util.Long.prototype.toString.call(message.bucketCounts[j]) : options3.longs === Number ? new $util.LongBits(message.bucketCounts[j].low >>> 0, message.bucketCounts[j].high >>> 0).toNumber(true) : message.bucketCounts[j];
                   }
                   return object;
                 }, "toObject");
@@ -9642,59 +9642,59 @@ var require_root = __commonJS({
                   message.flags = object.flags >>> 0;
                 return message;
               }, "fromObject");
-              SummaryDataPoint.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              SummaryDataPoint.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults) {
+                if (options3.arrays || options3.defaults) {
                   object.quantileValues = [];
                   object.attributes = [];
                 }
-                if (options2.defaults) {
+                if (options3.defaults) {
                   if ($util.Long) {
                     var long = new $util.Long(0, 0, false);
-                    object.startTimeUnixNano = options2.longs === String ? long.toString() : options2.longs === Number ? long.toNumber() : long;
+                    object.startTimeUnixNano = options3.longs === String ? long.toString() : options3.longs === Number ? long.toNumber() : long;
                   } else
-                    object.startTimeUnixNano = options2.longs === String ? "0" : 0;
+                    object.startTimeUnixNano = options3.longs === String ? "0" : 0;
                   if ($util.Long) {
                     var long = new $util.Long(0, 0, false);
-                    object.timeUnixNano = options2.longs === String ? long.toString() : options2.longs === Number ? long.toNumber() : long;
+                    object.timeUnixNano = options3.longs === String ? long.toString() : options3.longs === Number ? long.toNumber() : long;
                   } else
-                    object.timeUnixNano = options2.longs === String ? "0" : 0;
+                    object.timeUnixNano = options3.longs === String ? "0" : 0;
                   if ($util.Long) {
                     var long = new $util.Long(0, 0, false);
-                    object.count = options2.longs === String ? long.toString() : options2.longs === Number ? long.toNumber() : long;
+                    object.count = options3.longs === String ? long.toString() : options3.longs === Number ? long.toNumber() : long;
                   } else
-                    object.count = options2.longs === String ? "0" : 0;
+                    object.count = options3.longs === String ? "0" : 0;
                   object.sum = 0;
                   object.flags = 0;
                 }
                 if (message.startTimeUnixNano != null && message.hasOwnProperty("startTimeUnixNano"))
                   if (typeof message.startTimeUnixNano === "number")
-                    object.startTimeUnixNano = options2.longs === String ? String(message.startTimeUnixNano) : message.startTimeUnixNano;
+                    object.startTimeUnixNano = options3.longs === String ? String(message.startTimeUnixNano) : message.startTimeUnixNano;
                   else
-                    object.startTimeUnixNano = options2.longs === String ? $util.Long.prototype.toString.call(message.startTimeUnixNano) : options2.longs === Number ? new $util.LongBits(message.startTimeUnixNano.low >>> 0, message.startTimeUnixNano.high >>> 0).toNumber() : message.startTimeUnixNano;
+                    object.startTimeUnixNano = options3.longs === String ? $util.Long.prototype.toString.call(message.startTimeUnixNano) : options3.longs === Number ? new $util.LongBits(message.startTimeUnixNano.low >>> 0, message.startTimeUnixNano.high >>> 0).toNumber() : message.startTimeUnixNano;
                 if (message.timeUnixNano != null && message.hasOwnProperty("timeUnixNano"))
                   if (typeof message.timeUnixNano === "number")
-                    object.timeUnixNano = options2.longs === String ? String(message.timeUnixNano) : message.timeUnixNano;
+                    object.timeUnixNano = options3.longs === String ? String(message.timeUnixNano) : message.timeUnixNano;
                   else
-                    object.timeUnixNano = options2.longs === String ? $util.Long.prototype.toString.call(message.timeUnixNano) : options2.longs === Number ? new $util.LongBits(message.timeUnixNano.low >>> 0, message.timeUnixNano.high >>> 0).toNumber() : message.timeUnixNano;
+                    object.timeUnixNano = options3.longs === String ? $util.Long.prototype.toString.call(message.timeUnixNano) : options3.longs === Number ? new $util.LongBits(message.timeUnixNano.low >>> 0, message.timeUnixNano.high >>> 0).toNumber() : message.timeUnixNano;
                 if (message.count != null && message.hasOwnProperty("count"))
                   if (typeof message.count === "number")
-                    object.count = options2.longs === String ? String(message.count) : message.count;
+                    object.count = options3.longs === String ? String(message.count) : message.count;
                   else
-                    object.count = options2.longs === String ? $util.Long.prototype.toString.call(message.count) : options2.longs === Number ? new $util.LongBits(message.count.low >>> 0, message.count.high >>> 0).toNumber() : message.count;
+                    object.count = options3.longs === String ? $util.Long.prototype.toString.call(message.count) : options3.longs === Number ? new $util.LongBits(message.count.low >>> 0, message.count.high >>> 0).toNumber() : message.count;
                 if (message.sum != null && message.hasOwnProperty("sum"))
-                  object.sum = options2.json && !isFinite(message.sum) ? String(message.sum) : message.sum;
+                  object.sum = options3.json && !isFinite(message.sum) ? String(message.sum) : message.sum;
                 if (message.quantileValues && message.quantileValues.length) {
                   object.quantileValues = [];
                   for (var j = 0; j < message.quantileValues.length; ++j)
-                    object.quantileValues[j] = $root.opentelemetry.proto.metrics.v1.SummaryDataPoint.ValueAtQuantile.toObject(message.quantileValues[j], options2);
+                    object.quantileValues[j] = $root.opentelemetry.proto.metrics.v1.SummaryDataPoint.ValueAtQuantile.toObject(message.quantileValues[j], options3);
                 }
                 if (message.attributes && message.attributes.length) {
                   object.attributes = [];
                   for (var j = 0; j < message.attributes.length; ++j)
-                    object.attributes[j] = $root.opentelemetry.proto.common.v1.KeyValue.toObject(message.attributes[j], options2);
+                    object.attributes[j] = $root.opentelemetry.proto.common.v1.KeyValue.toObject(message.attributes[j], options3);
                 }
                 if (message.flags != null && message.hasOwnProperty("flags"))
                   object.flags = message.flags;
@@ -9791,18 +9791,18 @@ var require_root = __commonJS({
                     message.value = Number(object.value);
                   return message;
                 }, "fromObject");
-                ValueAtQuantile.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                  if (!options2)
-                    options2 = {};
+                ValueAtQuantile.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                  if (!options3)
+                    options3 = {};
                   var object = {};
-                  if (options2.defaults) {
+                  if (options3.defaults) {
                     object.quantile = 0;
                     object.value = 0;
                   }
                   if (message.quantile != null && message.hasOwnProperty("quantile"))
-                    object.quantile = options2.json && !isFinite(message.quantile) ? String(message.quantile) : message.quantile;
+                    object.quantile = options3.json && !isFinite(message.quantile) ? String(message.quantile) : message.quantile;
                   if (message.value != null && message.hasOwnProperty("value"))
-                    object.value = options2.json && !isFinite(message.value) ? String(message.value) : message.value;
+                    object.value = options3.json && !isFinite(message.value) ? String(message.value) : message.value;
                   return object;
                 }, "toObject");
                 ValueAtQuantile.prototype.toJSON = /* @__PURE__ */ __name(function toJSON() {
@@ -10015,59 +10015,59 @@ var require_root = __commonJS({
                 }
                 return message;
               }, "fromObject");
-              Exemplar.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              Exemplar.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults)
+                if (options3.arrays || options3.defaults)
                   object.filteredAttributes = [];
-                if (options2.defaults) {
+                if (options3.defaults) {
                   if ($util.Long) {
                     var long = new $util.Long(0, 0, false);
-                    object.timeUnixNano = options2.longs === String ? long.toString() : options2.longs === Number ? long.toNumber() : long;
+                    object.timeUnixNano = options3.longs === String ? long.toString() : options3.longs === Number ? long.toNumber() : long;
                   } else
-                    object.timeUnixNano = options2.longs === String ? "0" : 0;
-                  if (options2.bytes === String)
+                    object.timeUnixNano = options3.longs === String ? "0" : 0;
+                  if (options3.bytes === String)
                     object.spanId = "";
                   else {
                     object.spanId = [];
-                    if (options2.bytes !== Array)
+                    if (options3.bytes !== Array)
                       object.spanId = $util.newBuffer(object.spanId);
                   }
-                  if (options2.bytes === String)
+                  if (options3.bytes === String)
                     object.traceId = "";
                   else {
                     object.traceId = [];
-                    if (options2.bytes !== Array)
+                    if (options3.bytes !== Array)
                       object.traceId = $util.newBuffer(object.traceId);
                   }
                 }
                 if (message.timeUnixNano != null && message.hasOwnProperty("timeUnixNano"))
                   if (typeof message.timeUnixNano === "number")
-                    object.timeUnixNano = options2.longs === String ? String(message.timeUnixNano) : message.timeUnixNano;
+                    object.timeUnixNano = options3.longs === String ? String(message.timeUnixNano) : message.timeUnixNano;
                   else
-                    object.timeUnixNano = options2.longs === String ? $util.Long.prototype.toString.call(message.timeUnixNano) : options2.longs === Number ? new $util.LongBits(message.timeUnixNano.low >>> 0, message.timeUnixNano.high >>> 0).toNumber() : message.timeUnixNano;
+                    object.timeUnixNano = options3.longs === String ? $util.Long.prototype.toString.call(message.timeUnixNano) : options3.longs === Number ? new $util.LongBits(message.timeUnixNano.low >>> 0, message.timeUnixNano.high >>> 0).toNumber() : message.timeUnixNano;
                 if (message.asDouble != null && message.hasOwnProperty("asDouble")) {
-                  object.asDouble = options2.json && !isFinite(message.asDouble) ? String(message.asDouble) : message.asDouble;
-                  if (options2.oneofs)
+                  object.asDouble = options3.json && !isFinite(message.asDouble) ? String(message.asDouble) : message.asDouble;
+                  if (options3.oneofs)
                     object.value = "asDouble";
                 }
                 if (message.spanId != null && message.hasOwnProperty("spanId"))
-                  object.spanId = options2.bytes === String ? $util.base64.encode(message.spanId, 0, message.spanId.length) : options2.bytes === Array ? Array.prototype.slice.call(message.spanId) : message.spanId;
+                  object.spanId = options3.bytes === String ? $util.base64.encode(message.spanId, 0, message.spanId.length) : options3.bytes === Array ? Array.prototype.slice.call(message.spanId) : message.spanId;
                 if (message.traceId != null && message.hasOwnProperty("traceId"))
-                  object.traceId = options2.bytes === String ? $util.base64.encode(message.traceId, 0, message.traceId.length) : options2.bytes === Array ? Array.prototype.slice.call(message.traceId) : message.traceId;
+                  object.traceId = options3.bytes === String ? $util.base64.encode(message.traceId, 0, message.traceId.length) : options3.bytes === Array ? Array.prototype.slice.call(message.traceId) : message.traceId;
                 if (message.asInt != null && message.hasOwnProperty("asInt")) {
                   if (typeof message.asInt === "number")
-                    object.asInt = options2.longs === String ? String(message.asInt) : message.asInt;
+                    object.asInt = options3.longs === String ? String(message.asInt) : message.asInt;
                   else
-                    object.asInt = options2.longs === String ? $util.Long.prototype.toString.call(message.asInt) : options2.longs === Number ? new $util.LongBits(message.asInt.low >>> 0, message.asInt.high >>> 0).toNumber() : message.asInt;
-                  if (options2.oneofs)
+                    object.asInt = options3.longs === String ? $util.Long.prototype.toString.call(message.asInt) : options3.longs === Number ? new $util.LongBits(message.asInt.low >>> 0, message.asInt.high >>> 0).toNumber() : message.asInt;
+                  if (options3.oneofs)
                     object.value = "asInt";
                 }
                 if (message.filteredAttributes && message.filteredAttributes.length) {
                   object.filteredAttributes = [];
                   for (var j = 0; j < message.filteredAttributes.length; ++j)
-                    object.filteredAttributes[j] = $root.opentelemetry.proto.common.v1.KeyValue.toObject(message.filteredAttributes[j], options2);
+                    object.filteredAttributes[j] = $root.opentelemetry.proto.common.v1.KeyValue.toObject(message.filteredAttributes[j], options3);
                 }
                 return object;
               }, "toObject");
@@ -10173,16 +10173,16 @@ var require_root = __commonJS({
                 }
                 return message;
               }, "fromObject");
-              LogsData.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              LogsData.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults)
+                if (options3.arrays || options3.defaults)
                   object.resourceLogs = [];
                 if (message.resourceLogs && message.resourceLogs.length) {
                   object.resourceLogs = [];
                   for (var j = 0; j < message.resourceLogs.length; ++j)
-                    object.resourceLogs[j] = $root.opentelemetry.proto.logs.v1.ResourceLogs.toObject(message.resourceLogs[j], options2);
+                    object.resourceLogs[j] = $root.opentelemetry.proto.logs.v1.ResourceLogs.toObject(message.resourceLogs[j], options3);
                 }
                 return object;
               }, "toObject");
@@ -10316,22 +10316,22 @@ var require_root = __commonJS({
                   message.schemaUrl = String(object.schemaUrl);
                 return message;
               }, "fromObject");
-              ResourceLogs.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              ResourceLogs.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults)
+                if (options3.arrays || options3.defaults)
                   object.scopeLogs = [];
-                if (options2.defaults) {
+                if (options3.defaults) {
                   object.resource = null;
                   object.schemaUrl = "";
                 }
                 if (message.resource != null && message.hasOwnProperty("resource"))
-                  object.resource = $root.opentelemetry.proto.resource.v1.Resource.toObject(message.resource, options2);
+                  object.resource = $root.opentelemetry.proto.resource.v1.Resource.toObject(message.resource, options3);
                 if (message.scopeLogs && message.scopeLogs.length) {
                   object.scopeLogs = [];
                   for (var j = 0; j < message.scopeLogs.length; ++j)
-                    object.scopeLogs[j] = $root.opentelemetry.proto.logs.v1.ScopeLogs.toObject(message.scopeLogs[j], options2);
+                    object.scopeLogs[j] = $root.opentelemetry.proto.logs.v1.ScopeLogs.toObject(message.scopeLogs[j], options3);
                 }
                 if (message.schemaUrl != null && message.hasOwnProperty("schemaUrl"))
                   object.schemaUrl = message.schemaUrl;
@@ -10467,22 +10467,22 @@ var require_root = __commonJS({
                   message.schemaUrl = String(object.schemaUrl);
                 return message;
               }, "fromObject");
-              ScopeLogs.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              ScopeLogs.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults)
+                if (options3.arrays || options3.defaults)
                   object.logRecords = [];
-                if (options2.defaults) {
+                if (options3.defaults) {
                   object.scope = null;
                   object.schemaUrl = "";
                 }
                 if (message.scope != null && message.hasOwnProperty("scope"))
-                  object.scope = $root.opentelemetry.proto.common.v1.InstrumentationScope.toObject(message.scope, options2);
+                  object.scope = $root.opentelemetry.proto.common.v1.InstrumentationScope.toObject(message.scope, options3);
                 if (message.logRecords && message.logRecords.length) {
                   object.logRecords = [];
                   for (var j = 0; j < message.logRecords.length; ++j)
-                    object.logRecords[j] = $root.opentelemetry.proto.logs.v1.LogRecord.toObject(message.logRecords[j], options2);
+                    object.logRecords[j] = $root.opentelemetry.proto.logs.v1.LogRecord.toObject(message.logRecords[j], options3);
                 }
                 if (message.schemaUrl != null && message.hasOwnProperty("schemaUrl"))
                   object.schemaUrl = message.schemaUrl;
@@ -10922,72 +10922,72 @@ var require_root = __commonJS({
                 }
                 return message;
               }, "fromObject");
-              LogRecord.toObject = /* @__PURE__ */ __name(function toObject(message, options2) {
-                if (!options2)
-                  options2 = {};
+              LogRecord.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+                if (!options3)
+                  options3 = {};
                 var object = {};
-                if (options2.arrays || options2.defaults)
+                if (options3.arrays || options3.defaults)
                   object.attributes = [];
-                if (options2.defaults) {
+                if (options3.defaults) {
                   if ($util.Long) {
                     var long = new $util.Long(0, 0, false);
-                    object.timeUnixNano = options2.longs === String ? long.toString() : options2.longs === Number ? long.toNumber() : long;
+                    object.timeUnixNano = options3.longs === String ? long.toString() : options3.longs === Number ? long.toNumber() : long;
                   } else
-                    object.timeUnixNano = options2.longs === String ? "0" : 0;
-                  object.severityNumber = options2.enums === String ? "SEVERITY_NUMBER_UNSPECIFIED" : 0;
+                    object.timeUnixNano = options3.longs === String ? "0" : 0;
+                  object.severityNumber = options3.enums === String ? "SEVERITY_NUMBER_UNSPECIFIED" : 0;
                   object.severityText = "";
                   object.body = null;
                   object.droppedAttributesCount = 0;
                   object.flags = 0;
-                  if (options2.bytes === String)
+                  if (options3.bytes === String)
                     object.traceId = "";
                   else {
                     object.traceId = [];
-                    if (options2.bytes !== Array)
+                    if (options3.bytes !== Array)
                       object.traceId = $util.newBuffer(object.traceId);
                   }
-                  if (options2.bytes === String)
+                  if (options3.bytes === String)
                     object.spanId = "";
                   else {
                     object.spanId = [];
-                    if (options2.bytes !== Array)
+                    if (options3.bytes !== Array)
                       object.spanId = $util.newBuffer(object.spanId);
                   }
                   if ($util.Long) {
                     var long = new $util.Long(0, 0, false);
-                    object.observedTimeUnixNano = options2.longs === String ? long.toString() : options2.longs === Number ? long.toNumber() : long;
+                    object.observedTimeUnixNano = options3.longs === String ? long.toString() : options3.longs === Number ? long.toNumber() : long;
                   } else
-                    object.observedTimeUnixNano = options2.longs === String ? "0" : 0;
+                    object.observedTimeUnixNano = options3.longs === String ? "0" : 0;
                 }
                 if (message.timeUnixNano != null && message.hasOwnProperty("timeUnixNano"))
                   if (typeof message.timeUnixNano === "number")
-                    object.timeUnixNano = options2.longs === String ? String(message.timeUnixNano) : message.timeUnixNano;
+                    object.timeUnixNano = options3.longs === String ? String(message.timeUnixNano) : message.timeUnixNano;
                   else
-                    object.timeUnixNano = options2.longs === String ? $util.Long.prototype.toString.call(message.timeUnixNano) : options2.longs === Number ? new $util.LongBits(message.timeUnixNano.low >>> 0, message.timeUnixNano.high >>> 0).toNumber() : message.timeUnixNano;
+                    object.timeUnixNano = options3.longs === String ? $util.Long.prototype.toString.call(message.timeUnixNano) : options3.longs === Number ? new $util.LongBits(message.timeUnixNano.low >>> 0, message.timeUnixNano.high >>> 0).toNumber() : message.timeUnixNano;
                 if (message.severityNumber != null && message.hasOwnProperty("severityNumber"))
-                  object.severityNumber = options2.enums === String ? $root.opentelemetry.proto.logs.v1.SeverityNumber[message.severityNumber] === void 0 ? message.severityNumber : $root.opentelemetry.proto.logs.v1.SeverityNumber[message.severityNumber] : message.severityNumber;
+                  object.severityNumber = options3.enums === String ? $root.opentelemetry.proto.logs.v1.SeverityNumber[message.severityNumber] === void 0 ? message.severityNumber : $root.opentelemetry.proto.logs.v1.SeverityNumber[message.severityNumber] : message.severityNumber;
                 if (message.severityText != null && message.hasOwnProperty("severityText"))
                   object.severityText = message.severityText;
                 if (message.body != null && message.hasOwnProperty("body"))
-                  object.body = $root.opentelemetry.proto.common.v1.AnyValue.toObject(message.body, options2);
+                  object.body = $root.opentelemetry.proto.common.v1.AnyValue.toObject(message.body, options3);
                 if (message.attributes && message.attributes.length) {
                   object.attributes = [];
                   for (var j = 0; j < message.attributes.length; ++j)
-                    object.attributes[j] = $root.opentelemetry.proto.common.v1.KeyValue.toObject(message.attributes[j], options2);
+                    object.attributes[j] = $root.opentelemetry.proto.common.v1.KeyValue.toObject(message.attributes[j], options3);
                 }
                 if (message.droppedAttributesCount != null && message.hasOwnProperty("droppedAttributesCount"))
                   object.droppedAttributesCount = message.droppedAttributesCount;
                 if (message.flags != null && message.hasOwnProperty("flags"))
                   object.flags = message.flags;
                 if (message.traceId != null && message.hasOwnProperty("traceId"))
-                  object.traceId = options2.bytes === String ? $util.base64.encode(message.traceId, 0, message.traceId.length) : options2.bytes === Array ? Array.prototype.slice.call(message.traceId) : message.traceId;
+                  object.traceId = options3.bytes === String ? $util.base64.encode(message.traceId, 0, message.traceId.length) : options3.bytes === Array ? Array.prototype.slice.call(message.traceId) : message.traceId;
                 if (message.spanId != null && message.hasOwnProperty("spanId"))
-                  object.spanId = options2.bytes === String ? $util.base64.encode(message.spanId, 0, message.spanId.length) : options2.bytes === Array ? Array.prototype.slice.call(message.spanId) : message.spanId;
+                  object.spanId = options3.bytes === String ? $util.base64.encode(message.spanId, 0, message.spanId.length) : options3.bytes === Array ? Array.prototype.slice.call(message.spanId) : message.spanId;
                 if (message.observedTimeUnixNano != null && message.hasOwnProperty("observedTimeUnixNano"))
                   if (typeof message.observedTimeUnixNano === "number")
-                    object.observedTimeUnixNano = options2.longs === String ? String(message.observedTimeUnixNano) : message.observedTimeUnixNano;
+                    object.observedTimeUnixNano = options3.longs === String ? String(message.observedTimeUnixNano) : message.observedTimeUnixNano;
                   else
-                    object.observedTimeUnixNano = options2.longs === String ? $util.Long.prototype.toString.call(message.observedTimeUnixNano) : options2.longs === Number ? new $util.LongBits(message.observedTimeUnixNano.low >>> 0, message.observedTimeUnixNano.high >>> 0).toNumber() : message.observedTimeUnixNano;
+                    object.observedTimeUnixNano = options3.longs === String ? $util.Long.prototype.toString.call(message.observedTimeUnixNano) : options3.longs === Number ? new $util.LongBits(message.observedTimeUnixNano.low >>> 0, message.observedTimeUnixNano.high >>> 0).toNumber() : message.observedTimeUnixNano;
                 return object;
               }, "toObject");
               LogRecord.prototype.toJSON = /* @__PURE__ */ __name(function toJSON() {
@@ -11073,6 +11073,4494 @@ var init_util4 = __esm({
   }
 });
 
+// node_modules/.pnpm/pino-std-serializers@7.0.0/node_modules/pino-std-serializers/lib/err-helpers.js
+var require_err_helpers = __commonJS({
+  "node_modules/.pnpm/pino-std-serializers@7.0.0/node_modules/pino-std-serializers/lib/err-helpers.js"(exports2, module2) {
+    "use strict";
+    var isErrorLike = /* @__PURE__ */ __name((err) => {
+      return err && typeof err.message === "string";
+    }, "isErrorLike");
+    var getErrorCause = /* @__PURE__ */ __name((err) => {
+      if (!err)
+        return;
+      const cause = err.cause;
+      if (typeof cause === "function") {
+        const causeResult = err.cause();
+        return isErrorLike(causeResult) ? causeResult : void 0;
+      } else {
+        return isErrorLike(cause) ? cause : void 0;
+      }
+    }, "getErrorCause");
+    var _stackWithCauses = /* @__PURE__ */ __name((err, seen) => {
+      if (!isErrorLike(err))
+        return "";
+      const stack = err.stack || "";
+      if (seen.has(err)) {
+        return stack + "\ncauses have become circular...";
+      }
+      const cause = getErrorCause(err);
+      if (cause) {
+        seen.add(err);
+        return stack + "\ncaused by: " + _stackWithCauses(cause, seen);
+      } else {
+        return stack;
+      }
+    }, "_stackWithCauses");
+    var stackWithCauses = /* @__PURE__ */ __name((err) => _stackWithCauses(err, /* @__PURE__ */ new Set()), "stackWithCauses");
+    var _messageWithCauses = /* @__PURE__ */ __name((err, seen, skip) => {
+      if (!isErrorLike(err))
+        return "";
+      const message = skip ? "" : err.message || "";
+      if (seen.has(err)) {
+        return message + ": ...";
+      }
+      const cause = getErrorCause(err);
+      if (cause) {
+        seen.add(err);
+        const skipIfVErrorStyleCause = typeof err.cause === "function";
+        return message + (skipIfVErrorStyleCause ? "" : ": ") + _messageWithCauses(cause, seen, skipIfVErrorStyleCause);
+      } else {
+        return message;
+      }
+    }, "_messageWithCauses");
+    var messageWithCauses = /* @__PURE__ */ __name((err) => _messageWithCauses(err, /* @__PURE__ */ new Set()), "messageWithCauses");
+    module2.exports = {
+      isErrorLike,
+      getErrorCause,
+      stackWithCauses,
+      messageWithCauses
+    };
+  }
+});
+
+// node_modules/.pnpm/pino-std-serializers@7.0.0/node_modules/pino-std-serializers/lib/err-proto.js
+var require_err_proto = __commonJS({
+  "node_modules/.pnpm/pino-std-serializers@7.0.0/node_modules/pino-std-serializers/lib/err-proto.js"(exports2, module2) {
+    "use strict";
+    var seen = Symbol("circular-ref-tag");
+    var rawSymbol = Symbol("pino-raw-err-ref");
+    var pinoErrProto = Object.create({}, {
+      type: {
+        enumerable: true,
+        writable: true,
+        value: void 0
+      },
+      message: {
+        enumerable: true,
+        writable: true,
+        value: void 0
+      },
+      stack: {
+        enumerable: true,
+        writable: true,
+        value: void 0
+      },
+      aggregateErrors: {
+        enumerable: true,
+        writable: true,
+        value: void 0
+      },
+      raw: {
+        enumerable: false,
+        get: function() {
+          return this[rawSymbol];
+        },
+        set: function(val) {
+          this[rawSymbol] = val;
+        }
+      }
+    });
+    Object.defineProperty(pinoErrProto, rawSymbol, {
+      writable: true,
+      value: {}
+    });
+    module2.exports = {
+      pinoErrProto,
+      pinoErrorSymbols: {
+        seen,
+        rawSymbol
+      }
+    };
+  }
+});
+
+// node_modules/.pnpm/pino-std-serializers@7.0.0/node_modules/pino-std-serializers/lib/err.js
+var require_err = __commonJS({
+  "node_modules/.pnpm/pino-std-serializers@7.0.0/node_modules/pino-std-serializers/lib/err.js"(exports2, module2) {
+    "use strict";
+    module2.exports = errSerializer;
+    var { messageWithCauses, stackWithCauses, isErrorLike } = require_err_helpers();
+    var { pinoErrProto, pinoErrorSymbols } = require_err_proto();
+    var { seen } = pinoErrorSymbols;
+    var { toString: toString2 } = Object.prototype;
+    function errSerializer(err) {
+      if (!isErrorLike(err)) {
+        return err;
+      }
+      err[seen] = void 0;
+      const _err = Object.create(pinoErrProto);
+      _err.type = toString2.call(err.constructor) === "[object Function]" ? err.constructor.name : err.name;
+      _err.message = messageWithCauses(err);
+      _err.stack = stackWithCauses(err);
+      if (Array.isArray(err.errors)) {
+        _err.aggregateErrors = err.errors.map((err2) => errSerializer(err2));
+      }
+      for (const key in err) {
+        if (_err[key] === void 0) {
+          const val = err[key];
+          if (isErrorLike(val)) {
+            if (key !== "cause" && !Object.prototype.hasOwnProperty.call(val, seen)) {
+              _err[key] = errSerializer(val);
+            }
+          } else {
+            _err[key] = val;
+          }
+        }
+      }
+      delete err[seen];
+      _err.raw = err;
+      return _err;
+    }
+    __name(errSerializer, "errSerializer");
+  }
+});
+
+// node_modules/.pnpm/pino-std-serializers@7.0.0/node_modules/pino-std-serializers/lib/err-with-cause.js
+var require_err_with_cause = __commonJS({
+  "node_modules/.pnpm/pino-std-serializers@7.0.0/node_modules/pino-std-serializers/lib/err-with-cause.js"(exports2, module2) {
+    "use strict";
+    module2.exports = errWithCauseSerializer;
+    var { isErrorLike } = require_err_helpers();
+    var { pinoErrProto, pinoErrorSymbols } = require_err_proto();
+    var { seen } = pinoErrorSymbols;
+    var { toString: toString2 } = Object.prototype;
+    function errWithCauseSerializer(err) {
+      if (!isErrorLike(err)) {
+        return err;
+      }
+      err[seen] = void 0;
+      const _err = Object.create(pinoErrProto);
+      _err.type = toString2.call(err.constructor) === "[object Function]" ? err.constructor.name : err.name;
+      _err.message = err.message;
+      _err.stack = err.stack;
+      if (Array.isArray(err.errors)) {
+        _err.aggregateErrors = err.errors.map((err2) => errWithCauseSerializer(err2));
+      }
+      if (isErrorLike(err.cause) && !Object.prototype.hasOwnProperty.call(err.cause, seen)) {
+        _err.cause = errWithCauseSerializer(err.cause);
+      }
+      for (const key in err) {
+        if (_err[key] === void 0) {
+          const val = err[key];
+          if (isErrorLike(val)) {
+            if (!Object.prototype.hasOwnProperty.call(val, seen)) {
+              _err[key] = errWithCauseSerializer(val);
+            }
+          } else {
+            _err[key] = val;
+          }
+        }
+      }
+      delete err[seen];
+      _err.raw = err;
+      return _err;
+    }
+    __name(errWithCauseSerializer, "errWithCauseSerializer");
+  }
+});
+
+// node_modules/.pnpm/pino-std-serializers@7.0.0/node_modules/pino-std-serializers/lib/req.js
+var require_req = __commonJS({
+  "node_modules/.pnpm/pino-std-serializers@7.0.0/node_modules/pino-std-serializers/lib/req.js"(exports2, module2) {
+    "use strict";
+    module2.exports = {
+      mapHttpRequest,
+      reqSerializer
+    };
+    var rawSymbol = Symbol("pino-raw-req-ref");
+    var pinoReqProto = Object.create({}, {
+      id: {
+        enumerable: true,
+        writable: true,
+        value: ""
+      },
+      method: {
+        enumerable: true,
+        writable: true,
+        value: ""
+      },
+      url: {
+        enumerable: true,
+        writable: true,
+        value: ""
+      },
+      query: {
+        enumerable: true,
+        writable: true,
+        value: ""
+      },
+      params: {
+        enumerable: true,
+        writable: true,
+        value: ""
+      },
+      headers: {
+        enumerable: true,
+        writable: true,
+        value: {}
+      },
+      remoteAddress: {
+        enumerable: true,
+        writable: true,
+        value: ""
+      },
+      remotePort: {
+        enumerable: true,
+        writable: true,
+        value: ""
+      },
+      raw: {
+        enumerable: false,
+        get: function() {
+          return this[rawSymbol];
+        },
+        set: function(val) {
+          this[rawSymbol] = val;
+        }
+      }
+    });
+    Object.defineProperty(pinoReqProto, rawSymbol, {
+      writable: true,
+      value: {}
+    });
+    function reqSerializer(req) {
+      const connection = req.info || req.socket;
+      const _req = Object.create(pinoReqProto);
+      _req.id = typeof req.id === "function" ? req.id() : req.id || (req.info ? req.info.id : void 0);
+      _req.method = req.method;
+      if (req.originalUrl) {
+        _req.url = req.originalUrl;
+      } else {
+        const path = req.path;
+        _req.url = typeof path === "string" ? path : req.url ? req.url.path || req.url : void 0;
+      }
+      if (req.query) {
+        _req.query = req.query;
+      }
+      if (req.params) {
+        _req.params = req.params;
+      }
+      _req.headers = req.headers;
+      _req.remoteAddress = connection && connection.remoteAddress;
+      _req.remotePort = connection && connection.remotePort;
+      _req.raw = req.raw || req;
+      return _req;
+    }
+    __name(reqSerializer, "reqSerializer");
+    function mapHttpRequest(req) {
+      return {
+        req: reqSerializer(req)
+      };
+    }
+    __name(mapHttpRequest, "mapHttpRequest");
+  }
+});
+
+// node_modules/.pnpm/pino-std-serializers@7.0.0/node_modules/pino-std-serializers/lib/res.js
+var require_res = __commonJS({
+  "node_modules/.pnpm/pino-std-serializers@7.0.0/node_modules/pino-std-serializers/lib/res.js"(exports2, module2) {
+    "use strict";
+    module2.exports = {
+      mapHttpResponse,
+      resSerializer
+    };
+    var rawSymbol = Symbol("pino-raw-res-ref");
+    var pinoResProto = Object.create({}, {
+      statusCode: {
+        enumerable: true,
+        writable: true,
+        value: 0
+      },
+      headers: {
+        enumerable: true,
+        writable: true,
+        value: ""
+      },
+      raw: {
+        enumerable: false,
+        get: function() {
+          return this[rawSymbol];
+        },
+        set: function(val) {
+          this[rawSymbol] = val;
+        }
+      }
+    });
+    Object.defineProperty(pinoResProto, rawSymbol, {
+      writable: true,
+      value: {}
+    });
+    function resSerializer(res) {
+      const _res = Object.create(pinoResProto);
+      _res.statusCode = res.headersSent ? res.statusCode : null;
+      _res.headers = res.getHeaders ? res.getHeaders() : res._headers;
+      _res.raw = res;
+      return _res;
+    }
+    __name(resSerializer, "resSerializer");
+    function mapHttpResponse(res) {
+      return {
+        res: resSerializer(res)
+      };
+    }
+    __name(mapHttpResponse, "mapHttpResponse");
+  }
+});
+
+// node_modules/.pnpm/pino-std-serializers@7.0.0/node_modules/pino-std-serializers/index.js
+var require_pino_std_serializers = __commonJS({
+  "node_modules/.pnpm/pino-std-serializers@7.0.0/node_modules/pino-std-serializers/index.js"(exports2, module2) {
+    "use strict";
+    var errSerializer = require_err();
+    var errWithCauseSerializer = require_err_with_cause();
+    var reqSerializers = require_req();
+    var resSerializers = require_res();
+    module2.exports = {
+      err: errSerializer,
+      errWithCause: errWithCauseSerializer,
+      mapHttpRequest: reqSerializers.mapHttpRequest,
+      mapHttpResponse: resSerializers.mapHttpResponse,
+      req: reqSerializers.reqSerializer,
+      res: resSerializers.resSerializer,
+      wrapErrorSerializer: /* @__PURE__ */ __name(function wrapErrorSerializer(customSerializer) {
+        if (customSerializer === errSerializer)
+          return customSerializer;
+        return /* @__PURE__ */ __name(function wrapErrSerializer(err) {
+          return customSerializer(errSerializer(err));
+        }, "wrapErrSerializer");
+      }, "wrapErrorSerializer"),
+      wrapRequestSerializer: /* @__PURE__ */ __name(function wrapRequestSerializer(customSerializer) {
+        if (customSerializer === reqSerializers.reqSerializer)
+          return customSerializer;
+        return /* @__PURE__ */ __name(function wrappedReqSerializer(req) {
+          return customSerializer(reqSerializers.reqSerializer(req));
+        }, "wrappedReqSerializer");
+      }, "wrapRequestSerializer"),
+      wrapResponseSerializer: /* @__PURE__ */ __name(function wrapResponseSerializer(customSerializer) {
+        if (customSerializer === resSerializers.resSerializer)
+          return customSerializer;
+        return /* @__PURE__ */ __name(function wrappedResSerializer(res) {
+          return customSerializer(resSerializers.resSerializer(res));
+        }, "wrappedResSerializer");
+      }, "wrapResponseSerializer")
+    };
+  }
+});
+
+// node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/caller.js
+var require_caller = __commonJS({
+  "node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/caller.js"(exports2, module2) {
+    "use strict";
+    function noOpPrepareStackTrace(_5, stack) {
+      return stack;
+    }
+    __name(noOpPrepareStackTrace, "noOpPrepareStackTrace");
+    module2.exports = /* @__PURE__ */ __name(function getCallers() {
+      const originalPrepare = Error.prepareStackTrace;
+      Error.prepareStackTrace = noOpPrepareStackTrace;
+      const stack = new Error().stack;
+      Error.prepareStackTrace = originalPrepare;
+      if (!Array.isArray(stack)) {
+        return void 0;
+      }
+      const entries = stack.slice(2);
+      const fileNames = [];
+      for (const entry of entries) {
+        if (!entry) {
+          continue;
+        }
+        fileNames.push(entry.getFileName());
+      }
+      return fileNames;
+    }, "getCallers");
+  }
+});
+
+// node_modules/.pnpm/fast-redact@3.5.0/node_modules/fast-redact/lib/validator.js
+var require_validator = __commonJS({
+  "node_modules/.pnpm/fast-redact@3.5.0/node_modules/fast-redact/lib/validator.js"(exports2, module2) {
+    "use strict";
+    module2.exports = validator;
+    function validator(opts = {}) {
+      const {
+        ERR_PATHS_MUST_BE_STRINGS = /* @__PURE__ */ __name(() => "fast-redact - Paths must be (non-empty) strings", "ERR_PATHS_MUST_BE_STRINGS"),
+        ERR_INVALID_PATH = /* @__PURE__ */ __name((s) => `fast-redact \u2013 Invalid path (${s})`, "ERR_INVALID_PATH")
+      } = opts;
+      return /* @__PURE__ */ __name(function validate({ paths }) {
+        paths.forEach((s) => {
+          if (typeof s !== "string") {
+            throw Error(ERR_PATHS_MUST_BE_STRINGS());
+          }
+          try {
+            if (/〇/.test(s))
+              throw Error();
+            const expr = (s[0] === "[" ? "" : ".") + s.replace(/^\*/, "\u3007").replace(/\.\*/g, ".\u3007").replace(/\[\*\]/g, "[\u3007]");
+            if (/\n|\r|;/.test(expr))
+              throw Error();
+            if (/\/\*/.test(expr))
+              throw Error();
+            Function(`
+            'use strict'
+            const o = new Proxy({}, { get: () => o, set: () => { throw Error() } });
+            const \u3007 = null;
+            o${expr}
+            if ([o${expr}].length !== 1) throw Error()`)();
+          } catch (e) {
+            throw Error(ERR_INVALID_PATH(s));
+          }
+        });
+      }, "validate");
+    }
+    __name(validator, "validator");
+  }
+});
+
+// node_modules/.pnpm/fast-redact@3.5.0/node_modules/fast-redact/lib/rx.js
+var require_rx = __commonJS({
+  "node_modules/.pnpm/fast-redact@3.5.0/node_modules/fast-redact/lib/rx.js"(exports2, module2) {
+    "use strict";
+    module2.exports = /[^.[\]]+|\[((?:.)*?)\]/g;
+  }
+});
+
+// node_modules/.pnpm/fast-redact@3.5.0/node_modules/fast-redact/lib/parse.js
+var require_parse = __commonJS({
+  "node_modules/.pnpm/fast-redact@3.5.0/node_modules/fast-redact/lib/parse.js"(exports2, module2) {
+    "use strict";
+    var rx = require_rx();
+    module2.exports = parse;
+    function parse({ paths }) {
+      const wildcards = [];
+      var wcLen = 0;
+      const secret = paths.reduce(function(o, strPath, ix) {
+        var path = strPath.match(rx).map((p) => p.replace(/'|"|`/g, ""));
+        const leadingBracket = strPath[0] === "[";
+        path = path.map((p) => {
+          if (p[0] === "[")
+            return p.substr(1, p.length - 2);
+          else
+            return p;
+        });
+        const star = path.indexOf("*");
+        if (star > -1) {
+          const before = path.slice(0, star);
+          const beforeStr = before.join(".");
+          const after = path.slice(star + 1, path.length);
+          const nested = after.length > 0;
+          wcLen++;
+          wildcards.push({
+            before,
+            beforeStr,
+            after,
+            nested
+          });
+        } else {
+          o[strPath] = {
+            path,
+            val: void 0,
+            precensored: false,
+            circle: "",
+            escPath: JSON.stringify(strPath),
+            leadingBracket
+          };
+        }
+        return o;
+      }, {});
+      return { wildcards, wcLen, secret };
+    }
+    __name(parse, "parse");
+  }
+});
+
+// node_modules/.pnpm/fast-redact@3.5.0/node_modules/fast-redact/lib/redactor.js
+var require_redactor = __commonJS({
+  "node_modules/.pnpm/fast-redact@3.5.0/node_modules/fast-redact/lib/redactor.js"(exports2, module2) {
+    "use strict";
+    var rx = require_rx();
+    module2.exports = redactor;
+    function redactor({ secret, serialize, wcLen, strict, isCensorFct, censorFctTakesPath }, state) {
+      const redact = Function("o", `
+    if (typeof o !== 'object' || o == null) {
+      ${strictImpl(strict, serialize)}
+    }
+    const { censor, secret } = this
+    const originalSecret = {}
+    const secretKeys = Object.keys(secret)
+    for (var i = 0; i < secretKeys.length; i++) {
+      originalSecret[secretKeys[i]] = secret[secretKeys[i]]
+    }
+
+    ${redactTmpl(secret, isCensorFct, censorFctTakesPath)}
+    this.compileRestore()
+    ${dynamicRedactTmpl(wcLen > 0, isCensorFct, censorFctTakesPath)}
+    this.secret = originalSecret
+    ${resultTmpl(serialize)}
+  `).bind(state);
+      redact.state = state;
+      if (serialize === false) {
+        redact.restore = (o) => state.restore(o);
+      }
+      return redact;
+    }
+    __name(redactor, "redactor");
+    function redactTmpl(secret, isCensorFct, censorFctTakesPath) {
+      return Object.keys(secret).map((path) => {
+        const { escPath, leadingBracket, path: arrPath } = secret[path];
+        const skip = leadingBracket ? 1 : 0;
+        const delim = leadingBracket ? "" : ".";
+        const hops = [];
+        var match;
+        while ((match = rx.exec(path)) !== null) {
+          const [, ix] = match;
+          const { index, input } = match;
+          if (index > skip)
+            hops.push(input.substring(0, index - (ix ? 0 : 1)));
+        }
+        var existence = hops.map((p) => `o${delim}${p}`).join(" && ");
+        if (existence.length === 0)
+          existence += `o${delim}${path} != null`;
+        else
+          existence += ` && o${delim}${path} != null`;
+        const circularDetection = `
+      switch (true) {
+        ${hops.reverse().map((p) => `
+          case o${delim}${p} === censor:
+            secret[${escPath}].circle = ${JSON.stringify(p)}
+            break
+        `).join("\n")}
+      }
+    `;
+        const censorArgs = censorFctTakesPath ? `val, ${JSON.stringify(arrPath)}` : `val`;
+        return `
+      if (${existence}) {
+        const val = o${delim}${path}
+        if (val === censor) {
+          secret[${escPath}].precensored = true
+        } else {
+          secret[${escPath}].val = val
+          o${delim}${path} = ${isCensorFct ? `censor(${censorArgs})` : "censor"}
+          ${circularDetection}
+        }
+      }
+    `;
+      }).join("\n");
+    }
+    __name(redactTmpl, "redactTmpl");
+    function dynamicRedactTmpl(hasWildcards, isCensorFct, censorFctTakesPath) {
+      return hasWildcards === true ? `
+    {
+      const { wildcards, wcLen, groupRedact, nestedRedact } = this
+      for (var i = 0; i < wcLen; i++) {
+        const { before, beforeStr, after, nested } = wildcards[i]
+        if (nested === true) {
+          secret[beforeStr] = secret[beforeStr] || []
+          nestedRedact(secret[beforeStr], o, before, after, censor, ${isCensorFct}, ${censorFctTakesPath})
+        } else secret[beforeStr] = groupRedact(o, before, censor, ${isCensorFct}, ${censorFctTakesPath})
+      }
+    }
+  ` : "";
+    }
+    __name(dynamicRedactTmpl, "dynamicRedactTmpl");
+    function resultTmpl(serialize) {
+      return serialize === false ? `return o` : `
+    var s = this.serialize(o)
+    this.restore(o)
+    return s
+  `;
+    }
+    __name(resultTmpl, "resultTmpl");
+    function strictImpl(strict, serialize) {
+      return strict === true ? `throw Error('fast-redact: primitives cannot be redacted')` : serialize === false ? `return o` : `return this.serialize(o)`;
+    }
+    __name(strictImpl, "strictImpl");
+  }
+});
+
+// node_modules/.pnpm/fast-redact@3.5.0/node_modules/fast-redact/lib/modifiers.js
+var require_modifiers = __commonJS({
+  "node_modules/.pnpm/fast-redact@3.5.0/node_modules/fast-redact/lib/modifiers.js"(exports2, module2) {
+    "use strict";
+    module2.exports = {
+      groupRedact,
+      groupRestore,
+      nestedRedact,
+      nestedRestore
+    };
+    function groupRestore({ keys: keys4, values, target }) {
+      if (target == null || typeof target === "string")
+        return;
+      const length = keys4.length;
+      for (var i = 0; i < length; i++) {
+        const k = keys4[i];
+        target[k] = values[i];
+      }
+    }
+    __name(groupRestore, "groupRestore");
+    function groupRedact(o, path, censor, isCensorFct, censorFctTakesPath) {
+      const target = get(o, path);
+      if (target == null || typeof target === "string")
+        return { keys: null, values: null, target, flat: true };
+      const keys4 = Object.keys(target);
+      const keysLength = keys4.length;
+      const pathLength = path.length;
+      const pathWithKey = censorFctTakesPath ? [...path] : void 0;
+      const values = new Array(keysLength);
+      for (var i = 0; i < keysLength; i++) {
+        const key = keys4[i];
+        values[i] = target[key];
+        if (censorFctTakesPath) {
+          pathWithKey[pathLength] = key;
+          target[key] = censor(target[key], pathWithKey);
+        } else if (isCensorFct) {
+          target[key] = censor(target[key]);
+        } else {
+          target[key] = censor;
+        }
+      }
+      return { keys: keys4, values, target, flat: true };
+    }
+    __name(groupRedact, "groupRedact");
+    function nestedRestore(instructions) {
+      for (let i = 0; i < instructions.length; i++) {
+        const { target, path, value } = instructions[i];
+        let current = target;
+        for (let i2 = path.length - 1; i2 > 0; i2--) {
+          current = current[path[i2]];
+        }
+        current[path[0]] = value;
+      }
+    }
+    __name(nestedRestore, "nestedRestore");
+    function nestedRedact(store, o, path, ns, censor, isCensorFct, censorFctTakesPath) {
+      const target = get(o, path);
+      if (target == null)
+        return;
+      const keys4 = Object.keys(target);
+      const keysLength = keys4.length;
+      for (var i = 0; i < keysLength; i++) {
+        const key = keys4[i];
+        specialSet(store, target, key, path, ns, censor, isCensorFct, censorFctTakesPath);
+      }
+      return store;
+    }
+    __name(nestedRedact, "nestedRedact");
+    function has(obj, prop) {
+      return obj !== void 0 && obj !== null ? "hasOwn" in Object ? Object.hasOwn(obj, prop) : Object.prototype.hasOwnProperty.call(obj, prop) : false;
+    }
+    __name(has, "has");
+    function specialSet(store, o, k, path, afterPath, censor, isCensorFct, censorFctTakesPath) {
+      const afterPathLen = afterPath.length;
+      const lastPathIndex = afterPathLen - 1;
+      const originalKey = k;
+      var i = -1;
+      var n;
+      var nv;
+      var ov;
+      var oov = null;
+      var wc = null;
+      var kIsWc;
+      var wcov;
+      var consecutive = false;
+      var level = 0;
+      var depth = 0;
+      var redactPathCurrent = tree();
+      ov = n = o[k];
+      if (typeof n !== "object")
+        return;
+      while (n != null && ++i < afterPathLen) {
+        depth += 1;
+        k = afterPath[i];
+        oov = ov;
+        if (k !== "*" && !wc && !(typeof n === "object" && k in n)) {
+          break;
+        }
+        if (k === "*") {
+          if (wc === "*") {
+            consecutive = true;
+          }
+          wc = k;
+          if (i !== lastPathIndex) {
+            continue;
+          }
+        }
+        if (wc) {
+          const wcKeys = Object.keys(n);
+          for (var j = 0; j < wcKeys.length; j++) {
+            const wck = wcKeys[j];
+            wcov = n[wck];
+            kIsWc = k === "*";
+            if (consecutive) {
+              redactPathCurrent = node(redactPathCurrent, wck, depth);
+              level = i;
+              ov = iterateNthLevel(wcov, level - 1, k, path, afterPath, censor, isCensorFct, censorFctTakesPath, originalKey, n, nv, ov, kIsWc, wck, i, lastPathIndex, redactPathCurrent, store, o[originalKey], depth + 1);
+            } else {
+              if (kIsWc || typeof wcov === "object" && wcov !== null && k in wcov) {
+                if (kIsWc) {
+                  ov = wcov;
+                } else {
+                  ov = wcov[k];
+                }
+                nv = i !== lastPathIndex ? ov : isCensorFct ? censorFctTakesPath ? censor(ov, [...path, originalKey, ...afterPath]) : censor(ov) : censor;
+                if (kIsWc) {
+                  const rv = restoreInstr(node(redactPathCurrent, wck, depth), ov, o[originalKey]);
+                  store.push(rv);
+                  n[wck] = nv;
+                } else {
+                  if (wcov[k] === nv) {
+                  } else if (nv === void 0 && censor !== void 0 || has(wcov, k) && nv === ov) {
+                    redactPathCurrent = node(redactPathCurrent, wck, depth);
+                  } else {
+                    redactPathCurrent = node(redactPathCurrent, wck, depth);
+                    const rv = restoreInstr(node(redactPathCurrent, k, depth + 1), ov, o[originalKey]);
+                    store.push(rv);
+                    wcov[k] = nv;
+                  }
+                }
+              }
+            }
+          }
+          wc = null;
+        } else {
+          ov = n[k];
+          redactPathCurrent = node(redactPathCurrent, k, depth);
+          nv = i !== lastPathIndex ? ov : isCensorFct ? censorFctTakesPath ? censor(ov, [...path, originalKey, ...afterPath]) : censor(ov) : censor;
+          if (has(n, k) && nv === ov || nv === void 0 && censor !== void 0) {
+          } else {
+            const rv = restoreInstr(redactPathCurrent, ov, o[originalKey]);
+            store.push(rv);
+            n[k] = nv;
+          }
+          n = n[k];
+        }
+        if (typeof n !== "object")
+          break;
+        if (ov === oov || typeof ov === "undefined") {
+        }
+      }
+    }
+    __name(specialSet, "specialSet");
+    function get(o, p) {
+      var i = -1;
+      var l = p.length;
+      var n = o;
+      while (n != null && ++i < l) {
+        n = n[p[i]];
+      }
+      return n;
+    }
+    __name(get, "get");
+    function iterateNthLevel(wcov, level, k, path, afterPath, censor, isCensorFct, censorFctTakesPath, originalKey, n, nv, ov, kIsWc, wck, i, lastPathIndex, redactPathCurrent, store, parent, depth) {
+      if (level === 0) {
+        if (kIsWc || typeof wcov === "object" && wcov !== null && k in wcov) {
+          if (kIsWc) {
+            ov = wcov;
+          } else {
+            ov = wcov[k];
+          }
+          nv = i !== lastPathIndex ? ov : isCensorFct ? censorFctTakesPath ? censor(ov, [...path, originalKey, ...afterPath]) : censor(ov) : censor;
+          if (kIsWc) {
+            const rv = restoreInstr(redactPathCurrent, ov, parent);
+            store.push(rv);
+            n[wck] = nv;
+          } else {
+            if (wcov[k] === nv) {
+            } else if (nv === void 0 && censor !== void 0 || has(wcov, k) && nv === ov) {
+            } else {
+              const rv = restoreInstr(node(redactPathCurrent, k, depth + 1), ov, parent);
+              store.push(rv);
+              wcov[k] = nv;
+            }
+          }
+        }
+      }
+      for (const key in wcov) {
+        if (typeof wcov[key] === "object") {
+          redactPathCurrent = node(redactPathCurrent, key, depth);
+          iterateNthLevel(wcov[key], level - 1, k, path, afterPath, censor, isCensorFct, censorFctTakesPath, originalKey, n, nv, ov, kIsWc, wck, i, lastPathIndex, redactPathCurrent, store, parent, depth + 1);
+        }
+      }
+    }
+    __name(iterateNthLevel, "iterateNthLevel");
+    function tree() {
+      return { parent: null, key: null, children: [], depth: 0 };
+    }
+    __name(tree, "tree");
+    function node(parent, key, depth) {
+      if (parent.depth === depth) {
+        return node(parent.parent, key, depth);
+      }
+      var child = {
+        parent,
+        key,
+        depth,
+        children: []
+      };
+      parent.children.push(child);
+      return child;
+    }
+    __name(node, "node");
+    function restoreInstr(node2, value, target) {
+      let current = node2;
+      const path = [];
+      do {
+        path.push(current.key);
+        current = current.parent;
+      } while (current.parent != null);
+      return { path, value, target };
+    }
+    __name(restoreInstr, "restoreInstr");
+  }
+});
+
+// node_modules/.pnpm/fast-redact@3.5.0/node_modules/fast-redact/lib/restorer.js
+var require_restorer = __commonJS({
+  "node_modules/.pnpm/fast-redact@3.5.0/node_modules/fast-redact/lib/restorer.js"(exports2, module2) {
+    "use strict";
+    var { groupRestore, nestedRestore } = require_modifiers();
+    module2.exports = restorer;
+    function restorer() {
+      return /* @__PURE__ */ __name(function compileRestore() {
+        if (this.restore) {
+          this.restore.state.secret = this.secret;
+          return;
+        }
+        const { secret, wcLen } = this;
+        const paths = Object.keys(secret);
+        const resetters = resetTmpl(secret, paths);
+        const hasWildcards = wcLen > 0;
+        const state = hasWildcards ? { secret, groupRestore, nestedRestore } : { secret };
+        this.restore = Function(
+          "o",
+          restoreTmpl(resetters, paths, hasWildcards)
+        ).bind(state);
+        this.restore.state = state;
+      }, "compileRestore");
+    }
+    __name(restorer, "restorer");
+    function resetTmpl(secret, paths) {
+      return paths.map((path) => {
+        const { circle, escPath, leadingBracket } = secret[path];
+        const delim = leadingBracket ? "" : ".";
+        const reset = circle ? `o.${circle} = secret[${escPath}].val` : `o${delim}${path} = secret[${escPath}].val`;
+        const clear = `secret[${escPath}].val = undefined`;
+        return `
+      if (secret[${escPath}].val !== undefined) {
+        try { ${reset} } catch (e) {}
+        ${clear}
+      }
+    `;
+      }).join("");
+    }
+    __name(resetTmpl, "resetTmpl");
+    function restoreTmpl(resetters, paths, hasWildcards) {
+      const dynamicReset = hasWildcards === true ? `
+    const keys = Object.keys(secret)
+    const len = keys.length
+    for (var i = len - 1; i >= ${paths.length}; i--) {
+      const k = keys[i]
+      const o = secret[k]
+      if (o) {
+        if (o.flat === true) this.groupRestore(o)
+        else this.nestedRestore(o)
+        secret[k] = null
+      }
+    }
+  ` : "";
+      return `
+    const secret = this.secret
+    ${dynamicReset}
+    ${resetters}
+    return o
+  `;
+    }
+    __name(restoreTmpl, "restoreTmpl");
+  }
+});
+
+// node_modules/.pnpm/fast-redact@3.5.0/node_modules/fast-redact/lib/state.js
+var require_state = __commonJS({
+  "node_modules/.pnpm/fast-redact@3.5.0/node_modules/fast-redact/lib/state.js"(exports2, module2) {
+    "use strict";
+    module2.exports = state;
+    function state(o) {
+      const {
+        secret,
+        censor,
+        compileRestore,
+        serialize,
+        groupRedact,
+        nestedRedact,
+        wildcards,
+        wcLen
+      } = o;
+      const builder = [{ secret, censor, compileRestore }];
+      if (serialize !== false)
+        builder.push({ serialize });
+      if (wcLen > 0)
+        builder.push({ groupRedact, nestedRedact, wildcards, wcLen });
+      return Object.assign(...builder);
+    }
+    __name(state, "state");
+  }
+});
+
+// node_modules/.pnpm/fast-redact@3.5.0/node_modules/fast-redact/index.js
+var require_fast_redact = __commonJS({
+  "node_modules/.pnpm/fast-redact@3.5.0/node_modules/fast-redact/index.js"(exports2, module2) {
+    "use strict";
+    var validator = require_validator();
+    var parse = require_parse();
+    var redactor = require_redactor();
+    var restorer = require_restorer();
+    var { groupRedact, nestedRedact } = require_modifiers();
+    var state = require_state();
+    var rx = require_rx();
+    var validate = validator();
+    var noop = /* @__PURE__ */ __name((o) => o, "noop");
+    noop.restore = noop;
+    var DEFAULT_CENSOR = "[REDACTED]";
+    fastRedact.rx = rx;
+    fastRedact.validator = validator;
+    module2.exports = fastRedact;
+    function fastRedact(opts = {}) {
+      const paths = Array.from(new Set(opts.paths || []));
+      const serialize = "serialize" in opts ? opts.serialize === false ? opts.serialize : typeof opts.serialize === "function" ? opts.serialize : JSON.stringify : JSON.stringify;
+      const remove = opts.remove;
+      if (remove === true && serialize !== JSON.stringify) {
+        throw Error("fast-redact \u2013 remove option may only be set when serializer is JSON.stringify");
+      }
+      const censor = remove === true ? void 0 : "censor" in opts ? opts.censor : DEFAULT_CENSOR;
+      const isCensorFct = typeof censor === "function";
+      const censorFctTakesPath = isCensorFct && censor.length > 1;
+      if (paths.length === 0)
+        return serialize || noop;
+      validate({ paths, serialize, censor });
+      const { wildcards, wcLen, secret } = parse({ paths, censor });
+      const compileRestore = restorer();
+      const strict = "strict" in opts ? opts.strict : true;
+      return redactor({ secret, wcLen, serialize, strict, isCensorFct, censorFctTakesPath }, state({
+        secret,
+        censor,
+        compileRestore,
+        serialize,
+        groupRedact,
+        nestedRedact,
+        wildcards,
+        wcLen
+      }));
+    }
+    __name(fastRedact, "fastRedact");
+  }
+});
+
+// node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/symbols.js
+var require_symbols = __commonJS({
+  "node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/symbols.js"(exports2, module2) {
+    "use strict";
+    var setLevelSym = Symbol("pino.setLevel");
+    var getLevelSym = Symbol("pino.getLevel");
+    var levelValSym = Symbol("pino.levelVal");
+    var levelCompSym = Symbol("pino.levelComp");
+    var useLevelLabelsSym = Symbol("pino.useLevelLabels");
+    var useOnlyCustomLevelsSym = Symbol("pino.useOnlyCustomLevels");
+    var mixinSym = Symbol("pino.mixin");
+    var lsCacheSym = Symbol("pino.lsCache");
+    var chindingsSym = Symbol("pino.chindings");
+    var asJsonSym = Symbol("pino.asJson");
+    var writeSym = Symbol("pino.write");
+    var redactFmtSym = Symbol("pino.redactFmt");
+    var timeSym = Symbol("pino.time");
+    var timeSliceIndexSym = Symbol("pino.timeSliceIndex");
+    var streamSym = Symbol("pino.stream");
+    var stringifySym = Symbol("pino.stringify");
+    var stringifySafeSym = Symbol("pino.stringifySafe");
+    var stringifiersSym = Symbol("pino.stringifiers");
+    var endSym = Symbol("pino.end");
+    var formatOptsSym = Symbol("pino.formatOpts");
+    var messageKeySym = Symbol("pino.messageKey");
+    var errorKeySym = Symbol("pino.errorKey");
+    var nestedKeySym = Symbol("pino.nestedKey");
+    var nestedKeyStrSym = Symbol("pino.nestedKeyStr");
+    var mixinMergeStrategySym = Symbol("pino.mixinMergeStrategy");
+    var msgPrefixSym = Symbol("pino.msgPrefix");
+    var wildcardFirstSym = Symbol("pino.wildcardFirst");
+    var serializersSym = Symbol.for("pino.serializers");
+    var formattersSym = Symbol.for("pino.formatters");
+    var hooksSym = Symbol.for("pino.hooks");
+    var needsMetadataGsym = Symbol.for("pino.metadata");
+    module2.exports = {
+      setLevelSym,
+      getLevelSym,
+      levelValSym,
+      levelCompSym,
+      useLevelLabelsSym,
+      mixinSym,
+      lsCacheSym,
+      chindingsSym,
+      asJsonSym,
+      writeSym,
+      serializersSym,
+      redactFmtSym,
+      timeSym,
+      timeSliceIndexSym,
+      streamSym,
+      stringifySym,
+      stringifySafeSym,
+      stringifiersSym,
+      endSym,
+      formatOptsSym,
+      messageKeySym,
+      errorKeySym,
+      nestedKeySym,
+      wildcardFirstSym,
+      needsMetadataGsym,
+      useOnlyCustomLevelsSym,
+      formattersSym,
+      hooksSym,
+      nestedKeyStrSym,
+      mixinMergeStrategySym,
+      msgPrefixSym
+    };
+  }
+});
+
+// node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/redaction.js
+var require_redaction = __commonJS({
+  "node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/redaction.js"(exports2, module2) {
+    "use strict";
+    var fastRedact = require_fast_redact();
+    var { redactFmtSym, wildcardFirstSym } = require_symbols();
+    var { rx, validator } = fastRedact;
+    var validate = validator({
+      ERR_PATHS_MUST_BE_STRINGS: () => "pino \u2013 redacted paths must be strings",
+      ERR_INVALID_PATH: (s) => `pino \u2013 redact paths array contains an invalid path (${s})`
+    });
+    var CENSOR = "[Redacted]";
+    var strict = false;
+    function redaction(opts, serialize) {
+      const { paths, censor } = handle(opts);
+      const shape = paths.reduce((o, str) => {
+        rx.lastIndex = 0;
+        const first = rx.exec(str);
+        const next = rx.exec(str);
+        let ns = first[1] !== void 0 ? first[1].replace(/^(?:"|'|`)(.*)(?:"|'|`)$/, "$1") : first[0];
+        if (ns === "*") {
+          ns = wildcardFirstSym;
+        }
+        if (next === null) {
+          o[ns] = null;
+          return o;
+        }
+        if (o[ns] === null) {
+          return o;
+        }
+        const { index } = next;
+        const nextPath = `${str.substr(index, str.length - 1)}`;
+        o[ns] = o[ns] || [];
+        if (ns !== wildcardFirstSym && o[ns].length === 0) {
+          o[ns].push(...o[wildcardFirstSym] || []);
+        }
+        if (ns === wildcardFirstSym) {
+          Object.keys(o).forEach(function(k) {
+            if (o[k]) {
+              o[k].push(nextPath);
+            }
+          });
+        }
+        o[ns].push(nextPath);
+        return o;
+      }, {});
+      const result = {
+        [redactFmtSym]: fastRedact({ paths, censor, serialize, strict })
+      };
+      const topCensor = /* @__PURE__ */ __name((...args2) => {
+        return typeof censor === "function" ? serialize(censor(...args2)) : serialize(censor);
+      }, "topCensor");
+      return [...Object.keys(shape), ...Object.getOwnPropertySymbols(shape)].reduce((o, k) => {
+        if (shape[k] === null) {
+          o[k] = (value) => topCensor(value, [k]);
+        } else {
+          const wrappedCensor = typeof censor === "function" ? (value, path) => {
+            return censor(value, [k, ...path]);
+          } : censor;
+          o[k] = fastRedact({
+            paths: shape[k],
+            censor: wrappedCensor,
+            serialize,
+            strict
+          });
+        }
+        return o;
+      }, result);
+    }
+    __name(redaction, "redaction");
+    function handle(opts) {
+      if (Array.isArray(opts)) {
+        opts = { paths: opts, censor: CENSOR };
+        validate(opts);
+        return opts;
+      }
+      let { paths, censor = CENSOR, remove } = opts;
+      if (Array.isArray(paths) === false) {
+        throw Error("pino \u2013 redact must contain an array of strings");
+      }
+      if (remove === true)
+        censor = void 0;
+      validate({ paths, censor });
+      return { paths, censor };
+    }
+    __name(handle, "handle");
+    module2.exports = redaction;
+  }
+});
+
+// node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/time.js
+var require_time = __commonJS({
+  "node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/time.js"(exports2, module2) {
+    "use strict";
+    var nullTime = /* @__PURE__ */ __name(() => "", "nullTime");
+    var epochTime = /* @__PURE__ */ __name(() => `,"time":${Date.now()}`, "epochTime");
+    var unixTime = /* @__PURE__ */ __name(() => `,"time":${Math.round(Date.now() / 1e3)}`, "unixTime");
+    var isoTime = /* @__PURE__ */ __name(() => `,"time":"${new Date(Date.now()).toISOString()}"`, "isoTime");
+    module2.exports = { nullTime, epochTime, unixTime, isoTime };
+  }
+});
+
+// node_modules/.pnpm/quick-format-unescaped@4.0.4/node_modules/quick-format-unescaped/index.js
+var require_quick_format_unescaped = __commonJS({
+  "node_modules/.pnpm/quick-format-unescaped@4.0.4/node_modules/quick-format-unescaped/index.js"(exports2, module2) {
+    "use strict";
+    function tryStringify(o) {
+      try {
+        return JSON.stringify(o);
+      } catch (e) {
+        return '"[Circular]"';
+      }
+    }
+    __name(tryStringify, "tryStringify");
+    module2.exports = format;
+    function format(f, args2, opts) {
+      var ss = opts && opts.stringify || tryStringify;
+      var offset = 1;
+      if (typeof f === "object" && f !== null) {
+        var len = args2.length + offset;
+        if (len === 1)
+          return f;
+        var objects = new Array(len);
+        objects[0] = ss(f);
+        for (var index = 1; index < len; index++) {
+          objects[index] = ss(args2[index]);
+        }
+        return objects.join(" ");
+      }
+      if (typeof f !== "string") {
+        return f;
+      }
+      var argLen = args2.length;
+      if (argLen === 0)
+        return f;
+      var str = "";
+      var a = 1 - offset;
+      var lastPos = -1;
+      var flen = f && f.length || 0;
+      for (var i = 0; i < flen; ) {
+        if (f.charCodeAt(i) === 37 && i + 1 < flen) {
+          lastPos = lastPos > -1 ? lastPos : 0;
+          switch (f.charCodeAt(i + 1)) {
+            case 100:
+            case 102:
+              if (a >= argLen)
+                break;
+              if (args2[a] == null)
+                break;
+              if (lastPos < i)
+                str += f.slice(lastPos, i);
+              str += Number(args2[a]);
+              lastPos = i + 2;
+              i++;
+              break;
+            case 105:
+              if (a >= argLen)
+                break;
+              if (args2[a] == null)
+                break;
+              if (lastPos < i)
+                str += f.slice(lastPos, i);
+              str += Math.floor(Number(args2[a]));
+              lastPos = i + 2;
+              i++;
+              break;
+            case 79:
+            case 111:
+            case 106:
+              if (a >= argLen)
+                break;
+              if (args2[a] === void 0)
+                break;
+              if (lastPos < i)
+                str += f.slice(lastPos, i);
+              var type = typeof args2[a];
+              if (type === "string") {
+                str += "'" + args2[a] + "'";
+                lastPos = i + 2;
+                i++;
+                break;
+              }
+              if (type === "function") {
+                str += args2[a].name || "<anonymous>";
+                lastPos = i + 2;
+                i++;
+                break;
+              }
+              str += ss(args2[a]);
+              lastPos = i + 2;
+              i++;
+              break;
+            case 115:
+              if (a >= argLen)
+                break;
+              if (lastPos < i)
+                str += f.slice(lastPos, i);
+              str += String(args2[a]);
+              lastPos = i + 2;
+              i++;
+              break;
+            case 37:
+              if (lastPos < i)
+                str += f.slice(lastPos, i);
+              str += "%";
+              lastPos = i + 2;
+              i++;
+              a--;
+              break;
+          }
+          ++a;
+        }
+        ++i;
+      }
+      if (lastPos === -1)
+        return f;
+      else if (lastPos < flen) {
+        str += f.slice(lastPos);
+      }
+      return str;
+    }
+    __name(format, "format");
+  }
+});
+
+// node_modules/.pnpm/atomic-sleep@1.0.0/node_modules/atomic-sleep/index.js
+var require_atomic_sleep = __commonJS({
+  "node_modules/.pnpm/atomic-sleep@1.0.0/node_modules/atomic-sleep/index.js"(exports2, module2) {
+    "use strict";
+    if (typeof SharedArrayBuffer !== "undefined" && typeof Atomics !== "undefined") {
+      let sleep = function(ms) {
+        const valid = ms > 0 && ms < Infinity;
+        if (valid === false) {
+          if (typeof ms !== "number" && typeof ms !== "bigint") {
+            throw TypeError("sleep: ms must be a number");
+          }
+          throw RangeError("sleep: ms must be a number that is greater than 0 but less than Infinity");
+        }
+        Atomics.wait(nil, 0, 0, Number(ms));
+      };
+      __name(sleep, "sleep");
+      const nil = new Int32Array(new SharedArrayBuffer(4));
+      module2.exports = sleep;
+    } else {
+      let sleep = function(ms) {
+        const valid = ms > 0 && ms < Infinity;
+        if (valid === false) {
+          if (typeof ms !== "number" && typeof ms !== "bigint") {
+            throw TypeError("sleep: ms must be a number");
+          }
+          throw RangeError("sleep: ms must be a number that is greater than 0 but less than Infinity");
+        }
+        const target = Date.now() + Number(ms);
+        while (target > Date.now()) {
+        }
+      };
+      __name(sleep, "sleep");
+      module2.exports = sleep;
+    }
+  }
+});
+
+// node_modules/.pnpm/sonic-boom@4.0.1/node_modules/sonic-boom/index.js
+var require_sonic_boom = __commonJS({
+  "node_modules/.pnpm/sonic-boom@4.0.1/node_modules/sonic-boom/index.js"(exports2, module2) {
+    "use strict";
+    var fs = require("fs");
+    var EventEmitter = require("events");
+    var inherits = require("util").inherits;
+    var path = require("path");
+    var sleep = require_atomic_sleep();
+    var BUSY_WRITE_TIMEOUT = 100;
+    var kEmptyBuffer = Buffer.allocUnsafe(0);
+    var MAX_WRITE = 16 * 1024;
+    var kContentModeBuffer = "buffer";
+    var kContentModeUtf8 = "utf8";
+    function openFile(file, sonic) {
+      sonic._opening = true;
+      sonic._writing = true;
+      sonic._asyncDrainScheduled = false;
+      function fileOpened(err, fd) {
+        if (err) {
+          sonic._reopening = false;
+          sonic._writing = false;
+          sonic._opening = false;
+          if (sonic.sync) {
+            process.nextTick(() => {
+              if (sonic.listenerCount("error") > 0) {
+                sonic.emit("error", err);
+              }
+            });
+          } else {
+            sonic.emit("error", err);
+          }
+          return;
+        }
+        const reopening = sonic._reopening;
+        sonic.fd = fd;
+        sonic.file = file;
+        sonic._reopening = false;
+        sonic._opening = false;
+        sonic._writing = false;
+        if (sonic.sync) {
+          process.nextTick(() => sonic.emit("ready"));
+        } else {
+          sonic.emit("ready");
+        }
+        if (sonic.destroyed) {
+          return;
+        }
+        if (!sonic._writing && sonic._len > sonic.minLength || sonic._flushPending) {
+          sonic._actualWrite();
+        } else if (reopening) {
+          process.nextTick(() => sonic.emit("drain"));
+        }
+      }
+      __name(fileOpened, "fileOpened");
+      const flags = sonic.append ? "a" : "w";
+      const mode = sonic.mode;
+      if (sonic.sync) {
+        try {
+          if (sonic.mkdir)
+            fs.mkdirSync(path.dirname(file), { recursive: true });
+          const fd = fs.openSync(file, flags, mode);
+          fileOpened(null, fd);
+        } catch (err) {
+          fileOpened(err);
+          throw err;
+        }
+      } else if (sonic.mkdir) {
+        fs.mkdir(path.dirname(file), { recursive: true }, (err) => {
+          if (err)
+            return fileOpened(err);
+          fs.open(file, flags, mode, fileOpened);
+        });
+      } else {
+        fs.open(file, flags, mode, fileOpened);
+      }
+    }
+    __name(openFile, "openFile");
+    function SonicBoom(opts) {
+      if (!(this instanceof SonicBoom)) {
+        return new SonicBoom(opts);
+      }
+      let { fd, dest, minLength, maxLength, maxWrite, sync, append = true, mkdir, retryEAGAIN, fsync, contentMode, mode } = opts || {};
+      fd = fd || dest;
+      this._len = 0;
+      this.fd = -1;
+      this._bufs = [];
+      this._lens = [];
+      this._writing = false;
+      this._ending = false;
+      this._reopening = false;
+      this._asyncDrainScheduled = false;
+      this._flushPending = false;
+      this._hwm = Math.max(minLength || 0, 16387);
+      this.file = null;
+      this.destroyed = false;
+      this.minLength = minLength || 0;
+      this.maxLength = maxLength || 0;
+      this.maxWrite = maxWrite || MAX_WRITE;
+      this.sync = sync || false;
+      this.writable = true;
+      this._fsync = fsync || false;
+      this.append = append || false;
+      this.mode = mode;
+      this.retryEAGAIN = retryEAGAIN || (() => true);
+      this.mkdir = mkdir || false;
+      let fsWriteSync;
+      let fsWrite;
+      if (contentMode === kContentModeBuffer) {
+        this._writingBuf = kEmptyBuffer;
+        this.write = writeBuffer;
+        this.flush = flushBuffer;
+        this.flushSync = flushBufferSync;
+        this._actualWrite = actualWriteBuffer;
+        fsWriteSync = /* @__PURE__ */ __name(() => fs.writeSync(this.fd, this._writingBuf), "fsWriteSync");
+        fsWrite = /* @__PURE__ */ __name(() => fs.write(this.fd, this._writingBuf, this.release), "fsWrite");
+      } else if (contentMode === void 0 || contentMode === kContentModeUtf8) {
+        this._writingBuf = "";
+        this.write = write2;
+        this.flush = flush;
+        this.flushSync = flushSync;
+        this._actualWrite = actualWrite;
+        fsWriteSync = /* @__PURE__ */ __name(() => fs.writeSync(this.fd, this._writingBuf, "utf8"), "fsWriteSync");
+        fsWrite = /* @__PURE__ */ __name(() => fs.write(this.fd, this._writingBuf, "utf8", this.release), "fsWrite");
+      } else {
+        throw new Error(`SonicBoom supports "${kContentModeUtf8}" and "${kContentModeBuffer}", but passed ${contentMode}`);
+      }
+      if (typeof fd === "number") {
+        this.fd = fd;
+        process.nextTick(() => this.emit("ready"));
+      } else if (typeof fd === "string") {
+        openFile(fd, this);
+      } else {
+        throw new Error("SonicBoom supports only file descriptors and files");
+      }
+      if (this.minLength >= this.maxWrite) {
+        throw new Error(`minLength should be smaller than maxWrite (${this.maxWrite})`);
+      }
+      this.release = (err, n) => {
+        if (err) {
+          if ((err.code === "EAGAIN" || err.code === "EBUSY") && this.retryEAGAIN(err, this._writingBuf.length, this._len - this._writingBuf.length)) {
+            if (this.sync) {
+              try {
+                sleep(BUSY_WRITE_TIMEOUT);
+                this.release(void 0, 0);
+              } catch (err2) {
+                this.release(err2);
+              }
+            } else {
+              setTimeout(fsWrite, BUSY_WRITE_TIMEOUT);
+            }
+          } else {
+            this._writing = false;
+            this.emit("error", err);
+          }
+          return;
+        }
+        this.emit("write", n);
+        const releasedBufObj = releaseWritingBuf(this._writingBuf, this._len, n);
+        this._len = releasedBufObj.len;
+        this._writingBuf = releasedBufObj.writingBuf;
+        if (this._writingBuf.length) {
+          if (!this.sync) {
+            fsWrite();
+            return;
+          }
+          try {
+            do {
+              const n2 = fsWriteSync();
+              const releasedBufObj2 = releaseWritingBuf(this._writingBuf, this._len, n2);
+              this._len = releasedBufObj2.len;
+              this._writingBuf = releasedBufObj2.writingBuf;
+            } while (this._writingBuf.length);
+          } catch (err2) {
+            this.release(err2);
+            return;
+          }
+        }
+        if (this._fsync) {
+          fs.fsyncSync(this.fd);
+        }
+        const len = this._len;
+        if (this._reopening) {
+          this._writing = false;
+          this._reopening = false;
+          this.reopen();
+        } else if (len > this.minLength) {
+          this._actualWrite();
+        } else if (this._ending) {
+          if (len > 0) {
+            this._actualWrite();
+          } else {
+            this._writing = false;
+            actualClose(this);
+          }
+        } else {
+          this._writing = false;
+          if (this.sync) {
+            if (!this._asyncDrainScheduled) {
+              this._asyncDrainScheduled = true;
+              process.nextTick(emitDrain, this);
+            }
+          } else {
+            this.emit("drain");
+          }
+        }
+      };
+      this.on("newListener", function(name) {
+        if (name === "drain") {
+          this._asyncDrainScheduled = false;
+        }
+      });
+    }
+    __name(SonicBoom, "SonicBoom");
+    function releaseWritingBuf(writingBuf, len, n) {
+      if (typeof writingBuf === "string" && Buffer.byteLength(writingBuf) !== n) {
+        n = Buffer.from(writingBuf).subarray(0, n).toString().length;
+      }
+      len = Math.max(len - n, 0);
+      writingBuf = writingBuf.slice(n);
+      return { writingBuf, len };
+    }
+    __name(releaseWritingBuf, "releaseWritingBuf");
+    function emitDrain(sonic) {
+      const hasListeners = sonic.listenerCount("drain") > 0;
+      if (!hasListeners)
+        return;
+      sonic._asyncDrainScheduled = false;
+      sonic.emit("drain");
+    }
+    __name(emitDrain, "emitDrain");
+    inherits(SonicBoom, EventEmitter);
+    function mergeBuf(bufs, len) {
+      if (bufs.length === 0) {
+        return kEmptyBuffer;
+      }
+      if (bufs.length === 1) {
+        return bufs[0];
+      }
+      return Buffer.concat(bufs, len);
+    }
+    __name(mergeBuf, "mergeBuf");
+    function write2(data) {
+      if (this.destroyed) {
+        throw new Error("SonicBoom destroyed");
+      }
+      const len = this._len + data.length;
+      const bufs = this._bufs;
+      if (this.maxLength && len > this.maxLength) {
+        this.emit("drop", data);
+        return this._len < this._hwm;
+      }
+      if (bufs.length === 0 || bufs[bufs.length - 1].length + data.length > this.maxWrite) {
+        bufs.push("" + data);
+      } else {
+        bufs[bufs.length - 1] += data;
+      }
+      this._len = len;
+      if (!this._writing && this._len >= this.minLength) {
+        this._actualWrite();
+      }
+      return this._len < this._hwm;
+    }
+    __name(write2, "write");
+    function writeBuffer(data) {
+      if (this.destroyed) {
+        throw new Error("SonicBoom destroyed");
+      }
+      const len = this._len + data.length;
+      const bufs = this._bufs;
+      const lens = this._lens;
+      if (this.maxLength && len > this.maxLength) {
+        this.emit("drop", data);
+        return this._len < this._hwm;
+      }
+      if (bufs.length === 0 || lens[lens.length - 1] + data.length > this.maxWrite) {
+        bufs.push([data]);
+        lens.push(data.length);
+      } else {
+        bufs[bufs.length - 1].push(data);
+        lens[lens.length - 1] += data.length;
+      }
+      this._len = len;
+      if (!this._writing && this._len >= this.minLength) {
+        this._actualWrite();
+      }
+      return this._len < this._hwm;
+    }
+    __name(writeBuffer, "writeBuffer");
+    function callFlushCallbackOnDrain(cb) {
+      this._flushPending = true;
+      const onDrain = /* @__PURE__ */ __name(() => {
+        if (!this._fsync) {
+          fs.fsync(this.fd, (err) => {
+            this._flushPending = false;
+            cb(err);
+          });
+        } else {
+          this._flushPending = false;
+          cb();
+        }
+        this.off("error", onError);
+      }, "onDrain");
+      const onError = /* @__PURE__ */ __name((err) => {
+        this._flushPending = false;
+        cb(err);
+        this.off("drain", onDrain);
+      }, "onError");
+      this.once("drain", onDrain);
+      this.once("error", onError);
+    }
+    __name(callFlushCallbackOnDrain, "callFlushCallbackOnDrain");
+    function flush(cb) {
+      if (cb != null && typeof cb !== "function") {
+        throw new Error("flush cb must be a function");
+      }
+      if (this.destroyed) {
+        const error = new Error("SonicBoom destroyed");
+        if (cb) {
+          cb(error);
+          return;
+        }
+        throw error;
+      }
+      if (this.minLength <= 0) {
+        cb?.();
+        return;
+      }
+      if (cb) {
+        callFlushCallbackOnDrain.call(this, cb);
+      }
+      if (this._writing) {
+        return;
+      }
+      if (this._bufs.length === 0) {
+        this._bufs.push("");
+      }
+      this._actualWrite();
+    }
+    __name(flush, "flush");
+    function flushBuffer(cb) {
+      if (cb != null && typeof cb !== "function") {
+        throw new Error("flush cb must be a function");
+      }
+      if (this.destroyed) {
+        const error = new Error("SonicBoom destroyed");
+        if (cb) {
+          cb(error);
+          return;
+        }
+        throw error;
+      }
+      if (this.minLength <= 0) {
+        cb?.();
+        return;
+      }
+      if (cb) {
+        callFlushCallbackOnDrain.call(this, cb);
+      }
+      if (this._writing) {
+        return;
+      }
+      if (this._bufs.length === 0) {
+        this._bufs.push([]);
+        this._lens.push(0);
+      }
+      this._actualWrite();
+    }
+    __name(flushBuffer, "flushBuffer");
+    SonicBoom.prototype.reopen = function(file) {
+      if (this.destroyed) {
+        throw new Error("SonicBoom destroyed");
+      }
+      if (this._opening) {
+        this.once("ready", () => {
+          this.reopen(file);
+        });
+        return;
+      }
+      if (this._ending) {
+        return;
+      }
+      if (!this.file) {
+        throw new Error("Unable to reopen a file descriptor, you must pass a file to SonicBoom");
+      }
+      if (file) {
+        this.file = file;
+      }
+      this._reopening = true;
+      if (this._writing) {
+        return;
+      }
+      const fd = this.fd;
+      this.once("ready", () => {
+        if (fd !== this.fd) {
+          fs.close(fd, (err) => {
+            if (err) {
+              return this.emit("error", err);
+            }
+          });
+        }
+      });
+      openFile(this.file, this);
+    };
+    SonicBoom.prototype.end = function() {
+      if (this.destroyed) {
+        throw new Error("SonicBoom destroyed");
+      }
+      if (this._opening) {
+        this.once("ready", () => {
+          this.end();
+        });
+        return;
+      }
+      if (this._ending) {
+        return;
+      }
+      this._ending = true;
+      if (this._writing) {
+        return;
+      }
+      if (this._len > 0 && this.fd >= 0) {
+        this._actualWrite();
+      } else {
+        actualClose(this);
+      }
+    };
+    function flushSync() {
+      if (this.destroyed) {
+        throw new Error("SonicBoom destroyed");
+      }
+      if (this.fd < 0) {
+        throw new Error("sonic boom is not ready yet");
+      }
+      if (!this._writing && this._writingBuf.length > 0) {
+        this._bufs.unshift(this._writingBuf);
+        this._writingBuf = "";
+      }
+      let buf = "";
+      while (this._bufs.length || buf) {
+        if (buf.length <= 0) {
+          buf = this._bufs[0];
+        }
+        try {
+          const n = fs.writeSync(this.fd, buf, "utf8");
+          const releasedBufObj = releaseWritingBuf(buf, this._len, n);
+          buf = releasedBufObj.writingBuf;
+          this._len = releasedBufObj.len;
+          if (buf.length <= 0) {
+            this._bufs.shift();
+          }
+        } catch (err) {
+          const shouldRetry = err.code === "EAGAIN" || err.code === "EBUSY";
+          if (shouldRetry && !this.retryEAGAIN(err, buf.length, this._len - buf.length)) {
+            throw err;
+          }
+          sleep(BUSY_WRITE_TIMEOUT);
+        }
+      }
+      try {
+        fs.fsyncSync(this.fd);
+      } catch {
+      }
+    }
+    __name(flushSync, "flushSync");
+    function flushBufferSync() {
+      if (this.destroyed) {
+        throw new Error("SonicBoom destroyed");
+      }
+      if (this.fd < 0) {
+        throw new Error("sonic boom is not ready yet");
+      }
+      if (!this._writing && this._writingBuf.length > 0) {
+        this._bufs.unshift([this._writingBuf]);
+        this._writingBuf = kEmptyBuffer;
+      }
+      let buf = kEmptyBuffer;
+      while (this._bufs.length || buf.length) {
+        if (buf.length <= 0) {
+          buf = mergeBuf(this._bufs[0], this._lens[0]);
+        }
+        try {
+          const n = fs.writeSync(this.fd, buf);
+          buf = buf.subarray(n);
+          this._len = Math.max(this._len - n, 0);
+          if (buf.length <= 0) {
+            this._bufs.shift();
+            this._lens.shift();
+          }
+        } catch (err) {
+          const shouldRetry = err.code === "EAGAIN" || err.code === "EBUSY";
+          if (shouldRetry && !this.retryEAGAIN(err, buf.length, this._len - buf.length)) {
+            throw err;
+          }
+          sleep(BUSY_WRITE_TIMEOUT);
+        }
+      }
+    }
+    __name(flushBufferSync, "flushBufferSync");
+    SonicBoom.prototype.destroy = function() {
+      if (this.destroyed) {
+        return;
+      }
+      actualClose(this);
+    };
+    function actualWrite() {
+      const release = this.release;
+      this._writing = true;
+      this._writingBuf = this._writingBuf || this._bufs.shift() || "";
+      if (this.sync) {
+        try {
+          const written = fs.writeSync(this.fd, this._writingBuf, "utf8");
+          release(null, written);
+        } catch (err) {
+          release(err);
+        }
+      } else {
+        fs.write(this.fd, this._writingBuf, "utf8", release);
+      }
+    }
+    __name(actualWrite, "actualWrite");
+    function actualWriteBuffer() {
+      const release = this.release;
+      this._writing = true;
+      this._writingBuf = this._writingBuf.length ? this._writingBuf : mergeBuf(this._bufs.shift(), this._lens.shift());
+      if (this.sync) {
+        try {
+          const written = fs.writeSync(this.fd, this._writingBuf);
+          release(null, written);
+        } catch (err) {
+          release(err);
+        }
+      } else {
+        fs.write(this.fd, this._writingBuf, release);
+      }
+    }
+    __name(actualWriteBuffer, "actualWriteBuffer");
+    function actualClose(sonic) {
+      if (sonic.fd === -1) {
+        sonic.once("ready", actualClose.bind(null, sonic));
+        return;
+      }
+      sonic.destroyed = true;
+      sonic._bufs = [];
+      sonic._lens = [];
+      fs.fsync(sonic.fd, closeWrapped);
+      function closeWrapped() {
+        if (sonic.fd !== 1 && sonic.fd !== 2) {
+          fs.close(sonic.fd, done);
+        } else {
+          done();
+        }
+      }
+      __name(closeWrapped, "closeWrapped");
+      function done(err) {
+        if (err) {
+          sonic.emit("error", err);
+          return;
+        }
+        if (sonic._ending && !sonic._writing) {
+          sonic.emit("finish");
+        }
+        sonic.emit("close");
+      }
+      __name(done, "done");
+    }
+    __name(actualClose, "actualClose");
+    SonicBoom.SonicBoom = SonicBoom;
+    SonicBoom.default = SonicBoom;
+    module2.exports = SonicBoom;
+  }
+});
+
+// node_modules/.pnpm/on-exit-leak-free@2.1.2/node_modules/on-exit-leak-free/index.js
+var require_on_exit_leak_free = __commonJS({
+  "node_modules/.pnpm/on-exit-leak-free@2.1.2/node_modules/on-exit-leak-free/index.js"(exports2, module2) {
+    "use strict";
+    var refs = {
+      exit: [],
+      beforeExit: []
+    };
+    var functions = {
+      exit: onExit,
+      beforeExit: onBeforeExit
+    };
+    var registry;
+    function ensureRegistry() {
+      if (registry === void 0) {
+        registry = new FinalizationRegistry(clear);
+      }
+    }
+    __name(ensureRegistry, "ensureRegistry");
+    function install(event) {
+      if (refs[event].length > 0) {
+        return;
+      }
+      process.on(event, functions[event]);
+    }
+    __name(install, "install");
+    function uninstall(event) {
+      if (refs[event].length > 0) {
+        return;
+      }
+      process.removeListener(event, functions[event]);
+      if (refs.exit.length === 0 && refs.beforeExit.length === 0) {
+        registry = void 0;
+      }
+    }
+    __name(uninstall, "uninstall");
+    function onExit() {
+      callRefs("exit");
+    }
+    __name(onExit, "onExit");
+    function onBeforeExit() {
+      callRefs("beforeExit");
+    }
+    __name(onBeforeExit, "onBeforeExit");
+    function callRefs(event) {
+      for (const ref of refs[event]) {
+        const obj = ref.deref();
+        const fn = ref.fn;
+        if (obj !== void 0) {
+          fn(obj, event);
+        }
+      }
+      refs[event] = [];
+    }
+    __name(callRefs, "callRefs");
+    function clear(ref) {
+      for (const event of ["exit", "beforeExit"]) {
+        const index = refs[event].indexOf(ref);
+        refs[event].splice(index, index + 1);
+        uninstall(event);
+      }
+    }
+    __name(clear, "clear");
+    function _register(event, obj, fn) {
+      if (obj === void 0) {
+        throw new Error("the object can't be undefined");
+      }
+      install(event);
+      const ref = new WeakRef(obj);
+      ref.fn = fn;
+      ensureRegistry();
+      registry.register(obj, ref);
+      refs[event].push(ref);
+    }
+    __name(_register, "_register");
+    function register(obj, fn) {
+      _register("exit", obj, fn);
+    }
+    __name(register, "register");
+    function registerBeforeExit(obj, fn) {
+      _register("beforeExit", obj, fn);
+    }
+    __name(registerBeforeExit, "registerBeforeExit");
+    function unregister(obj) {
+      if (registry === void 0) {
+        return;
+      }
+      registry.unregister(obj);
+      for (const event of ["exit", "beforeExit"]) {
+        refs[event] = refs[event].filter((ref) => {
+          const _obj = ref.deref();
+          return _obj && _obj !== obj;
+        });
+        uninstall(event);
+      }
+    }
+    __name(unregister, "unregister");
+    module2.exports = {
+      register,
+      registerBeforeExit,
+      unregister
+    };
+  }
+});
+
+// node_modules/.pnpm/thread-stream@3.0.0/node_modules/thread-stream/package.json
+var require_package = __commonJS({
+  "node_modules/.pnpm/thread-stream@3.0.0/node_modules/thread-stream/package.json"(exports2, module2) {
+    module2.exports = {
+      name: "thread-stream",
+      version: "3.0.0",
+      description: "A streaming way to send data to a Node.js Worker Thread",
+      main: "index.js",
+      types: "index.d.ts",
+      dependencies: {
+        "real-require": "^0.2.0"
+      },
+      devDependencies: {
+        "@types/node": "^20.1.0",
+        "@types/tap": "^15.0.0",
+        "@yao-pkg/pkg": "^5.11.5",
+        desm: "^1.3.0",
+        fastbench: "^1.0.1",
+        husky: "^9.0.6",
+        "pino-elasticsearch": "^8.0.0",
+        "sonic-boom": "^3.0.0",
+        standard: "^17.0.0",
+        tap: "^16.2.0",
+        "ts-node": "^10.8.0",
+        typescript: "^5.3.2",
+        "why-is-node-running": "^2.2.2"
+      },
+      scripts: {
+        test: 'standard && npm run transpile && tap "test/**/*.test.*js" && tap --ts test/*.test.*ts',
+        "test:ci": "standard && npm run transpile && npm run test:ci:js && npm run test:ci:ts",
+        "test:ci:js": 'tap --no-check-coverage --timeout=120 --coverage-report=lcovonly "test/**/*.test.*js"',
+        "test:ci:ts": 'tap --ts --no-check-coverage --coverage-report=lcovonly "test/**/*.test.*ts"',
+        "test:yarn": 'npm run transpile && tap "test/**/*.test.js" --no-check-coverage',
+        transpile: "sh ./test/ts/transpile.sh",
+        prepare: "husky install"
+      },
+      standard: {
+        ignore: [
+          "test/ts/**/*"
+        ]
+      },
+      repository: {
+        type: "git",
+        url: "git+https://github.com/mcollina/thread-stream.git"
+      },
+      keywords: [
+        "worker",
+        "thread",
+        "threads",
+        "stream"
+      ],
+      author: "Matteo Collina <hello@matteocollina.com>",
+      license: "MIT",
+      bugs: {
+        url: "https://github.com/mcollina/thread-stream/issues"
+      },
+      homepage: "https://github.com/mcollina/thread-stream#readme"
+    };
+  }
+});
+
+// node_modules/.pnpm/thread-stream@3.0.0/node_modules/thread-stream/lib/wait.js
+var require_wait = __commonJS({
+  "node_modules/.pnpm/thread-stream@3.0.0/node_modules/thread-stream/lib/wait.js"(exports2, module2) {
+    "use strict";
+    var MAX_TIMEOUT = 1e3;
+    function wait(state, index, expected, timeout, done) {
+      const max = Date.now() + timeout;
+      let current = Atomics.load(state, index);
+      if (current === expected) {
+        done(null, "ok");
+        return;
+      }
+      let prior = current;
+      const check = /* @__PURE__ */ __name((backoff) => {
+        if (Date.now() > max) {
+          done(null, "timed-out");
+        } else {
+          setTimeout(() => {
+            prior = current;
+            current = Atomics.load(state, index);
+            if (current === prior) {
+              check(backoff >= MAX_TIMEOUT ? MAX_TIMEOUT : backoff * 2);
+            } else {
+              if (current === expected)
+                done(null, "ok");
+              else
+                done(null, "not-equal");
+            }
+          }, backoff);
+        }
+      }, "check");
+      check(1);
+    }
+    __name(wait, "wait");
+    function waitDiff(state, index, expected, timeout, done) {
+      const max = Date.now() + timeout;
+      let current = Atomics.load(state, index);
+      if (current !== expected) {
+        done(null, "ok");
+        return;
+      }
+      const check = /* @__PURE__ */ __name((backoff) => {
+        if (Date.now() > max) {
+          done(null, "timed-out");
+        } else {
+          setTimeout(() => {
+            current = Atomics.load(state, index);
+            if (current !== expected) {
+              done(null, "ok");
+            } else {
+              check(backoff >= MAX_TIMEOUT ? MAX_TIMEOUT : backoff * 2);
+            }
+          }, backoff);
+        }
+      }, "check");
+      check(1);
+    }
+    __name(waitDiff, "waitDiff");
+    module2.exports = { wait, waitDiff };
+  }
+});
+
+// node_modules/.pnpm/thread-stream@3.0.0/node_modules/thread-stream/lib/indexes.js
+var require_indexes = __commonJS({
+  "node_modules/.pnpm/thread-stream@3.0.0/node_modules/thread-stream/lib/indexes.js"(exports2, module2) {
+    "use strict";
+    var WRITE_INDEX = 4;
+    var READ_INDEX = 8;
+    module2.exports = {
+      WRITE_INDEX,
+      READ_INDEX
+    };
+  }
+});
+
+// node_modules/.pnpm/thread-stream@3.0.0/node_modules/thread-stream/index.js
+var require_thread_stream = __commonJS({
+  "node_modules/.pnpm/thread-stream@3.0.0/node_modules/thread-stream/index.js"(exports2, module2) {
+    "use strict";
+    var { version } = require_package();
+    var { EventEmitter } = require("events");
+    var { Worker } = require("worker_threads");
+    var { join } = require("path");
+    var { pathToFileURL } = require("url");
+    var { wait } = require_wait();
+    var {
+      WRITE_INDEX,
+      READ_INDEX
+    } = require_indexes();
+    var buffer = require("buffer");
+    var assert = require("assert");
+    var kImpl = Symbol("kImpl");
+    var MAX_STRING = buffer.constants.MAX_STRING_LENGTH;
+    var FakeWeakRef = class {
+      static {
+        __name(this, "FakeWeakRef");
+      }
+      constructor(value) {
+        this._value = value;
+      }
+      deref() {
+        return this._value;
+      }
+    };
+    var FakeFinalizationRegistry = class {
+      static {
+        __name(this, "FakeFinalizationRegistry");
+      }
+      register() {
+      }
+      unregister() {
+      }
+    };
+    var FinalizationRegistry2 = process.env.NODE_V8_COVERAGE ? FakeFinalizationRegistry : global.FinalizationRegistry || FakeFinalizationRegistry;
+    var WeakRef2 = process.env.NODE_V8_COVERAGE ? FakeWeakRef : global.WeakRef || FakeWeakRef;
+    var registry = new FinalizationRegistry2((worker) => {
+      if (worker.exited) {
+        return;
+      }
+      worker.terminate();
+    });
+    function createWorker(stream2, opts) {
+      const { filename, workerData } = opts;
+      const bundlerOverrides = "__bundlerPathsOverrides" in globalThis ? globalThis.__bundlerPathsOverrides : {};
+      const toExecute = bundlerOverrides["thread-stream-worker"] || join(__dirname, "lib", "worker.js");
+      const worker = new Worker(toExecute, {
+        ...opts.workerOpts,
+        trackUnmanagedFds: false,
+        workerData: {
+          filename: filename.indexOf("file://") === 0 ? filename : pathToFileURL(filename).href,
+          dataBuf: stream2[kImpl].dataBuf,
+          stateBuf: stream2[kImpl].stateBuf,
+          workerData: {
+            $context: {
+              threadStreamVersion: version
+            },
+            ...workerData
+          }
+        }
+      });
+      worker.stream = new FakeWeakRef(stream2);
+      worker.on("message", onWorkerMessage);
+      worker.on("exit", onWorkerExit);
+      registry.register(stream2, worker);
+      return worker;
+    }
+    __name(createWorker, "createWorker");
+    function drain(stream2) {
+      assert(!stream2[kImpl].sync);
+      if (stream2[kImpl].needDrain) {
+        stream2[kImpl].needDrain = false;
+        stream2.emit("drain");
+      }
+    }
+    __name(drain, "drain");
+    function nextFlush(stream2) {
+      const writeIndex = Atomics.load(stream2[kImpl].state, WRITE_INDEX);
+      let leftover = stream2[kImpl].data.length - writeIndex;
+      if (leftover > 0) {
+        if (stream2[kImpl].buf.length === 0) {
+          stream2[kImpl].flushing = false;
+          if (stream2[kImpl].ending) {
+            end(stream2);
+          } else if (stream2[kImpl].needDrain) {
+            process.nextTick(drain, stream2);
+          }
+          return;
+        }
+        let toWrite = stream2[kImpl].buf.slice(0, leftover);
+        let toWriteBytes = Buffer.byteLength(toWrite);
+        if (toWriteBytes <= leftover) {
+          stream2[kImpl].buf = stream2[kImpl].buf.slice(leftover);
+          write2(stream2, toWrite, nextFlush.bind(null, stream2));
+        } else {
+          stream2.flush(() => {
+            if (stream2.destroyed) {
+              return;
+            }
+            Atomics.store(stream2[kImpl].state, READ_INDEX, 0);
+            Atomics.store(stream2[kImpl].state, WRITE_INDEX, 0);
+            while (toWriteBytes > stream2[kImpl].data.length) {
+              leftover = leftover / 2;
+              toWrite = stream2[kImpl].buf.slice(0, leftover);
+              toWriteBytes = Buffer.byteLength(toWrite);
+            }
+            stream2[kImpl].buf = stream2[kImpl].buf.slice(leftover);
+            write2(stream2, toWrite, nextFlush.bind(null, stream2));
+          });
+        }
+      } else if (leftover === 0) {
+        if (writeIndex === 0 && stream2[kImpl].buf.length === 0) {
+          return;
+        }
+        stream2.flush(() => {
+          Atomics.store(stream2[kImpl].state, READ_INDEX, 0);
+          Atomics.store(stream2[kImpl].state, WRITE_INDEX, 0);
+          nextFlush(stream2);
+        });
+      } else {
+        destroy(stream2, new Error("overwritten"));
+      }
+    }
+    __name(nextFlush, "nextFlush");
+    function onWorkerMessage(msg) {
+      const stream2 = this.stream.deref();
+      if (stream2 === void 0) {
+        this.exited = true;
+        this.terminate();
+        return;
+      }
+      switch (msg.code) {
+        case "READY":
+          this.stream = new WeakRef2(stream2);
+          stream2.flush(() => {
+            stream2[kImpl].ready = true;
+            stream2.emit("ready");
+          });
+          break;
+        case "ERROR":
+          destroy(stream2, msg.err);
+          break;
+        case "EVENT":
+          if (Array.isArray(msg.args)) {
+            stream2.emit(msg.name, ...msg.args);
+          } else {
+            stream2.emit(msg.name, msg.args);
+          }
+          break;
+        case "WARNING":
+          process.emitWarning(msg.err);
+          break;
+        default:
+          destroy(stream2, new Error("this should not happen: " + msg.code));
+      }
+    }
+    __name(onWorkerMessage, "onWorkerMessage");
+    function onWorkerExit(code) {
+      const stream2 = this.stream.deref();
+      if (stream2 === void 0) {
+        return;
+      }
+      registry.unregister(stream2);
+      stream2.worker.exited = true;
+      stream2.worker.off("exit", onWorkerExit);
+      destroy(stream2, code !== 0 ? new Error("the worker thread exited") : null);
+    }
+    __name(onWorkerExit, "onWorkerExit");
+    var ThreadStream = class extends EventEmitter {
+      static {
+        __name(this, "ThreadStream");
+      }
+      constructor(opts = {}) {
+        super();
+        if (opts.bufferSize < 4) {
+          throw new Error("bufferSize must at least fit a 4-byte utf-8 char");
+        }
+        this[kImpl] = {};
+        this[kImpl].stateBuf = new SharedArrayBuffer(128);
+        this[kImpl].state = new Int32Array(this[kImpl].stateBuf);
+        this[kImpl].dataBuf = new SharedArrayBuffer(opts.bufferSize || 4 * 1024 * 1024);
+        this[kImpl].data = Buffer.from(this[kImpl].dataBuf);
+        this[kImpl].sync = opts.sync || false;
+        this[kImpl].ending = false;
+        this[kImpl].ended = false;
+        this[kImpl].needDrain = false;
+        this[kImpl].destroyed = false;
+        this[kImpl].flushing = false;
+        this[kImpl].ready = false;
+        this[kImpl].finished = false;
+        this[kImpl].errored = null;
+        this[kImpl].closed = false;
+        this[kImpl].buf = "";
+        this.worker = createWorker(this, opts);
+        this.on("message", (message, transferList) => {
+          this.worker.postMessage(message, transferList);
+        });
+      }
+      write(data) {
+        if (this[kImpl].destroyed) {
+          error(this, new Error("the worker has exited"));
+          return false;
+        }
+        if (this[kImpl].ending) {
+          error(this, new Error("the worker is ending"));
+          return false;
+        }
+        if (this[kImpl].flushing && this[kImpl].buf.length + data.length >= MAX_STRING) {
+          try {
+            writeSync(this);
+            this[kImpl].flushing = true;
+          } catch (err) {
+            destroy(this, err);
+            return false;
+          }
+        }
+        this[kImpl].buf += data;
+        if (this[kImpl].sync) {
+          try {
+            writeSync(this);
+            return true;
+          } catch (err) {
+            destroy(this, err);
+            return false;
+          }
+        }
+        if (!this[kImpl].flushing) {
+          this[kImpl].flushing = true;
+          setImmediate(nextFlush, this);
+        }
+        this[kImpl].needDrain = this[kImpl].data.length - this[kImpl].buf.length - Atomics.load(this[kImpl].state, WRITE_INDEX) <= 0;
+        return !this[kImpl].needDrain;
+      }
+      end() {
+        if (this[kImpl].destroyed) {
+          return;
+        }
+        this[kImpl].ending = true;
+        end(this);
+      }
+      flush(cb) {
+        if (this[kImpl].destroyed) {
+          if (typeof cb === "function") {
+            process.nextTick(cb, new Error("the worker has exited"));
+          }
+          return;
+        }
+        const writeIndex = Atomics.load(this[kImpl].state, WRITE_INDEX);
+        wait(this[kImpl].state, READ_INDEX, writeIndex, Infinity, (err, res) => {
+          if (err) {
+            destroy(this, err);
+            process.nextTick(cb, err);
+            return;
+          }
+          if (res === "not-equal") {
+            this.flush(cb);
+            return;
+          }
+          process.nextTick(cb);
+        });
+      }
+      flushSync() {
+        if (this[kImpl].destroyed) {
+          return;
+        }
+        writeSync(this);
+        flushSync(this);
+      }
+      unref() {
+        this.worker.unref();
+      }
+      ref() {
+        this.worker.ref();
+      }
+      get ready() {
+        return this[kImpl].ready;
+      }
+      get destroyed() {
+        return this[kImpl].destroyed;
+      }
+      get closed() {
+        return this[kImpl].closed;
+      }
+      get writable() {
+        return !this[kImpl].destroyed && !this[kImpl].ending;
+      }
+      get writableEnded() {
+        return this[kImpl].ending;
+      }
+      get writableFinished() {
+        return this[kImpl].finished;
+      }
+      get writableNeedDrain() {
+        return this[kImpl].needDrain;
+      }
+      get writableObjectMode() {
+        return false;
+      }
+      get writableErrored() {
+        return this[kImpl].errored;
+      }
+    };
+    function error(stream2, err) {
+      setImmediate(() => {
+        stream2.emit("error", err);
+      });
+    }
+    __name(error, "error");
+    function destroy(stream2, err) {
+      if (stream2[kImpl].destroyed) {
+        return;
+      }
+      stream2[kImpl].destroyed = true;
+      if (err) {
+        stream2[kImpl].errored = err;
+        error(stream2, err);
+      }
+      if (!stream2.worker.exited) {
+        stream2.worker.terminate().catch(() => {
+        }).then(() => {
+          stream2[kImpl].closed = true;
+          stream2.emit("close");
+        });
+      } else {
+        setImmediate(() => {
+          stream2[kImpl].closed = true;
+          stream2.emit("close");
+        });
+      }
+    }
+    __name(destroy, "destroy");
+    function write2(stream2, data, cb) {
+      const current = Atomics.load(stream2[kImpl].state, WRITE_INDEX);
+      const length = Buffer.byteLength(data);
+      stream2[kImpl].data.write(data, current);
+      Atomics.store(stream2[kImpl].state, WRITE_INDEX, current + length);
+      Atomics.notify(stream2[kImpl].state, WRITE_INDEX);
+      cb();
+      return true;
+    }
+    __name(write2, "write");
+    function end(stream2) {
+      if (stream2[kImpl].ended || !stream2[kImpl].ending || stream2[kImpl].flushing) {
+        return;
+      }
+      stream2[kImpl].ended = true;
+      try {
+        stream2.flushSync();
+        let readIndex = Atomics.load(stream2[kImpl].state, READ_INDEX);
+        Atomics.store(stream2[kImpl].state, WRITE_INDEX, -1);
+        Atomics.notify(stream2[kImpl].state, WRITE_INDEX);
+        let spins = 0;
+        while (readIndex !== -1) {
+          Atomics.wait(stream2[kImpl].state, READ_INDEX, readIndex, 1e3);
+          readIndex = Atomics.load(stream2[kImpl].state, READ_INDEX);
+          if (readIndex === -2) {
+            destroy(stream2, new Error("end() failed"));
+            return;
+          }
+          if (++spins === 10) {
+            destroy(stream2, new Error("end() took too long (10s)"));
+            return;
+          }
+        }
+        process.nextTick(() => {
+          stream2[kImpl].finished = true;
+          stream2.emit("finish");
+        });
+      } catch (err) {
+        destroy(stream2, err);
+      }
+    }
+    __name(end, "end");
+    function writeSync(stream2) {
+      const cb = /* @__PURE__ */ __name(() => {
+        if (stream2[kImpl].ending) {
+          end(stream2);
+        } else if (stream2[kImpl].needDrain) {
+          process.nextTick(drain, stream2);
+        }
+      }, "cb");
+      stream2[kImpl].flushing = false;
+      while (stream2[kImpl].buf.length !== 0) {
+        const writeIndex = Atomics.load(stream2[kImpl].state, WRITE_INDEX);
+        let leftover = stream2[kImpl].data.length - writeIndex;
+        if (leftover === 0) {
+          flushSync(stream2);
+          Atomics.store(stream2[kImpl].state, READ_INDEX, 0);
+          Atomics.store(stream2[kImpl].state, WRITE_INDEX, 0);
+          continue;
+        } else if (leftover < 0) {
+          throw new Error("overwritten");
+        }
+        let toWrite = stream2[kImpl].buf.slice(0, leftover);
+        let toWriteBytes = Buffer.byteLength(toWrite);
+        if (toWriteBytes <= leftover) {
+          stream2[kImpl].buf = stream2[kImpl].buf.slice(leftover);
+          write2(stream2, toWrite, cb);
+        } else {
+          flushSync(stream2);
+          Atomics.store(stream2[kImpl].state, READ_INDEX, 0);
+          Atomics.store(stream2[kImpl].state, WRITE_INDEX, 0);
+          while (toWriteBytes > stream2[kImpl].buf.length) {
+            leftover = leftover / 2;
+            toWrite = stream2[kImpl].buf.slice(0, leftover);
+            toWriteBytes = Buffer.byteLength(toWrite);
+          }
+          stream2[kImpl].buf = stream2[kImpl].buf.slice(leftover);
+          write2(stream2, toWrite, cb);
+        }
+      }
+    }
+    __name(writeSync, "writeSync");
+    function flushSync(stream2) {
+      if (stream2[kImpl].flushing) {
+        throw new Error("unable to flush while flushing");
+      }
+      const writeIndex = Atomics.load(stream2[kImpl].state, WRITE_INDEX);
+      let spins = 0;
+      while (true) {
+        const readIndex = Atomics.load(stream2[kImpl].state, READ_INDEX);
+        if (readIndex === -2) {
+          throw Error("_flushSync failed");
+        }
+        if (readIndex !== writeIndex) {
+          Atomics.wait(stream2[kImpl].state, READ_INDEX, readIndex, 1e3);
+        } else {
+          break;
+        }
+        if (++spins === 10) {
+          throw new Error("_flushSync took too long (10s)");
+        }
+      }
+    }
+    __name(flushSync, "flushSync");
+    module2.exports = ThreadStream;
+  }
+});
+
+// node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/transport.js
+var require_transport = __commonJS({
+  "node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/transport.js"(exports2, module2) {
+    "use strict";
+    var { createRequire } = require("module");
+    var getCallers = require_caller();
+    var { join, isAbsolute, sep } = require("path");
+    var sleep = require_atomic_sleep();
+    var onExit = require_on_exit_leak_free();
+    var ThreadStream = require_thread_stream();
+    function setupOnExit(stream2) {
+      onExit.register(stream2, autoEnd);
+      onExit.registerBeforeExit(stream2, flush);
+      stream2.on("close", function() {
+        onExit.unregister(stream2);
+      });
+    }
+    __name(setupOnExit, "setupOnExit");
+    function buildStream(filename, workerData, workerOpts) {
+      const stream2 = new ThreadStream({
+        filename,
+        workerData,
+        workerOpts
+      });
+      stream2.on("ready", onReady);
+      stream2.on("close", function() {
+        process.removeListener("exit", onExit2);
+      });
+      process.on("exit", onExit2);
+      function onReady() {
+        process.removeListener("exit", onExit2);
+        stream2.unref();
+        if (workerOpts.autoEnd !== false) {
+          setupOnExit(stream2);
+        }
+      }
+      __name(onReady, "onReady");
+      function onExit2() {
+        if (stream2.closed) {
+          return;
+        }
+        stream2.flushSync();
+        sleep(100);
+        stream2.end();
+      }
+      __name(onExit2, "onExit");
+      return stream2;
+    }
+    __name(buildStream, "buildStream");
+    function autoEnd(stream2) {
+      stream2.ref();
+      stream2.flushSync();
+      stream2.end();
+      stream2.once("close", function() {
+        stream2.unref();
+      });
+    }
+    __name(autoEnd, "autoEnd");
+    function flush(stream2) {
+      stream2.flushSync();
+    }
+    __name(flush, "flush");
+    function transport(fullOptions) {
+      const { pipeline, targets, levels, dedupe, options: options3 = {}, worker = {}, caller = getCallers() } = fullOptions;
+      const callers = typeof caller === "string" ? [caller] : caller;
+      const bundlerOverrides = "__bundlerPathsOverrides" in globalThis ? globalThis.__bundlerPathsOverrides : {};
+      let target = fullOptions.target;
+      if (target && targets) {
+        throw new Error("only one of target or targets can be specified");
+      }
+      if (targets) {
+        target = bundlerOverrides["pino-worker"] || join(__dirname, "worker.js");
+        options3.targets = targets.filter((dest) => dest.target).map((dest) => {
+          return {
+            ...dest,
+            target: fixTarget(dest.target)
+          };
+        });
+        options3.pipelines = targets.filter((dest) => dest.pipeline).map((dest) => {
+          return dest.pipeline.map((t) => {
+            return {
+              ...t,
+              level: dest.level,
+              // duplicate the pipeline `level` property defined in the upper level
+              target: fixTarget(t.target)
+            };
+          });
+        });
+      } else if (pipeline) {
+        target = bundlerOverrides["pino-worker"] || join(__dirname, "worker.js");
+        options3.pipelines = [pipeline.map((dest) => {
+          return {
+            ...dest,
+            target: fixTarget(dest.target)
+          };
+        })];
+      }
+      if (levels) {
+        options3.levels = levels;
+      }
+      if (dedupe) {
+        options3.dedupe = dedupe;
+      }
+      options3.pinoWillSendConfig = true;
+      return buildStream(fixTarget(target), options3, worker);
+      function fixTarget(origin) {
+        origin = bundlerOverrides[origin] || origin;
+        if (isAbsolute(origin) || origin.indexOf("file://") === 0) {
+          return origin;
+        }
+        if (origin === "pino/file") {
+          return join(__dirname, "..", "file.js");
+        }
+        let fixTarget2;
+        for (const filePath of callers) {
+          try {
+            const context = filePath === "node:repl" ? process.cwd() + sep : filePath;
+            fixTarget2 = createRequire(context).resolve(origin);
+            break;
+          } catch (err) {
+            continue;
+          }
+        }
+        if (!fixTarget2) {
+          throw new Error(`unable to determine transport target for "${origin}"`);
+        }
+        return fixTarget2;
+      }
+      __name(fixTarget, "fixTarget");
+    }
+    __name(transport, "transport");
+    module2.exports = transport;
+  }
+});
+
+// node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/tools.js
+var require_tools = __commonJS({
+  "node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/tools.js"(exports2, module2) {
+    "use strict";
+    var format = require_quick_format_unescaped();
+    var { mapHttpRequest, mapHttpResponse } = require_pino_std_serializers();
+    var SonicBoom = require_sonic_boom();
+    var onExit = require_on_exit_leak_free();
+    var {
+      lsCacheSym,
+      chindingsSym,
+      writeSym,
+      serializersSym,
+      formatOptsSym,
+      endSym,
+      stringifiersSym,
+      stringifySym,
+      stringifySafeSym,
+      wildcardFirstSym,
+      nestedKeySym,
+      formattersSym,
+      messageKeySym,
+      errorKeySym,
+      nestedKeyStrSym,
+      msgPrefixSym
+    } = require_symbols();
+    var { isMainThread } = require("worker_threads");
+    var transport = require_transport();
+    function noop() {
+    }
+    __name(noop, "noop");
+    function genLog(level, hook) {
+      if (!hook)
+        return LOG;
+      return /* @__PURE__ */ __name(function hookWrappedLog(...args2) {
+        hook.call(this, args2, LOG, level);
+      }, "hookWrappedLog");
+      function LOG(o, ...n) {
+        if (typeof o === "object") {
+          let msg = o;
+          if (o !== null) {
+            if (o.method && o.headers && o.socket) {
+              o = mapHttpRequest(o);
+            } else if (typeof o.setHeader === "function") {
+              o = mapHttpResponse(o);
+            }
+          }
+          let formatParams;
+          if (msg === null && n.length === 0) {
+            formatParams = [null];
+          } else {
+            msg = n.shift();
+            formatParams = n;
+          }
+          if (typeof this[msgPrefixSym] === "string" && msg !== void 0 && msg !== null) {
+            msg = this[msgPrefixSym] + msg;
+          }
+          this[writeSym](o, format(msg, formatParams, this[formatOptsSym]), level);
+        } else {
+          let msg = o === void 0 ? n.shift() : o;
+          if (typeof this[msgPrefixSym] === "string" && msg !== void 0 && msg !== null) {
+            msg = this[msgPrefixSym] + msg;
+          }
+          this[writeSym](null, format(msg, n, this[formatOptsSym]), level);
+        }
+      }
+      __name(LOG, "LOG");
+    }
+    __name(genLog, "genLog");
+    function asString(str) {
+      let result = "";
+      let last = 0;
+      let found = false;
+      let point = 255;
+      const l = str.length;
+      if (l > 100) {
+        return JSON.stringify(str);
+      }
+      for (var i = 0; i < l && point >= 32; i++) {
+        point = str.charCodeAt(i);
+        if (point === 34 || point === 92) {
+          result += str.slice(last, i) + "\\";
+          last = i;
+          found = true;
+        }
+      }
+      if (!found) {
+        result = str;
+      } else {
+        result += str.slice(last);
+      }
+      return point < 32 ? JSON.stringify(str) : '"' + result + '"';
+    }
+    __name(asString, "asString");
+    function asJson(obj, msg, num, time) {
+      const stringify2 = this[stringifySym];
+      const stringifySafe = this[stringifySafeSym];
+      const stringifiers = this[stringifiersSym];
+      const end = this[endSym];
+      const chindings = this[chindingsSym];
+      const serializers = this[serializersSym];
+      const formatters = this[formattersSym];
+      const messageKey = this[messageKeySym];
+      const errorKey = this[errorKeySym];
+      let data = this[lsCacheSym][num] + time;
+      data = data + chindings;
+      let value;
+      if (formatters.log) {
+        obj = formatters.log(obj);
+      }
+      const wildcardStringifier = stringifiers[wildcardFirstSym];
+      let propStr = "";
+      for (const key in obj) {
+        value = obj[key];
+        if (Object.prototype.hasOwnProperty.call(obj, key) && value !== void 0) {
+          if (serializers[key]) {
+            value = serializers[key](value);
+          } else if (key === errorKey && serializers.err) {
+            value = serializers.err(value);
+          }
+          const stringifier = stringifiers[key] || wildcardStringifier;
+          switch (typeof value) {
+            case "undefined":
+            case "function":
+              continue;
+            case "number":
+              if (Number.isFinite(value) === false) {
+                value = null;
+              }
+            case "boolean":
+              if (stringifier)
+                value = stringifier(value);
+              break;
+            case "string":
+              value = (stringifier || asString)(value);
+              break;
+            default:
+              value = (stringifier || stringify2)(value, stringifySafe);
+          }
+          if (value === void 0)
+            continue;
+          const strKey = asString(key);
+          propStr += "," + strKey + ":" + value;
+        }
+      }
+      let msgStr = "";
+      if (msg !== void 0) {
+        value = serializers[messageKey] ? serializers[messageKey](msg) : msg;
+        const stringifier = stringifiers[messageKey] || wildcardStringifier;
+        switch (typeof value) {
+          case "function":
+            break;
+          case "number":
+            if (Number.isFinite(value) === false) {
+              value = null;
+            }
+          case "boolean":
+            if (stringifier)
+              value = stringifier(value);
+            msgStr = ',"' + messageKey + '":' + value;
+            break;
+          case "string":
+            value = (stringifier || asString)(value);
+            msgStr = ',"' + messageKey + '":' + value;
+            break;
+          default:
+            value = (stringifier || stringify2)(value, stringifySafe);
+            msgStr = ',"' + messageKey + '":' + value;
+        }
+      }
+      if (this[nestedKeySym] && propStr) {
+        return data + this[nestedKeyStrSym] + propStr.slice(1) + "}" + msgStr + end;
+      } else {
+        return data + propStr + msgStr + end;
+      }
+    }
+    __name(asJson, "asJson");
+    function asChindings(instance, bindings) {
+      let value;
+      let data = instance[chindingsSym];
+      const stringify2 = instance[stringifySym];
+      const stringifySafe = instance[stringifySafeSym];
+      const stringifiers = instance[stringifiersSym];
+      const wildcardStringifier = stringifiers[wildcardFirstSym];
+      const serializers = instance[serializersSym];
+      const formatter = instance[formattersSym].bindings;
+      bindings = formatter(bindings);
+      for (const key in bindings) {
+        value = bindings[key];
+        const valid = key !== "level" && key !== "serializers" && key !== "formatters" && key !== "customLevels" && bindings.hasOwnProperty(key) && value !== void 0;
+        if (valid === true) {
+          value = serializers[key] ? serializers[key](value) : value;
+          value = (stringifiers[key] || wildcardStringifier || stringify2)(value, stringifySafe);
+          if (value === void 0)
+            continue;
+          data += ',"' + key + '":' + value;
+        }
+      }
+      return data;
+    }
+    __name(asChindings, "asChindings");
+    function hasBeenTampered(stream2) {
+      return stream2.write !== stream2.constructor.prototype.write;
+    }
+    __name(hasBeenTampered, "hasBeenTampered");
+    var hasNodeCodeCoverage = process.env.NODE_V8_COVERAGE || process.env.V8_COVERAGE;
+    function buildSafeSonicBoom(opts) {
+      const stream2 = new SonicBoom(opts);
+      stream2.on("error", filterBrokenPipe);
+      if (!hasNodeCodeCoverage && !opts.sync && isMainThread) {
+        onExit.register(stream2, autoEnd);
+        stream2.on("close", function() {
+          onExit.unregister(stream2);
+        });
+      }
+      return stream2;
+      function filterBrokenPipe(err) {
+        if (err.code === "EPIPE") {
+          stream2.write = noop;
+          stream2.end = noop;
+          stream2.flushSync = noop;
+          stream2.destroy = noop;
+          return;
+        }
+        stream2.removeListener("error", filterBrokenPipe);
+        stream2.emit("error", err);
+      }
+      __name(filterBrokenPipe, "filterBrokenPipe");
+    }
+    __name(buildSafeSonicBoom, "buildSafeSonicBoom");
+    function autoEnd(stream2, eventName) {
+      if (stream2.destroyed) {
+        return;
+      }
+      if (eventName === "beforeExit") {
+        stream2.flush();
+        stream2.on("drain", function() {
+          stream2.end();
+        });
+      } else {
+        stream2.flushSync();
+      }
+    }
+    __name(autoEnd, "autoEnd");
+    function createArgsNormalizer(defaultOptions) {
+      return /* @__PURE__ */ __name(function normalizeArgs(instance, caller, opts = {}, stream2) {
+        if (typeof opts === "string") {
+          stream2 = buildSafeSonicBoom({ dest: opts });
+          opts = {};
+        } else if (typeof stream2 === "string") {
+          if (opts && opts.transport) {
+            throw Error("only one of option.transport or stream can be specified");
+          }
+          stream2 = buildSafeSonicBoom({ dest: stream2 });
+        } else if (opts instanceof SonicBoom || opts.writable || opts._writableState) {
+          stream2 = opts;
+          opts = {};
+        } else if (opts.transport) {
+          if (opts.transport instanceof SonicBoom || opts.transport.writable || opts.transport._writableState) {
+            throw Error("option.transport do not allow stream, please pass to option directly. e.g. pino(transport)");
+          }
+          if (opts.transport.targets && opts.transport.targets.length && opts.formatters && typeof opts.formatters.level === "function") {
+            throw Error("option.transport.targets do not allow custom level formatters");
+          }
+          let customLevels;
+          if (opts.customLevels) {
+            customLevels = opts.useOnlyCustomLevels ? opts.customLevels : Object.assign({}, opts.levels, opts.customLevels);
+          }
+          stream2 = transport({ caller, ...opts.transport, levels: customLevels });
+        }
+        opts = Object.assign({}, defaultOptions, opts);
+        opts.serializers = Object.assign({}, defaultOptions.serializers, opts.serializers);
+        opts.formatters = Object.assign({}, defaultOptions.formatters, opts.formatters);
+        if (opts.prettyPrint) {
+          throw new Error("prettyPrint option is no longer supported, see the pino-pretty package (https://github.com/pinojs/pino-pretty)");
+        }
+        const { enabled, onChild } = opts;
+        if (enabled === false)
+          opts.level = "silent";
+        if (!onChild)
+          opts.onChild = noop;
+        if (!stream2) {
+          if (!hasBeenTampered(process.stdout)) {
+            stream2 = buildSafeSonicBoom({ fd: process.stdout.fd || 1 });
+          } else {
+            stream2 = process.stdout;
+          }
+        }
+        return { opts, stream: stream2 };
+      }, "normalizeArgs");
+    }
+    __name(createArgsNormalizer, "createArgsNormalizer");
+    function stringify(obj, stringifySafeFn) {
+      try {
+        return JSON.stringify(obj);
+      } catch (_5) {
+        try {
+          const stringify2 = stringifySafeFn || this[stringifySafeSym];
+          return stringify2(obj);
+        } catch (_6) {
+          return '"[unable to serialize, circular reference is too complex to analyze]"';
+        }
+      }
+    }
+    __name(stringify, "stringify");
+    function buildFormatters(level, bindings, log) {
+      return {
+        level,
+        bindings,
+        log
+      };
+    }
+    __name(buildFormatters, "buildFormatters");
+    function normalizeDestFileDescriptor(destination2) {
+      const fd = Number(destination2);
+      if (typeof destination2 === "string" && Number.isFinite(fd)) {
+        return fd;
+      }
+      if (destination2 === void 0) {
+        return 1;
+      }
+      return destination2;
+    }
+    __name(normalizeDestFileDescriptor, "normalizeDestFileDescriptor");
+    module2.exports = {
+      noop,
+      buildSafeSonicBoom,
+      asChindings,
+      asJson,
+      genLog,
+      createArgsNormalizer,
+      stringify,
+      buildFormatters,
+      normalizeDestFileDescriptor
+    };
+  }
+});
+
+// node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/constants.js
+var require_constants = __commonJS({
+  "node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/constants.js"(exports2, module2) {
+    "use strict";
+    var DEFAULT_LEVELS = {
+      trace: 10,
+      debug: 20,
+      info: 30,
+      warn: 40,
+      error: 50,
+      fatal: 60
+    };
+    var SORTING_ORDER = {
+      ASC: "ASC",
+      DESC: "DESC"
+    };
+    module2.exports = {
+      DEFAULT_LEVELS,
+      SORTING_ORDER
+    };
+  }
+});
+
+// node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/levels.js
+var require_levels = __commonJS({
+  "node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/levels.js"(exports2, module2) {
+    "use strict";
+    var {
+      lsCacheSym,
+      levelValSym,
+      useOnlyCustomLevelsSym,
+      streamSym,
+      formattersSym,
+      hooksSym,
+      levelCompSym
+    } = require_symbols();
+    var { noop, genLog } = require_tools();
+    var { DEFAULT_LEVELS, SORTING_ORDER } = require_constants();
+    var levelMethods = {
+      fatal: (hook) => {
+        const logFatal = genLog(DEFAULT_LEVELS.fatal, hook);
+        return function(...args2) {
+          const stream2 = this[streamSym];
+          logFatal.call(this, ...args2);
+          if (typeof stream2.flushSync === "function") {
+            try {
+              stream2.flushSync();
+            } catch (e) {
+            }
+          }
+        };
+      },
+      error: (hook) => genLog(DEFAULT_LEVELS.error, hook),
+      warn: (hook) => genLog(DEFAULT_LEVELS.warn, hook),
+      info: (hook) => genLog(DEFAULT_LEVELS.info, hook),
+      debug: (hook) => genLog(DEFAULT_LEVELS.debug, hook),
+      trace: (hook) => genLog(DEFAULT_LEVELS.trace, hook)
+    };
+    var nums = Object.keys(DEFAULT_LEVELS).reduce((o, k) => {
+      o[DEFAULT_LEVELS[k]] = k;
+      return o;
+    }, {});
+    var initialLsCache = Object.keys(nums).reduce((o, k) => {
+      o[k] = '{"level":' + Number(k);
+      return o;
+    }, {});
+    function genLsCache(instance) {
+      const formatter = instance[formattersSym].level;
+      const { labels } = instance.levels;
+      const cache = {};
+      for (const label in labels) {
+        const level = formatter(labels[label], Number(label));
+        cache[label] = JSON.stringify(level).slice(0, -1);
+      }
+      instance[lsCacheSym] = cache;
+      return instance;
+    }
+    __name(genLsCache, "genLsCache");
+    function isStandardLevel(level, useOnlyCustomLevels) {
+      if (useOnlyCustomLevels) {
+        return false;
+      }
+      switch (level) {
+        case "fatal":
+        case "error":
+        case "warn":
+        case "info":
+        case "debug":
+        case "trace":
+          return true;
+        default:
+          return false;
+      }
+    }
+    __name(isStandardLevel, "isStandardLevel");
+    function setLevel(level) {
+      const { labels, values } = this.levels;
+      if (typeof level === "number") {
+        if (labels[level] === void 0)
+          throw Error("unknown level value" + level);
+        level = labels[level];
+      }
+      if (values[level] === void 0)
+        throw Error("unknown level " + level);
+      const preLevelVal = this[levelValSym];
+      const levelVal = this[levelValSym] = values[level];
+      const useOnlyCustomLevelsVal = this[useOnlyCustomLevelsSym];
+      const levelComparison = this[levelCompSym];
+      const hook = this[hooksSym].logMethod;
+      for (const key in values) {
+        if (levelComparison(values[key], levelVal) === false) {
+          this[key] = noop;
+          continue;
+        }
+        this[key] = isStandardLevel(key, useOnlyCustomLevelsVal) ? levelMethods[key](hook) : genLog(values[key], hook);
+      }
+      this.emit(
+        "level-change",
+        level,
+        levelVal,
+        labels[preLevelVal],
+        preLevelVal,
+        this
+      );
+    }
+    __name(setLevel, "setLevel");
+    function getLevel(level) {
+      const { levels, levelVal } = this;
+      return levels && levels.labels ? levels.labels[levelVal] : "";
+    }
+    __name(getLevel, "getLevel");
+    function isLevelEnabled(logLevel) {
+      const { values } = this.levels;
+      const logLevelVal = values[logLevel];
+      return logLevelVal !== void 0 && this[levelCompSym](logLevelVal, this[levelValSym]);
+    }
+    __name(isLevelEnabled, "isLevelEnabled");
+    function compareLevel(direction, current, expected) {
+      if (direction === SORTING_ORDER.DESC) {
+        return current <= expected;
+      }
+      return current >= expected;
+    }
+    __name(compareLevel, "compareLevel");
+    function genLevelComparison(levelComparison) {
+      if (typeof levelComparison === "string") {
+        return compareLevel.bind(null, levelComparison);
+      }
+      return levelComparison;
+    }
+    __name(genLevelComparison, "genLevelComparison");
+    function mappings(customLevels = null, useOnlyCustomLevels = false) {
+      const customNums = customLevels ? Object.keys(customLevels).reduce((o, k) => {
+        o[customLevels[k]] = k;
+        return o;
+      }, {}) : null;
+      const labels = Object.assign(
+        Object.create(Object.prototype, { Infinity: { value: "silent" } }),
+        useOnlyCustomLevels ? null : nums,
+        customNums
+      );
+      const values = Object.assign(
+        Object.create(Object.prototype, { silent: { value: Infinity } }),
+        useOnlyCustomLevels ? null : DEFAULT_LEVELS,
+        customLevels
+      );
+      return { labels, values };
+    }
+    __name(mappings, "mappings");
+    function assertDefaultLevelFound(defaultLevel, customLevels, useOnlyCustomLevels) {
+      if (typeof defaultLevel === "number") {
+        const values = [].concat(
+          Object.keys(customLevels || {}).map((key) => customLevels[key]),
+          useOnlyCustomLevels ? [] : Object.keys(nums).map((level) => +level),
+          Infinity
+        );
+        if (!values.includes(defaultLevel)) {
+          throw Error(`default level:${defaultLevel} must be included in custom levels`);
+        }
+        return;
+      }
+      const labels = Object.assign(
+        Object.create(Object.prototype, { silent: { value: Infinity } }),
+        useOnlyCustomLevels ? null : DEFAULT_LEVELS,
+        customLevels
+      );
+      if (!(defaultLevel in labels)) {
+        throw Error(`default level:${defaultLevel} must be included in custom levels`);
+      }
+    }
+    __name(assertDefaultLevelFound, "assertDefaultLevelFound");
+    function assertNoLevelCollisions(levels, customLevels) {
+      const { labels, values } = levels;
+      for (const k in customLevels) {
+        if (k in values) {
+          throw Error("levels cannot be overridden");
+        }
+        if (customLevels[k] in labels) {
+          throw Error("pre-existing level values cannot be used for new levels");
+        }
+      }
+    }
+    __name(assertNoLevelCollisions, "assertNoLevelCollisions");
+    function assertLevelComparison(levelComparison) {
+      if (typeof levelComparison === "function") {
+        return;
+      }
+      if (typeof levelComparison === "string" && Object.values(SORTING_ORDER).includes(levelComparison)) {
+        return;
+      }
+      throw new Error('Levels comparison should be one of "ASC", "DESC" or "function" type');
+    }
+    __name(assertLevelComparison, "assertLevelComparison");
+    module2.exports = {
+      initialLsCache,
+      genLsCache,
+      levelMethods,
+      getLevel,
+      setLevel,
+      isLevelEnabled,
+      mappings,
+      assertNoLevelCollisions,
+      assertDefaultLevelFound,
+      genLevelComparison,
+      assertLevelComparison
+    };
+  }
+});
+
+// node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/meta.js
+var require_meta = __commonJS({
+  "node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/meta.js"(exports2, module2) {
+    "use strict";
+    module2.exports = { version: "9.1.0" };
+  }
+});
+
+// node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/proto.js
+var require_proto = __commonJS({
+  "node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/proto.js"(exports2, module2) {
+    "use strict";
+    var { EventEmitter } = require("events");
+    var {
+      lsCacheSym,
+      levelValSym,
+      setLevelSym,
+      getLevelSym,
+      chindingsSym,
+      parsedChindingsSym,
+      mixinSym,
+      asJsonSym,
+      writeSym,
+      mixinMergeStrategySym,
+      timeSym,
+      timeSliceIndexSym,
+      streamSym,
+      serializersSym,
+      formattersSym,
+      errorKeySym,
+      messageKeySym,
+      useOnlyCustomLevelsSym,
+      needsMetadataGsym,
+      redactFmtSym,
+      stringifySym,
+      formatOptsSym,
+      stringifiersSym,
+      msgPrefixSym
+    } = require_symbols();
+    var {
+      getLevel,
+      setLevel,
+      isLevelEnabled,
+      mappings,
+      initialLsCache,
+      genLsCache,
+      assertNoLevelCollisions
+    } = require_levels();
+    var {
+      asChindings,
+      asJson,
+      buildFormatters,
+      stringify
+    } = require_tools();
+    var {
+      version
+    } = require_meta();
+    var redaction = require_redaction();
+    var constructor = class Pino {
+      static {
+        __name(this, "Pino");
+      }
+    };
+    var prototype = {
+      constructor,
+      child,
+      bindings,
+      setBindings,
+      flush,
+      isLevelEnabled,
+      version,
+      get level() {
+        return this[getLevelSym]();
+      },
+      set level(lvl) {
+        this[setLevelSym](lvl);
+      },
+      get levelVal() {
+        return this[levelValSym];
+      },
+      set levelVal(n) {
+        throw Error("levelVal is read-only");
+      },
+      [lsCacheSym]: initialLsCache,
+      [writeSym]: write2,
+      [asJsonSym]: asJson,
+      [getLevelSym]: getLevel,
+      [setLevelSym]: setLevel
+    };
+    Object.setPrototypeOf(prototype, EventEmitter.prototype);
+    module2.exports = function() {
+      return Object.create(prototype);
+    };
+    var resetChildingsFormatter = /* @__PURE__ */ __name((bindings2) => bindings2, "resetChildingsFormatter");
+    function child(bindings2, options3) {
+      if (!bindings2) {
+        throw Error("missing bindings for child Pino");
+      }
+      options3 = options3 || {};
+      const serializers = this[serializersSym];
+      const formatters = this[formattersSym];
+      const instance = Object.create(this);
+      if (options3.hasOwnProperty("serializers") === true) {
+        instance[serializersSym] = /* @__PURE__ */ Object.create(null);
+        for (const k in serializers) {
+          instance[serializersSym][k] = serializers[k];
+        }
+        const parentSymbols = Object.getOwnPropertySymbols(serializers);
+        for (var i = 0; i < parentSymbols.length; i++) {
+          const ks = parentSymbols[i];
+          instance[serializersSym][ks] = serializers[ks];
+        }
+        for (const bk in options3.serializers) {
+          instance[serializersSym][bk] = options3.serializers[bk];
+        }
+        const bindingsSymbols = Object.getOwnPropertySymbols(options3.serializers);
+        for (var bi = 0; bi < bindingsSymbols.length; bi++) {
+          const bks = bindingsSymbols[bi];
+          instance[serializersSym][bks] = options3.serializers[bks];
+        }
+      } else
+        instance[serializersSym] = serializers;
+      if (options3.hasOwnProperty("formatters")) {
+        const { level, bindings: chindings, log } = options3.formatters;
+        instance[formattersSym] = buildFormatters(
+          level || formatters.level,
+          chindings || resetChildingsFormatter,
+          log || formatters.log
+        );
+      } else {
+        instance[formattersSym] = buildFormatters(
+          formatters.level,
+          resetChildingsFormatter,
+          formatters.log
+        );
+      }
+      if (options3.hasOwnProperty("customLevels") === true) {
+        assertNoLevelCollisions(this.levels, options3.customLevels);
+        instance.levels = mappings(options3.customLevels, instance[useOnlyCustomLevelsSym]);
+        genLsCache(instance);
+      }
+      if (typeof options3.redact === "object" && options3.redact !== null || Array.isArray(options3.redact)) {
+        instance.redact = options3.redact;
+        const stringifiers = redaction(instance.redact, stringify);
+        const formatOpts = { stringify: stringifiers[redactFmtSym] };
+        instance[stringifySym] = stringify;
+        instance[stringifiersSym] = stringifiers;
+        instance[formatOptsSym] = formatOpts;
+      }
+      if (typeof options3.msgPrefix === "string") {
+        instance[msgPrefixSym] = (this[msgPrefixSym] || "") + options3.msgPrefix;
+      }
+      instance[chindingsSym] = asChindings(instance, bindings2);
+      const childLevel = options3.level || this.level;
+      instance[setLevelSym](childLevel);
+      this.onChild(instance);
+      return instance;
+    }
+    __name(child, "child");
+    function bindings() {
+      const chindings = this[chindingsSym];
+      const chindingsJson = `{${chindings.substr(1)}}`;
+      const bindingsFromJson = JSON.parse(chindingsJson);
+      delete bindingsFromJson.pid;
+      delete bindingsFromJson.hostname;
+      return bindingsFromJson;
+    }
+    __name(bindings, "bindings");
+    function setBindings(newBindings) {
+      const chindings = asChindings(this, newBindings);
+      this[chindingsSym] = chindings;
+      delete this[parsedChindingsSym];
+    }
+    __name(setBindings, "setBindings");
+    function defaultMixinMergeStrategy(mergeObject, mixinObject) {
+      return Object.assign(mixinObject, mergeObject);
+    }
+    __name(defaultMixinMergeStrategy, "defaultMixinMergeStrategy");
+    function write2(_obj, msg, num) {
+      const t = this[timeSym]();
+      const mixin3 = this[mixinSym];
+      const errorKey = this[errorKeySym];
+      const messageKey = this[messageKeySym];
+      const mixinMergeStrategy = this[mixinMergeStrategySym] || defaultMixinMergeStrategy;
+      let obj;
+      if (_obj === void 0 || _obj === null) {
+        obj = {};
+      } else if (_obj instanceof Error) {
+        obj = { [errorKey]: _obj };
+        if (msg === void 0) {
+          msg = _obj.message;
+        }
+      } else {
+        obj = _obj;
+        if (msg === void 0 && _obj[messageKey] === void 0 && _obj[errorKey]) {
+          msg = _obj[errorKey].message;
+        }
+      }
+      if (mixin3) {
+        obj = mixinMergeStrategy(obj, mixin3(obj, num, this));
+      }
+      const s = this[asJsonSym](obj, msg, num, t);
+      const stream2 = this[streamSym];
+      if (stream2[needsMetadataGsym] === true) {
+        stream2.lastLevel = num;
+        stream2.lastObj = obj;
+        stream2.lastMsg = msg;
+        stream2.lastTime = t.slice(this[timeSliceIndexSym]);
+        stream2.lastLogger = this;
+      }
+      stream2.write(s);
+    }
+    __name(write2, "write");
+    function noop() {
+    }
+    __name(noop, "noop");
+    function flush(cb) {
+      if (cb != null && typeof cb !== "function") {
+        throw Error("callback must be a function");
+      }
+      const stream2 = this[streamSym];
+      if (typeof stream2.flush === "function") {
+        stream2.flush(cb || noop);
+      } else if (cb)
+        cb();
+    }
+    __name(flush, "flush");
+  }
+});
+
+// node_modules/.pnpm/safe-stable-stringify@2.4.3/node_modules/safe-stable-stringify/index.js
+var require_safe_stable_stringify = __commonJS({
+  "node_modules/.pnpm/safe-stable-stringify@2.4.3/node_modules/safe-stable-stringify/index.js"(exports2, module2) {
+    "use strict";
+    var { hasOwnProperty } = Object.prototype;
+    var stringify = configure();
+    stringify.configure = configure;
+    stringify.stringify = stringify;
+    stringify.default = stringify;
+    exports2.stringify = stringify;
+    exports2.configure = configure;
+    module2.exports = stringify;
+    var strEscapeSequencesRegExp = /[\u0000-\u001f\u0022\u005c\ud800-\udfff]|[\ud800-\udbff](?![\udc00-\udfff])|(?:[^\ud800-\udbff]|^)[\udc00-\udfff]/;
+    function strEscape(str) {
+      if (str.length < 5e3 && !strEscapeSequencesRegExp.test(str)) {
+        return `"${str}"`;
+      }
+      return JSON.stringify(str);
+    }
+    __name(strEscape, "strEscape");
+    function insertSort(array) {
+      if (array.length > 200) {
+        return array.sort();
+      }
+      for (let i = 1; i < array.length; i++) {
+        const currentValue = array[i];
+        let position = i;
+        while (position !== 0 && array[position - 1] > currentValue) {
+          array[position] = array[position - 1];
+          position--;
+        }
+        array[position] = currentValue;
+      }
+      return array;
+    }
+    __name(insertSort, "insertSort");
+    var typedArrayPrototypeGetSymbolToStringTag = Object.getOwnPropertyDescriptor(
+      Object.getPrototypeOf(
+        Object.getPrototypeOf(
+          new Int8Array()
+        )
+      ),
+      Symbol.toStringTag
+    ).get;
+    function isTypedArrayWithEntries(value) {
+      return typedArrayPrototypeGetSymbolToStringTag.call(value) !== void 0 && value.length !== 0;
+    }
+    __name(isTypedArrayWithEntries, "isTypedArrayWithEntries");
+    function stringifyTypedArray(array, separator, maximumBreadth) {
+      if (array.length < maximumBreadth) {
+        maximumBreadth = array.length;
+      }
+      const whitespace = separator === "," ? "" : " ";
+      let res = `"0":${whitespace}${array[0]}`;
+      for (let i = 1; i < maximumBreadth; i++) {
+        res += `${separator}"${i}":${whitespace}${array[i]}`;
+      }
+      return res;
+    }
+    __name(stringifyTypedArray, "stringifyTypedArray");
+    function getCircularValueOption(options3) {
+      if (hasOwnProperty.call(options3, "circularValue")) {
+        const circularValue = options3.circularValue;
+        if (typeof circularValue === "string") {
+          return `"${circularValue}"`;
+        }
+        if (circularValue == null) {
+          return circularValue;
+        }
+        if (circularValue === Error || circularValue === TypeError) {
+          return {
+            toString() {
+              throw new TypeError("Converting circular structure to JSON");
+            }
+          };
+        }
+        throw new TypeError('The "circularValue" argument must be of type string or the value null or undefined');
+      }
+      return '"[Circular]"';
+    }
+    __name(getCircularValueOption, "getCircularValueOption");
+    function getBooleanOption(options3, key) {
+      let value;
+      if (hasOwnProperty.call(options3, key)) {
+        value = options3[key];
+        if (typeof value !== "boolean") {
+          throw new TypeError(`The "${key}" argument must be of type boolean`);
+        }
+      }
+      return value === void 0 ? true : value;
+    }
+    __name(getBooleanOption, "getBooleanOption");
+    function getPositiveIntegerOption(options3, key) {
+      let value;
+      if (hasOwnProperty.call(options3, key)) {
+        value = options3[key];
+        if (typeof value !== "number") {
+          throw new TypeError(`The "${key}" argument must be of type number`);
+        }
+        if (!Number.isInteger(value)) {
+          throw new TypeError(`The "${key}" argument must be an integer`);
+        }
+        if (value < 1) {
+          throw new RangeError(`The "${key}" argument must be >= 1`);
+        }
+      }
+      return value === void 0 ? Infinity : value;
+    }
+    __name(getPositiveIntegerOption, "getPositiveIntegerOption");
+    function getItemCount(number) {
+      if (number === 1) {
+        return "1 item";
+      }
+      return `${number} items`;
+    }
+    __name(getItemCount, "getItemCount");
+    function getUniqueReplacerSet(replacerArray) {
+      const replacerSet = /* @__PURE__ */ new Set();
+      for (const value of replacerArray) {
+        if (typeof value === "string" || typeof value === "number") {
+          replacerSet.add(String(value));
+        }
+      }
+      return replacerSet;
+    }
+    __name(getUniqueReplacerSet, "getUniqueReplacerSet");
+    function getStrictOption(options3) {
+      if (hasOwnProperty.call(options3, "strict")) {
+        const value = options3.strict;
+        if (typeof value !== "boolean") {
+          throw new TypeError('The "strict" argument must be of type boolean');
+        }
+        if (value) {
+          return (value2) => {
+            let message = `Object can not safely be stringified. Received type ${typeof value2}`;
+            if (typeof value2 !== "function")
+              message += ` (${value2.toString()})`;
+            throw new Error(message);
+          };
+        }
+      }
+    }
+    __name(getStrictOption, "getStrictOption");
+    function configure(options3) {
+      options3 = { ...options3 };
+      const fail = getStrictOption(options3);
+      if (fail) {
+        if (options3.bigint === void 0) {
+          options3.bigint = false;
+        }
+        if (!("circularValue" in options3)) {
+          options3.circularValue = Error;
+        }
+      }
+      const circularValue = getCircularValueOption(options3);
+      const bigint = getBooleanOption(options3, "bigint");
+      const deterministic = getBooleanOption(options3, "deterministic");
+      const maximumDepth = getPositiveIntegerOption(options3, "maximumDepth");
+      const maximumBreadth = getPositiveIntegerOption(options3, "maximumBreadth");
+      function stringifyFnReplacer(key, parent, stack, replacer, spacer, indentation) {
+        let value = parent[key];
+        if (typeof value === "object" && value !== null && typeof value.toJSON === "function") {
+          value = value.toJSON(key);
+        }
+        value = replacer.call(parent, key, value);
+        switch (typeof value) {
+          case "string":
+            return strEscape(value);
+          case "object": {
+            if (value === null) {
+              return "null";
+            }
+            if (stack.indexOf(value) !== -1) {
+              return circularValue;
+            }
+            let res = "";
+            let join = ",";
+            const originalIndentation = indentation;
+            if (Array.isArray(value)) {
+              if (value.length === 0) {
+                return "[]";
+              }
+              if (maximumDepth < stack.length + 1) {
+                return '"[Array]"';
+              }
+              stack.push(value);
+              if (spacer !== "") {
+                indentation += spacer;
+                res += `
+${indentation}`;
+                join = `,
+${indentation}`;
+              }
+              const maximumValuesToStringify = Math.min(value.length, maximumBreadth);
+              let i = 0;
+              for (; i < maximumValuesToStringify - 1; i++) {
+                const tmp2 = stringifyFnReplacer(String(i), value, stack, replacer, spacer, indentation);
+                res += tmp2 !== void 0 ? tmp2 : "null";
+                res += join;
+              }
+              const tmp = stringifyFnReplacer(String(i), value, stack, replacer, spacer, indentation);
+              res += tmp !== void 0 ? tmp : "null";
+              if (value.length - 1 > maximumBreadth) {
+                const removedKeys = value.length - maximumBreadth - 1;
+                res += `${join}"... ${getItemCount(removedKeys)} not stringified"`;
+              }
+              if (spacer !== "") {
+                res += `
+${originalIndentation}`;
+              }
+              stack.pop();
+              return `[${res}]`;
+            }
+            let keys4 = Object.keys(value);
+            const keyLength = keys4.length;
+            if (keyLength === 0) {
+              return "{}";
+            }
+            if (maximumDepth < stack.length + 1) {
+              return '"[Object]"';
+            }
+            let whitespace = "";
+            let separator = "";
+            if (spacer !== "") {
+              indentation += spacer;
+              join = `,
+${indentation}`;
+              whitespace = " ";
+            }
+            const maximumPropertiesToStringify = Math.min(keyLength, maximumBreadth);
+            if (deterministic && !isTypedArrayWithEntries(value)) {
+              keys4 = insertSort(keys4);
+            }
+            stack.push(value);
+            for (let i = 0; i < maximumPropertiesToStringify; i++) {
+              const key2 = keys4[i];
+              const tmp = stringifyFnReplacer(key2, value, stack, replacer, spacer, indentation);
+              if (tmp !== void 0) {
+                res += `${separator}${strEscape(key2)}:${whitespace}${tmp}`;
+                separator = join;
+              }
+            }
+            if (keyLength > maximumBreadth) {
+              const removedKeys = keyLength - maximumBreadth;
+              res += `${separator}"...":${whitespace}"${getItemCount(removedKeys)} not stringified"`;
+              separator = join;
+            }
+            if (spacer !== "" && separator.length > 1) {
+              res = `
+${indentation}${res}
+${originalIndentation}`;
+            }
+            stack.pop();
+            return `{${res}}`;
+          }
+          case "number":
+            return isFinite(value) ? String(value) : fail ? fail(value) : "null";
+          case "boolean":
+            return value === true ? "true" : "false";
+          case "undefined":
+            return void 0;
+          case "bigint":
+            if (bigint) {
+              return String(value);
+            }
+          default:
+            return fail ? fail(value) : void 0;
+        }
+      }
+      __name(stringifyFnReplacer, "stringifyFnReplacer");
+      function stringifyArrayReplacer(key, value, stack, replacer, spacer, indentation) {
+        if (typeof value === "object" && value !== null && typeof value.toJSON === "function") {
+          value = value.toJSON(key);
+        }
+        switch (typeof value) {
+          case "string":
+            return strEscape(value);
+          case "object": {
+            if (value === null) {
+              return "null";
+            }
+            if (stack.indexOf(value) !== -1) {
+              return circularValue;
+            }
+            const originalIndentation = indentation;
+            let res = "";
+            let join = ",";
+            if (Array.isArray(value)) {
+              if (value.length === 0) {
+                return "[]";
+              }
+              if (maximumDepth < stack.length + 1) {
+                return '"[Array]"';
+              }
+              stack.push(value);
+              if (spacer !== "") {
+                indentation += spacer;
+                res += `
+${indentation}`;
+                join = `,
+${indentation}`;
+              }
+              const maximumValuesToStringify = Math.min(value.length, maximumBreadth);
+              let i = 0;
+              for (; i < maximumValuesToStringify - 1; i++) {
+                const tmp2 = stringifyArrayReplacer(String(i), value[i], stack, replacer, spacer, indentation);
+                res += tmp2 !== void 0 ? tmp2 : "null";
+                res += join;
+              }
+              const tmp = stringifyArrayReplacer(String(i), value[i], stack, replacer, spacer, indentation);
+              res += tmp !== void 0 ? tmp : "null";
+              if (value.length - 1 > maximumBreadth) {
+                const removedKeys = value.length - maximumBreadth - 1;
+                res += `${join}"... ${getItemCount(removedKeys)} not stringified"`;
+              }
+              if (spacer !== "") {
+                res += `
+${originalIndentation}`;
+              }
+              stack.pop();
+              return `[${res}]`;
+            }
+            stack.push(value);
+            let whitespace = "";
+            if (spacer !== "") {
+              indentation += spacer;
+              join = `,
+${indentation}`;
+              whitespace = " ";
+            }
+            let separator = "";
+            for (const key2 of replacer) {
+              const tmp = stringifyArrayReplacer(key2, value[key2], stack, replacer, spacer, indentation);
+              if (tmp !== void 0) {
+                res += `${separator}${strEscape(key2)}:${whitespace}${tmp}`;
+                separator = join;
+              }
+            }
+            if (spacer !== "" && separator.length > 1) {
+              res = `
+${indentation}${res}
+${originalIndentation}`;
+            }
+            stack.pop();
+            return `{${res}}`;
+          }
+          case "number":
+            return isFinite(value) ? String(value) : fail ? fail(value) : "null";
+          case "boolean":
+            return value === true ? "true" : "false";
+          case "undefined":
+            return void 0;
+          case "bigint":
+            if (bigint) {
+              return String(value);
+            }
+          default:
+            return fail ? fail(value) : void 0;
+        }
+      }
+      __name(stringifyArrayReplacer, "stringifyArrayReplacer");
+      function stringifyIndent(key, value, stack, spacer, indentation) {
+        switch (typeof value) {
+          case "string":
+            return strEscape(value);
+          case "object": {
+            if (value === null) {
+              return "null";
+            }
+            if (typeof value.toJSON === "function") {
+              value = value.toJSON(key);
+              if (typeof value !== "object") {
+                return stringifyIndent(key, value, stack, spacer, indentation);
+              }
+              if (value === null) {
+                return "null";
+              }
+            }
+            if (stack.indexOf(value) !== -1) {
+              return circularValue;
+            }
+            const originalIndentation = indentation;
+            if (Array.isArray(value)) {
+              if (value.length === 0) {
+                return "[]";
+              }
+              if (maximumDepth < stack.length + 1) {
+                return '"[Array]"';
+              }
+              stack.push(value);
+              indentation += spacer;
+              let res2 = `
+${indentation}`;
+              const join2 = `,
+${indentation}`;
+              const maximumValuesToStringify = Math.min(value.length, maximumBreadth);
+              let i = 0;
+              for (; i < maximumValuesToStringify - 1; i++) {
+                const tmp2 = stringifyIndent(String(i), value[i], stack, spacer, indentation);
+                res2 += tmp2 !== void 0 ? tmp2 : "null";
+                res2 += join2;
+              }
+              const tmp = stringifyIndent(String(i), value[i], stack, spacer, indentation);
+              res2 += tmp !== void 0 ? tmp : "null";
+              if (value.length - 1 > maximumBreadth) {
+                const removedKeys = value.length - maximumBreadth - 1;
+                res2 += `${join2}"... ${getItemCount(removedKeys)} not stringified"`;
+              }
+              res2 += `
+${originalIndentation}`;
+              stack.pop();
+              return `[${res2}]`;
+            }
+            let keys4 = Object.keys(value);
+            const keyLength = keys4.length;
+            if (keyLength === 0) {
+              return "{}";
+            }
+            if (maximumDepth < stack.length + 1) {
+              return '"[Object]"';
+            }
+            indentation += spacer;
+            const join = `,
+${indentation}`;
+            let res = "";
+            let separator = "";
+            let maximumPropertiesToStringify = Math.min(keyLength, maximumBreadth);
+            if (isTypedArrayWithEntries(value)) {
+              res += stringifyTypedArray(value, join, maximumBreadth);
+              keys4 = keys4.slice(value.length);
+              maximumPropertiesToStringify -= value.length;
+              separator = join;
+            }
+            if (deterministic) {
+              keys4 = insertSort(keys4);
+            }
+            stack.push(value);
+            for (let i = 0; i < maximumPropertiesToStringify; i++) {
+              const key2 = keys4[i];
+              const tmp = stringifyIndent(key2, value[key2], stack, spacer, indentation);
+              if (tmp !== void 0) {
+                res += `${separator}${strEscape(key2)}: ${tmp}`;
+                separator = join;
+              }
+            }
+            if (keyLength > maximumBreadth) {
+              const removedKeys = keyLength - maximumBreadth;
+              res += `${separator}"...": "${getItemCount(removedKeys)} not stringified"`;
+              separator = join;
+            }
+            if (separator !== "") {
+              res = `
+${indentation}${res}
+${originalIndentation}`;
+            }
+            stack.pop();
+            return `{${res}}`;
+          }
+          case "number":
+            return isFinite(value) ? String(value) : fail ? fail(value) : "null";
+          case "boolean":
+            return value === true ? "true" : "false";
+          case "undefined":
+            return void 0;
+          case "bigint":
+            if (bigint) {
+              return String(value);
+            }
+          default:
+            return fail ? fail(value) : void 0;
+        }
+      }
+      __name(stringifyIndent, "stringifyIndent");
+      function stringifySimple(key, value, stack) {
+        switch (typeof value) {
+          case "string":
+            return strEscape(value);
+          case "object": {
+            if (value === null) {
+              return "null";
+            }
+            if (typeof value.toJSON === "function") {
+              value = value.toJSON(key);
+              if (typeof value !== "object") {
+                return stringifySimple(key, value, stack);
+              }
+              if (value === null) {
+                return "null";
+              }
+            }
+            if (stack.indexOf(value) !== -1) {
+              return circularValue;
+            }
+            let res = "";
+            if (Array.isArray(value)) {
+              if (value.length === 0) {
+                return "[]";
+              }
+              if (maximumDepth < stack.length + 1) {
+                return '"[Array]"';
+              }
+              stack.push(value);
+              const maximumValuesToStringify = Math.min(value.length, maximumBreadth);
+              let i = 0;
+              for (; i < maximumValuesToStringify - 1; i++) {
+                const tmp2 = stringifySimple(String(i), value[i], stack);
+                res += tmp2 !== void 0 ? tmp2 : "null";
+                res += ",";
+              }
+              const tmp = stringifySimple(String(i), value[i], stack);
+              res += tmp !== void 0 ? tmp : "null";
+              if (value.length - 1 > maximumBreadth) {
+                const removedKeys = value.length - maximumBreadth - 1;
+                res += `,"... ${getItemCount(removedKeys)} not stringified"`;
+              }
+              stack.pop();
+              return `[${res}]`;
+            }
+            let keys4 = Object.keys(value);
+            const keyLength = keys4.length;
+            if (keyLength === 0) {
+              return "{}";
+            }
+            if (maximumDepth < stack.length + 1) {
+              return '"[Object]"';
+            }
+            let separator = "";
+            let maximumPropertiesToStringify = Math.min(keyLength, maximumBreadth);
+            if (isTypedArrayWithEntries(value)) {
+              res += stringifyTypedArray(value, ",", maximumBreadth);
+              keys4 = keys4.slice(value.length);
+              maximumPropertiesToStringify -= value.length;
+              separator = ",";
+            }
+            if (deterministic) {
+              keys4 = insertSort(keys4);
+            }
+            stack.push(value);
+            for (let i = 0; i < maximumPropertiesToStringify; i++) {
+              const key2 = keys4[i];
+              const tmp = stringifySimple(key2, value[key2], stack);
+              if (tmp !== void 0) {
+                res += `${separator}${strEscape(key2)}:${tmp}`;
+                separator = ",";
+              }
+            }
+            if (keyLength > maximumBreadth) {
+              const removedKeys = keyLength - maximumBreadth;
+              res += `${separator}"...":"${getItemCount(removedKeys)} not stringified"`;
+            }
+            stack.pop();
+            return `{${res}}`;
+          }
+          case "number":
+            return isFinite(value) ? String(value) : fail ? fail(value) : "null";
+          case "boolean":
+            return value === true ? "true" : "false";
+          case "undefined":
+            return void 0;
+          case "bigint":
+            if (bigint) {
+              return String(value);
+            }
+          default:
+            return fail ? fail(value) : void 0;
+        }
+      }
+      __name(stringifySimple, "stringifySimple");
+      function stringify2(value, replacer, space) {
+        if (arguments.length > 1) {
+          let spacer = "";
+          if (typeof space === "number") {
+            spacer = " ".repeat(Math.min(space, 10));
+          } else if (typeof space === "string") {
+            spacer = space.slice(0, 10);
+          }
+          if (replacer != null) {
+            if (typeof replacer === "function") {
+              return stringifyFnReplacer("", { "": value }, [], replacer, spacer, "");
+            }
+            if (Array.isArray(replacer)) {
+              return stringifyArrayReplacer("", value, [], getUniqueReplacerSet(replacer), spacer, "");
+            }
+          }
+          if (spacer.length !== 0) {
+            return stringifyIndent("", value, [], spacer, "");
+          }
+        }
+        return stringifySimple("", value, []);
+      }
+      __name(stringify2, "stringify");
+      return stringify2;
+    }
+    __name(configure, "configure");
+  }
+});
+
+// node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/multistream.js
+var require_multistream = __commonJS({
+  "node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/multistream.js"(exports2, module2) {
+    "use strict";
+    var metadata = Symbol.for("pino.metadata");
+    var { DEFAULT_LEVELS } = require_constants();
+    var DEFAULT_INFO_LEVEL = DEFAULT_LEVELS.info;
+    function multistream(streamsArray, opts) {
+      let counter = 0;
+      streamsArray = streamsArray || [];
+      opts = opts || { dedupe: false };
+      const streamLevels = Object.create(DEFAULT_LEVELS);
+      streamLevels.silent = Infinity;
+      if (opts.levels && typeof opts.levels === "object") {
+        Object.keys(opts.levels).forEach((i) => {
+          streamLevels[i] = opts.levels[i];
+        });
+      }
+      const res = {
+        write: write2,
+        add,
+        emit,
+        flushSync,
+        end,
+        minLevel: 0,
+        streams: [],
+        clone,
+        [metadata]: true,
+        streamLevels
+      };
+      if (Array.isArray(streamsArray)) {
+        streamsArray.forEach(add, res);
+      } else {
+        add.call(res, streamsArray);
+      }
+      streamsArray = null;
+      return res;
+      function write2(data) {
+        let dest;
+        const level = this.lastLevel;
+        const { streams } = this;
+        let recordedLevel = 0;
+        let stream2;
+        for (let i = initLoopVar(streams.length, opts.dedupe); checkLoopVar(i, streams.length, opts.dedupe); i = adjustLoopVar(i, opts.dedupe)) {
+          dest = streams[i];
+          if (dest.level <= level) {
+            if (recordedLevel !== 0 && recordedLevel !== dest.level) {
+              break;
+            }
+            stream2 = dest.stream;
+            if (stream2[metadata]) {
+              const { lastTime, lastMsg, lastObj, lastLogger } = this;
+              stream2.lastLevel = level;
+              stream2.lastTime = lastTime;
+              stream2.lastMsg = lastMsg;
+              stream2.lastObj = lastObj;
+              stream2.lastLogger = lastLogger;
+            }
+            stream2.write(data);
+            if (opts.dedupe) {
+              recordedLevel = dest.level;
+            }
+          } else if (!opts.dedupe) {
+            break;
+          }
+        }
+      }
+      __name(write2, "write");
+      function emit(...args2) {
+        for (const { stream: stream2 } of this.streams) {
+          if (typeof stream2.emit === "function") {
+            stream2.emit(...args2);
+          }
+        }
+      }
+      __name(emit, "emit");
+      function flushSync() {
+        for (const { stream: stream2 } of this.streams) {
+          if (typeof stream2.flushSync === "function") {
+            stream2.flushSync();
+          }
+        }
+      }
+      __name(flushSync, "flushSync");
+      function add(dest) {
+        if (!dest) {
+          return res;
+        }
+        const isStream = typeof dest.write === "function" || dest.stream;
+        const stream_ = dest.write ? dest : dest.stream;
+        if (!isStream) {
+          throw Error("stream object needs to implement either StreamEntry or DestinationStream interface");
+        }
+        const { streams, streamLevels: streamLevels2 } = this;
+        let level;
+        if (typeof dest.levelVal === "number") {
+          level = dest.levelVal;
+        } else if (typeof dest.level === "string") {
+          level = streamLevels2[dest.level];
+        } else if (typeof dest.level === "number") {
+          level = dest.level;
+        } else {
+          level = DEFAULT_INFO_LEVEL;
+        }
+        const dest_ = {
+          stream: stream_,
+          level,
+          levelVal: void 0,
+          id: counter++
+        };
+        streams.unshift(dest_);
+        streams.sort(compareByLevel);
+        this.minLevel = streams[0].level;
+        return res;
+      }
+      __name(add, "add");
+      function end() {
+        for (const { stream: stream2 } of this.streams) {
+          if (typeof stream2.flushSync === "function") {
+            stream2.flushSync();
+          }
+          stream2.end();
+        }
+      }
+      __name(end, "end");
+      function clone(level) {
+        const streams = new Array(this.streams.length);
+        for (let i = 0; i < streams.length; i++) {
+          streams[i] = {
+            level,
+            stream: this.streams[i].stream
+          };
+        }
+        return {
+          write: write2,
+          add,
+          minLevel: level,
+          streams,
+          clone,
+          emit,
+          flushSync,
+          [metadata]: true
+        };
+      }
+      __name(clone, "clone");
+    }
+    __name(multistream, "multistream");
+    function compareByLevel(a, b) {
+      return a.level - b.level;
+    }
+    __name(compareByLevel, "compareByLevel");
+    function initLoopVar(length, dedupe) {
+      return dedupe ? length - 1 : 0;
+    }
+    __name(initLoopVar, "initLoopVar");
+    function adjustLoopVar(i, dedupe) {
+      return dedupe ? i - 1 : i + 1;
+    }
+    __name(adjustLoopVar, "adjustLoopVar");
+    function checkLoopVar(i, length, dedupe) {
+      return dedupe ? i >= 0 : i < length;
+    }
+    __name(checkLoopVar, "checkLoopVar");
+    module2.exports = multistream;
+  }
+});
+
+// node_modules/.pnpm/pino@9.1.0/node_modules/pino/pino.js
+var require_pino = __commonJS({
+  "node_modules/.pnpm/pino@9.1.0/node_modules/pino/pino.js"(exports2, module2) {
+    "use strict";
+    var os = require("os");
+    var stdSerializers = require_pino_std_serializers();
+    var caller = require_caller();
+    var redaction = require_redaction();
+    var time = require_time();
+    var proto = require_proto();
+    var symbols = require_symbols();
+    var { configure } = require_safe_stable_stringify();
+    var { assertDefaultLevelFound, mappings, genLsCache, genLevelComparison, assertLevelComparison } = require_levels();
+    var { DEFAULT_LEVELS, SORTING_ORDER } = require_constants();
+    var {
+      createArgsNormalizer,
+      asChindings,
+      buildSafeSonicBoom,
+      buildFormatters,
+      stringify,
+      normalizeDestFileDescriptor,
+      noop
+    } = require_tools();
+    var { version } = require_meta();
+    var {
+      chindingsSym,
+      redactFmtSym,
+      serializersSym,
+      timeSym,
+      timeSliceIndexSym,
+      streamSym,
+      stringifySym,
+      stringifySafeSym,
+      stringifiersSym,
+      setLevelSym,
+      endSym,
+      formatOptsSym,
+      messageKeySym,
+      errorKeySym,
+      nestedKeySym,
+      mixinSym,
+      levelCompSym,
+      useOnlyCustomLevelsSym,
+      formattersSym,
+      hooksSym,
+      nestedKeyStrSym,
+      mixinMergeStrategySym,
+      msgPrefixSym
+    } = symbols;
+    var { epochTime, nullTime } = time;
+    var { pid } = process;
+    var hostname = os.hostname();
+    var defaultErrorSerializer = stdSerializers.err;
+    var defaultOptions = {
+      level: "info",
+      levelComparison: SORTING_ORDER.ASC,
+      levels: DEFAULT_LEVELS,
+      messageKey: "msg",
+      errorKey: "err",
+      nestedKey: null,
+      enabled: true,
+      base: { pid, hostname },
+      serializers: Object.assign(/* @__PURE__ */ Object.create(null), {
+        err: defaultErrorSerializer
+      }),
+      formatters: Object.assign(/* @__PURE__ */ Object.create(null), {
+        bindings(bindings) {
+          return bindings;
+        },
+        level(label, number) {
+          return { level: number };
+        }
+      }),
+      hooks: {
+        logMethod: void 0
+      },
+      timestamp: epochTime,
+      name: void 0,
+      redact: null,
+      customLevels: null,
+      useOnlyCustomLevels: false,
+      depthLimit: 5,
+      edgeLimit: 100
+    };
+    var normalize = createArgsNormalizer(defaultOptions);
+    var serializers = Object.assign(/* @__PURE__ */ Object.create(null), stdSerializers);
+    function pino2(...args2) {
+      const instance = {};
+      const { opts, stream: stream2 } = normalize(instance, caller(), ...args2);
+      const {
+        redact,
+        crlf,
+        serializers: serializers2,
+        timestamp,
+        messageKey,
+        errorKey,
+        nestedKey,
+        base,
+        name,
+        level,
+        customLevels,
+        levelComparison,
+        mixin: mixin3,
+        mixinMergeStrategy,
+        useOnlyCustomLevels,
+        formatters,
+        hooks,
+        depthLimit,
+        edgeLimit,
+        onChild,
+        msgPrefix
+      } = opts;
+      const stringifySafe = configure({
+        maximumDepth: depthLimit,
+        maximumBreadth: edgeLimit
+      });
+      const allFormatters = buildFormatters(
+        formatters.level,
+        formatters.bindings,
+        formatters.log
+      );
+      const stringifyFn = stringify.bind({
+        [stringifySafeSym]: stringifySafe
+      });
+      const stringifiers = redact ? redaction(redact, stringifyFn) : {};
+      const formatOpts = redact ? { stringify: stringifiers[redactFmtSym] } : { stringify: stringifyFn };
+      const end = "}" + (crlf ? "\r\n" : "\n");
+      const coreChindings = asChindings.bind(null, {
+        [chindingsSym]: "",
+        [serializersSym]: serializers2,
+        [stringifiersSym]: stringifiers,
+        [stringifySym]: stringify,
+        [stringifySafeSym]: stringifySafe,
+        [formattersSym]: allFormatters
+      });
+      let chindings = "";
+      if (base !== null) {
+        if (name === void 0) {
+          chindings = coreChindings(base);
+        } else {
+          chindings = coreChindings(Object.assign({}, base, { name }));
+        }
+      }
+      const time2 = timestamp instanceof Function ? timestamp : timestamp ? epochTime : nullTime;
+      const timeSliceIndex = time2().indexOf(":") + 1;
+      if (useOnlyCustomLevels && !customLevels)
+        throw Error("customLevels is required if useOnlyCustomLevels is set true");
+      if (mixin3 && typeof mixin3 !== "function")
+        throw Error(`Unknown mixin type "${typeof mixin3}" - expected "function"`);
+      if (msgPrefix && typeof msgPrefix !== "string")
+        throw Error(`Unknown msgPrefix type "${typeof msgPrefix}" - expected "string"`);
+      assertDefaultLevelFound(level, customLevels, useOnlyCustomLevels);
+      const levels = mappings(customLevels, useOnlyCustomLevels);
+      if (typeof stream2.emit === "function") {
+        stream2.emit("message", { code: "PINO_CONFIG", config: { levels, messageKey, errorKey } });
+      }
+      assertLevelComparison(levelComparison);
+      const levelCompFunc = genLevelComparison(levelComparison);
+      Object.assign(instance, {
+        levels,
+        [levelCompSym]: levelCompFunc,
+        [useOnlyCustomLevelsSym]: useOnlyCustomLevels,
+        [streamSym]: stream2,
+        [timeSym]: time2,
+        [timeSliceIndexSym]: timeSliceIndex,
+        [stringifySym]: stringify,
+        [stringifySafeSym]: stringifySafe,
+        [stringifiersSym]: stringifiers,
+        [endSym]: end,
+        [formatOptsSym]: formatOpts,
+        [messageKeySym]: messageKey,
+        [errorKeySym]: errorKey,
+        [nestedKeySym]: nestedKey,
+        // protect against injection
+        [nestedKeyStrSym]: nestedKey ? `,${JSON.stringify(nestedKey)}:{` : "",
+        [serializersSym]: serializers2,
+        [mixinSym]: mixin3,
+        [mixinMergeStrategySym]: mixinMergeStrategy,
+        [chindingsSym]: chindings,
+        [formattersSym]: allFormatters,
+        [hooksSym]: hooks,
+        silent: noop,
+        onChild,
+        [msgPrefixSym]: msgPrefix
+      });
+      Object.setPrototypeOf(instance, proto());
+      genLsCache(instance);
+      instance[setLevelSym](level);
+      return instance;
+    }
+    __name(pino2, "pino");
+    module2.exports = pino2;
+    module2.exports.destination = (dest = process.stdout.fd) => {
+      if (typeof dest === "object") {
+        dest.dest = normalizeDestFileDescriptor(dest.dest || process.stdout.fd);
+        return buildSafeSonicBoom(dest);
+      } else {
+        return buildSafeSonicBoom({ dest: normalizeDestFileDescriptor(dest), minLength: 0 });
+      }
+    };
+    module2.exports.transport = require_transport();
+    module2.exports.multistream = require_multistream();
+    module2.exports.levels = mappings();
+    module2.exports.stdSerializers = serializers;
+    module2.exports.stdTimeFunctions = Object.assign({}, time);
+    module2.exports.symbols = symbols;
+    module2.exports.version = version;
+    module2.exports.default = pino2;
+    module2.exports.pino = pino2;
+  }
+});
+
 // src/index.ts
 var src_exports = {};
 __export(src_exports, {
@@ -11091,6 +15579,7 @@ __export(src_exports, {
   chatListSchema: () => chatListSchema,
   chatTextSchema: () => chatTextSchema,
   chatTurnSchema: () => chatTurnSchema,
+  config: () => config,
   convertSeverityTextToNumber: () => convertSeverityTextToNumber,
   convertSeverityValuesToLevel: () => convertSeverityValuesToLevel,
   createClient: () => createClient,
@@ -11109,10 +15598,11 @@ __export(src_exports, {
   getWorkflowByIdResSchema: () => getWorkflowByIdResSchema,
   getWorkflowsResSchema: () => getWorkflowsResSchema,
   instrument: () => instrument,
-  is: () => is,
   iudexConsole: () => console_exports,
   iudexFastify: () => fastify_exports,
   iudexPino: () => pino_exports,
+  iudexPinoHttp: () => pino_http_exports,
+  iudexTrpc: () => trpc_exports,
   mapIudexToOpenAi: () => mapIudexToOpenAi,
   nextMessage: () => nextMessage,
   postWorkflowsReqSchema: () => postWorkflowsReqSchema,
@@ -11752,11 +16242,11 @@ var OTLPProtoExporterNodeBase = (
   /** @class */
   function(_super) {
     __extends4(OTLPProtoExporterNodeBase2, _super);
-    function OTLPProtoExporterNodeBase2(config3) {
-      if (config3 === void 0) {
-        config3 = {};
+    function OTLPProtoExporterNodeBase2(config5) {
+      if (config5 === void 0) {
+        config5 = {};
       }
-      return _super.call(this, config3) || this;
+      return _super.call(this, config5) || this;
     }
     __name(OTLPProtoExporterNodeBase2, "OTLPProtoExporterNodeBase");
     OTLPProtoExporterNodeBase2.prototype._sendPromise = function(objects, onSuccess, onError) {
@@ -11833,13 +16323,13 @@ var DEFAULT_ENCODER = {
   encodeSpanContext: hexToBinary,
   encodeOptionalSpanContext: optionalHexToBinary
 };
-function getOtlpEncoder(options2) {
+function getOtlpEncoder(options3) {
   var _a2, _b;
-  if (options2 === void 0) {
+  if (options3 === void 0) {
     return DEFAULT_ENCODER;
   }
-  var useLongBits = (_a2 = options2.useLongBits) !== null && _a2 !== void 0 ? _a2 : true;
-  var useHex = (_b = options2.useHex) !== null && _b !== void 0 ? _b : false;
+  var useLongBits = (_a2 = options3.useLongBits) !== null && _a2 !== void 0 ? _a2 : true;
+  var useHex = (_b = options3.useHex) !== null && _b !== void 0 ? _b : false;
   return {
     encodeHrTime: useLongBits ? encodeAsLongBits : encodeTimestamp,
     encodeSpanContext: useHex ? identity : hexToBinary,
@@ -11963,8 +16453,8 @@ var __read5 = function(o, n) {
   }
   return ar;
 };
-function createExportLogsServiceRequest(logRecords, options2) {
-  var encoder = getOtlpEncoder(options2);
+function createExportLogsServiceRequest(logRecords, options3) {
+  var encoder = getOtlpEncoder(options3);
   return {
     resourceLogs: logRecordsToResourceLogs(logRecords, encoder)
   };
@@ -12099,20 +16589,20 @@ var OTLPLogExporter = (
   /** @class */
   function(_super) {
     __extends5(OTLPLogExporter2, _super);
-    function OTLPLogExporter2(config3) {
-      if (config3 === void 0) {
-        config3 = {};
+    function OTLPLogExporter2(config5) {
+      if (config5 === void 0) {
+        config5 = {};
       }
-      var _this = _super.call(this, config3) || this;
-      _this.headers = __assign2(__assign2(__assign2(__assign2({}, _this.headers), USER_AGENT), utils_exports.parseKeyPairsIntoRecord(getEnv().OTEL_EXPORTER_OTLP_LOGS_HEADERS)), parseHeaders(config3 === null || config3 === void 0 ? void 0 : config3.headers));
+      var _this = _super.call(this, config5) || this;
+      _this.headers = __assign2(__assign2(__assign2(__assign2({}, _this.headers), USER_AGENT), utils_exports.parseKeyPairsIntoRecord(getEnv().OTEL_EXPORTER_OTLP_LOGS_HEADERS)), parseHeaders(config5 === null || config5 === void 0 ? void 0 : config5.headers));
       return _this;
     }
     __name(OTLPLogExporter2, "OTLPLogExporter");
     OTLPLogExporter2.prototype.convert = function(logs3) {
       return createExportLogsServiceRequest(logs3);
     };
-    OTLPLogExporter2.prototype.getDefaultUrl = function(config3) {
-      return typeof config3.url === "string" ? config3.url : getEnv().OTEL_EXPORTER_OTLP_LOGS_ENDPOINT.length > 0 ? appendRootPathToUrlIfNeeded(getEnv().OTEL_EXPORTER_OTLP_LOGS_ENDPOINT) : getEnv().OTEL_EXPORTER_OTLP_ENDPOINT.length > 0 ? appendResourcePathToUrl(getEnv().OTEL_EXPORTER_OTLP_ENDPOINT, DEFAULT_COLLECTOR_RESOURCE_PATH) : DEFAULT_COLLECTOR_URL;
+    OTLPLogExporter2.prototype.getDefaultUrl = function(config5) {
+      return typeof config5.url === "string" ? config5.url : getEnv().OTEL_EXPORTER_OTLP_LOGS_ENDPOINT.length > 0 ? appendRootPathToUrlIfNeeded(getEnv().OTEL_EXPORTER_OTLP_LOGS_ENDPOINT) : getEnv().OTEL_EXPORTER_OTLP_ENDPOINT.length > 0 ? appendResourcePathToUrl(getEnv().OTEL_EXPORTER_OTLP_ENDPOINT, DEFAULT_COLLECTOR_RESOURCE_PATH) : DEFAULT_COLLECTOR_URL;
     };
     OTLPLogExporter2.prototype.getServiceClientType = function() {
       return ServiceClientType.LOGS;
@@ -12129,7 +16619,7 @@ var import_lodash4 = __toESM(require("lodash"));
 var import_semantic_conventions2 = require("@opentelemetry/semantic-conventions");
 var import_api_logs = require("@opentelemetry/api-logs");
 var import_lodash = __toESM(require("lodash"));
-var is = { instrumented: false };
+var config = { isInstrumented: false, oldConsole: { ...console } };
 function convertSeverityTextToNumber(severityText) {
   if (severityText == void 0) {
     return;
@@ -12199,7 +16689,7 @@ function emitOtelLog({
   attributes,
   stackDepth
 }) {
-  if (!is.instrumented)
+  if (!config.isInstrumented)
     return;
   const attrs = { ...attributes };
   if (stackDepth != null) {
@@ -12229,13 +16719,15 @@ __export(console_exports, {
   instrumentConsole: () => instrumentConsole
 });
 function instrumentConsole() {
-  const { log, error, warn, info, debug } = console;
+  const { log, error, warn, info, debug, timeLog, timeEnd } = console;
   [
     { name: "log", logger: log, level: "INFO" },
     { name: "error", logger: error, level: "ERROR" },
     { name: "warn", logger: warn, level: "WARN" },
     { name: "info", logger: info, level: "INFO" },
-    { name: "debug", logger: debug, level: "DEBUG" }
+    { name: "debug", logger: debug, level: "DEBUG" },
+    { name: "timeLog", logger: timeLog, level: "INFO" },
+    { name: "timeEnd", logger: timeEnd, level: "INFO" }
   ].forEach(({ name, logger: logger2, level }) => {
     console[name] = function(...content) {
       logger2(...content);
@@ -12252,18 +16744,21 @@ function instrumentConsole() {
       if (contentWoCtx.length === 1) {
         emitOtelLog({ level, body: contentWoCtx[0], attributes: contentCtx });
       } else {
-        emitOtelLog({ level, body: contentWoCtx, attributes: contentCtx });
+        emitOtelLog({ level, body: contentWoCtx.join(" "), attributes: contentCtx });
       }
     };
   });
 }
 __name(instrumentConsole, "instrumentConsole");
 
+// src/instrumentation/index.ts
+var traceloop = __toESM(require("@traceloop/node-server-sdk"));
+
 // src/instrumentation/pino.ts
 var pino_exports = {};
 __export(pino_exports, {
   args: () => args,
-  config: () => config,
+  config: () => config2,
   destination: () => destination,
   iudexPino: () => iudexPino,
   mixin: () => mixin,
@@ -12271,25 +16766,27 @@ __export(pino_exports, {
   write: () => write
 });
 var import_semantic_conventions3 = require("@opentelemetry/semantic-conventions");
+var import_pino = __toESM(require_pino());
 var import_lodash2 = __toESM(require("lodash"));
 function write(str) {
-  if (!is.instrumented)
-    return;
-  try {
-    const { level, msg, time, ...rest } = JSON.parse(str);
-    const levelNumber = Number(level);
-    const severityText = convertSeverityValuesToLevel(levelNumber ? levelNumber : void 0, level);
-    emitOtelLog({ level: severityText, severityNumber: level, body: msg, attributes: rest });
-  } catch {
-    emitOtelLog({ level: "INFO", body: str });
+  if (config.isInstrumented) {
+    try {
+      const { level, msg, time, ...rest } = JSON.parse(str);
+      const levelNumber = Number(level);
+      const severityText = convertSeverityValuesToLevel(levelNumber || void 0, level);
+      emitOtelLog({ level: severityText, severityNumber: level, body: msg, attributes: rest });
+    } catch {
+      emitOtelLog({ level: "INFO", body: str });
+    }
   }
+  import_pino.default.destination(1).write(str);
 }
 __name(write, "write");
-var config = {
+var config2 = {
   mixinStackDepth: 4
 };
 function mixin() {
-  const { filePath, lineNum, caller } = getCallerInfo(config.mixinStackDepth);
+  const { filePath, lineNum, caller } = getCallerInfo(config2.mixinStackDepth);
   return import_lodash2.default.omitBy({
     [import_semantic_conventions3.SEMATTRS_CODE_FILEPATH]: filePath,
     [import_semantic_conventions3.SEMATTRS_CODE_LINENO]: lineNum,
@@ -12302,17 +16799,153 @@ var options = { mixin };
 var args = [options, destination];
 var iudexPino = {
   write,
-  config,
+  config: config2,
   mixin,
   destination,
   options,
   args
 };
 
+// src/instrumentation/pino-http.ts
+var pino_http_exports = {};
+__export(pino_http_exports, {
+  PinoHttpInstrumentation: () => PinoHttpInstrumentation,
+  iudexPinoHttp: () => iudexPinoHttp,
+  options: () => options2
+});
+var import_instrumentation = require("@opentelemetry/instrumentation");
+
+// src/instrumentation/trpc.ts
+var trpc_exports = {};
+__export(trpc_exports, {
+  config: () => config3,
+  extractTrpcReqInputs: () => extractTrpcReqInputs,
+  isObject: () => isObject,
+  isTrpcRequest: () => isTrpcRequest,
+  iudexTrpc: () => iudexTrpc,
+  trpcReqMessage: () => trpcReqMessage
+});
+var config3 = {
+  trpcBasePath: "/trpc"
+};
+function isTrpcRequest(req) {
+  const url2 = req.originalUrl || req.url;
+  return url2 && url2.startsWith(config3.trpcBasePath);
+}
+__name(isTrpcRequest, "isTrpcRequest");
+function extractTrpcReqInputs(req) {
+  const { url: url2 } = req;
+  if (!url2) {
+    return {};
+  }
+  if (req.method === "GET") {
+    const [, inputStr] = url2.split("?", 2);
+    const searchParams = new URLSearchParams(inputStr);
+    const queryInput = searchParams.get("input");
+    const inputs2 = (queryInput ? JSON.parse(queryInput) : {}) || {};
+    return isObject(inputs2) ? inputs2 : { 0: inputs2 };
+  }
+  const inputs = req.body;
+  return isObject(inputs) ? inputs : { 0: inputs };
+}
+__name(extractTrpcReqInputs, "extractTrpcReqInputs");
+function trpcReqMessage(req, res) {
+  const { url: url2 } = req;
+  if (!url2) {
+    return "Iudex Error: Missing URL in TRPC request";
+  }
+  const [pathsStr] = url2.split("?", 2);
+  const paths = pathsStr.slice(1).split(",");
+  const inputs = extractTrpcReqInputs(req);
+  const calls = paths.map((path, idx) => {
+    return {
+      path,
+      input: inputs[idx]
+    };
+  });
+  return `TRPC:
+${calls.map((call) => {
+    return `  ${call.path}${call.input ? ` (${jsonStrOrEmpty(call.input)})` : ""}`;
+  }).join("\n")}`;
+}
+__name(trpcReqMessage, "trpcReqMessage");
+var iudexTrpc = {
+  config: config3,
+  isTrpcRequest,
+  extractTrpcReqInputs,
+  trpcReqMessage
+};
+function jsonStrOrEmpty(obj) {
+  return obj ? JSON.stringify(obj, null, 4) : "";
+}
+__name(jsonStrOrEmpty, "jsonStrOrEmpty");
+function isObject(value) {
+  return !!value && !Array.isArray(value) && typeof value === "object";
+}
+__name(isObject, "isObject");
+
+// src/instrumentation/pino-http.ts
+var options2 = {
+  customSuccessMessage: (req, res) => {
+    if (iudexTrpc.isTrpcRequest(req)) {
+      try {
+        return iudexTrpc.trpcReqMessage(req, res);
+      } catch {
+      }
+    }
+    return !req.readableAborted && res.writableEnded ? "request completed" : "request aborted";
+  }
+};
+var iudexPinoHttp = {
+  options: options2
+};
+var PinoHttpInstrumentation = class extends import_instrumentation.InstrumentationBase {
+  static {
+    __name(this, "PinoHttpInstrumentation");
+  }
+  constructor(config5 = {}) {
+    super("pino-http", "1.0.0", config5);
+  }
+  init() {
+    return new import_instrumentation.InstrumentationNodeModuleDefinition("pino-http", ["*"], (module2) => {
+      const isESM = module2[Symbol.toStringTag] === "Module";
+      const moduleExports = isESM ? module2.default : module2;
+      const patchedPinoHttp = Object.assign((...args2) => {
+        if (args2.length === 0) {
+          return moduleExports(options2);
+        }
+        if (args2.length === 1) {
+          const optsOrStream = args2[0];
+          if (typeof optsOrStream?.write === "function") {
+            return moduleExports(options2, optsOrStream);
+          }
+          if (typeof optsOrStream === "object") {
+            return moduleExports({ ...options2, ...optsOrStream });
+          }
+        }
+        const opts = args2[0];
+        args2[0] = { ...options2, ...opts };
+        return moduleExports(...args2);
+      }, moduleExports);
+      if (typeof patchedPinoHttp.pinoHttp === "function") {
+        patchedPinoHttp.pinoHttp = patchedPinoHttp;
+      }
+      if (typeof patchedPinoHttp.default === "function") {
+        patchedPinoHttp.default = patchedPinoHttp;
+      }
+      if (isESM) {
+        module2.pinoHttp = patchedPinoHttp;
+        module2.default = patchedPinoHttp;
+      }
+      return patchedPinoHttp;
+    });
+  }
+};
+
 // src/instrumentation/fastify.ts
 var fastify_exports = {};
 __export(fastify_exports, {
-  config: () => config2,
+  config: () => config4,
   iudexFastify: () => iudexFastify,
   logger: () => logger,
   mixin: () => mixin2,
@@ -12321,11 +16954,11 @@ __export(fastify_exports, {
 var import_semantic_conventions4 = require("@opentelemetry/semantic-conventions");
 var import_lodash3 = __toESM(require("lodash"));
 var stream = iudexPino.destination;
-var config2 = {
+var config4 = {
   mixinStackDepth: 5
 };
 function mixin2() {
-  const { filePath, lineNum, caller } = getCallerInfo(config2.mixinStackDepth);
+  const { filePath, lineNum, caller } = getCallerInfo(config4.mixinStackDepth);
   return import_lodash3.default.omitBy({
     [import_semantic_conventions4.SEMATTRS_CODE_FILEPATH]: filePath,
     [import_semantic_conventions4.SEMATTRS_CODE_LINENO]: lineNum,
@@ -12360,7 +16993,7 @@ function instrument({
   headers: configHeaders = {},
   settings = {}
 } = {}) {
-  if (is.instrumented)
+  if (config.isInstrumented)
     return;
   if (!iudexApiKey) {
     console.warn(
@@ -12399,6 +17032,7 @@ function instrument({
     logRecordProcessor,
     spanProcessors,
     instrumentations: [
+      // new PinoHttpInstrumentation(),
       (0, import_auto_instrumentations_node.getNodeAutoInstrumentations)({
         "@opentelemetry/instrumentation-fs": { enabled: false }
       })
@@ -12406,10 +17040,17 @@ function instrument({
     autoDetectResources: true
   });
   sdk.start();
-  if (settings.instrumentConsole) {
+  if (settings.instrumentConsole || settings.instrumentConsole == void 0) {
     instrumentConsole();
   }
-  is.instrumented = true;
+  traceloop.initialize({
+    appName: serviceName,
+    baseUrl: baseUrl + "/v1",
+    logLevel: "info",
+    exporter: traceExporter,
+    traceloopSyncEnabled: false
+  });
+  config.isInstrumented = true;
   return {
     updateResource(newResource) {
       const mergedResource = resource.merge(new import_resources.Resource(newResource));
@@ -12425,7 +17066,7 @@ function instrument({
 }
 __name(instrument, "instrument");
 function withTracing(fn, ctx = {}) {
-  if (!is.instrumented) {
+  if (!config.isInstrumented) {
     return fn;
   }
   const { name, trackArgs = true, attributes } = ctx;
@@ -12801,6 +17442,7 @@ __name(preOrderTraversal, "preOrderTraversal");
   chatListSchema,
   chatTextSchema,
   chatTurnSchema,
+  config,
   convertSeverityTextToNumber,
   convertSeverityValuesToLevel,
   createClient,
@@ -12819,10 +17461,11 @@ __name(preOrderTraversal, "preOrderTraversal");
   getWorkflowByIdResSchema,
   getWorkflowsResSchema,
   instrument,
-  is,
   iudexConsole,
   iudexFastify,
   iudexPino,
+  iudexPinoHttp,
+  iudexTrpc,
   mapIudexToOpenAi,
   nextMessage,
   postWorkflowsReqSchema,
