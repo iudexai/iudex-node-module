@@ -2359,7 +2359,7 @@ var require_longbits = __commonJS({
   "../../node_modules/.pnpm/protobufjs@7.2.6/node_modules/protobufjs/src/util/longbits.js"(exports2, module2) {
     "use strict";
     module2.exports = LongBits;
-    var util = require_minimal();
+    var util2 = require_minimal();
     function LongBits(lo, hi) {
       this.lo = lo >>> 0;
       this.hi = hi >>> 0;
@@ -2397,9 +2397,9 @@ var require_longbits = __commonJS({
     LongBits.from = /* @__PURE__ */ __name(function from(value) {
       if (typeof value === "number")
         return LongBits.fromNumber(value);
-      if (util.isString(value)) {
-        if (util.Long)
-          value = util.Long.fromString(value);
+      if (util2.isString(value)) {
+        if (util2.Long)
+          value = util2.Long.fromString(value);
         else
           return LongBits.fromNumber(parseInt(value, 10));
       }
@@ -2415,7 +2415,7 @@ var require_longbits = __commonJS({
       return this.lo + this.hi * 4294967296;
     }, "toNumber");
     LongBits.prototype.toLong = /* @__PURE__ */ __name(function toLong(unsigned) {
-      return util.Long ? new util.Long(this.lo | 0, this.hi | 0, Boolean(unsigned)) : { low: this.lo | 0, high: this.hi | 0, unsigned: Boolean(unsigned) };
+      return util2.Long ? new util2.Long(this.lo | 0, this.hi | 0, Boolean(unsigned)) : { low: this.lo | 0, high: this.hi | 0, unsigned: Boolean(unsigned) };
     }, "toLong");
     var charCodeAt = String.prototype.charCodeAt;
     LongBits.fromHash = /* @__PURE__ */ __name(function fromHash(hash) {
@@ -2461,50 +2461,50 @@ var require_longbits = __commonJS({
 var require_minimal = __commonJS({
   "../../node_modules/.pnpm/protobufjs@7.2.6/node_modules/protobufjs/src/util/minimal.js"(exports2) {
     "use strict";
-    var util = exports2;
-    util.asPromise = require_aspromise();
-    util.base64 = require_base64();
-    util.EventEmitter = require_eventemitter();
-    util.float = require_float();
-    util.inquire = require_inquire();
-    util.utf8 = require_utf8();
-    util.pool = require_pool();
-    util.LongBits = require_longbits();
-    util.isNode = Boolean(typeof global !== "undefined" && global && global.process && global.process.versions && global.process.versions.node);
-    util.global = util.isNode && global || typeof window !== "undefined" && window || typeof self !== "undefined" && self || exports2;
-    util.emptyArray = Object.freeze ? Object.freeze([]) : (
+    var util2 = exports2;
+    util2.asPromise = require_aspromise();
+    util2.base64 = require_base64();
+    util2.EventEmitter = require_eventemitter();
+    util2.float = require_float();
+    util2.inquire = require_inquire();
+    util2.utf8 = require_utf8();
+    util2.pool = require_pool();
+    util2.LongBits = require_longbits();
+    util2.isNode = Boolean(typeof global !== "undefined" && global && global.process && global.process.versions && global.process.versions.node);
+    util2.global = util2.isNode && global || typeof window !== "undefined" && window || typeof self !== "undefined" && self || exports2;
+    util2.emptyArray = Object.freeze ? Object.freeze([]) : (
       /* istanbul ignore next */
       []
     );
-    util.emptyObject = Object.freeze ? Object.freeze({}) : (
+    util2.emptyObject = Object.freeze ? Object.freeze({}) : (
       /* istanbul ignore next */
       {}
     );
-    util.isInteger = Number.isInteger || /* istanbul ignore next */
+    util2.isInteger = Number.isInteger || /* istanbul ignore next */
     /* @__PURE__ */ __name(function isInteger(value) {
       return typeof value === "number" && isFinite(value) && Math.floor(value) === value;
     }, "isInteger");
-    util.isString = /* @__PURE__ */ __name(function isString(value) {
+    util2.isString = /* @__PURE__ */ __name(function isString(value) {
       return typeof value === "string" || value instanceof String;
     }, "isString");
-    util.isObject = /* @__PURE__ */ __name(function isObject3(value) {
+    util2.isObject = /* @__PURE__ */ __name(function isObject3(value) {
       return value && typeof value === "object";
     }, "isObject");
-    util.isset = /**
+    util2.isset = /**
      * Checks if a property on a message is considered to be present.
      * @param {Object} obj Plain object or message instance
      * @param {string} prop Property name
      * @returns {boolean} `true` if considered to be present, otherwise `false`
      */
-    util.isSet = /* @__PURE__ */ __name(function isSet(obj, prop) {
+    util2.isSet = /* @__PURE__ */ __name(function isSet(obj, prop) {
       var value = obj[prop];
       if (value != null && obj.hasOwnProperty(prop))
         return typeof value !== "object" || (Array.isArray(value) ? value.length : Object.keys(value).length) > 0;
       return false;
     }, "isSet");
-    util.Buffer = function() {
+    util2.Buffer = function() {
       try {
-        var Buffer2 = util.inquire("buffer").Buffer;
+        var Buffer2 = util2.inquire("buffer").Buffer;
         return Buffer2.prototype.utf8Write ? Buffer2 : (
           /* istanbul ignore next */
           null
@@ -2513,26 +2513,26 @@ var require_minimal = __commonJS({
         return null;
       }
     }();
-    util._Buffer_from = null;
-    util._Buffer_allocUnsafe = null;
-    util.newBuffer = /* @__PURE__ */ __name(function newBuffer(sizeOrArray) {
-      return typeof sizeOrArray === "number" ? util.Buffer ? util._Buffer_allocUnsafe(sizeOrArray) : new util.Array(sizeOrArray) : util.Buffer ? util._Buffer_from(sizeOrArray) : typeof Uint8Array === "undefined" ? sizeOrArray : new Uint8Array(sizeOrArray);
+    util2._Buffer_from = null;
+    util2._Buffer_allocUnsafe = null;
+    util2.newBuffer = /* @__PURE__ */ __name(function newBuffer(sizeOrArray) {
+      return typeof sizeOrArray === "number" ? util2.Buffer ? util2._Buffer_allocUnsafe(sizeOrArray) : new util2.Array(sizeOrArray) : util2.Buffer ? util2._Buffer_from(sizeOrArray) : typeof Uint8Array === "undefined" ? sizeOrArray : new Uint8Array(sizeOrArray);
     }, "newBuffer");
-    util.Array = typeof Uint8Array !== "undefined" ? Uint8Array : Array;
-    util.Long = /* istanbul ignore next */
-    util.global.dcodeIO && /* istanbul ignore next */
-    util.global.dcodeIO.Long || /* istanbul ignore next */
-    util.global.Long || util.inquire("long");
-    util.key2Re = /^true|false|0|1$/;
-    util.key32Re = /^-?(?:0|[1-9][0-9]*)$/;
-    util.key64Re = /^(?:[\\x00-\\xff]{8}|-?(?:0|[1-9][0-9]*))$/;
-    util.longToHash = /* @__PURE__ */ __name(function longToHash(value) {
-      return value ? util.LongBits.from(value).toHash() : util.LongBits.zeroHash;
+    util2.Array = typeof Uint8Array !== "undefined" ? Uint8Array : Array;
+    util2.Long = /* istanbul ignore next */
+    util2.global.dcodeIO && /* istanbul ignore next */
+    util2.global.dcodeIO.Long || /* istanbul ignore next */
+    util2.global.Long || util2.inquire("long");
+    util2.key2Re = /^true|false|0|1$/;
+    util2.key32Re = /^-?(?:0|[1-9][0-9]*)$/;
+    util2.key64Re = /^(?:[\\x00-\\xff]{8}|-?(?:0|[1-9][0-9]*))$/;
+    util2.longToHash = /* @__PURE__ */ __name(function longToHash(value) {
+      return value ? util2.LongBits.from(value).toHash() : util2.LongBits.zeroHash;
     }, "longToHash");
-    util.longFromHash = /* @__PURE__ */ __name(function longFromHash(hash, unsigned) {
-      var bits = util.LongBits.fromHash(hash);
-      if (util.Long)
-        return util.Long.fromBits(bits.lo, bits.hi, unsigned);
+    util2.longFromHash = /* @__PURE__ */ __name(function longFromHash(hash, unsigned) {
+      var bits = util2.LongBits.fromHash(hash);
+      if (util2.Long)
+        return util2.Long.fromBits(bits.lo, bits.hi, unsigned);
       return bits.toNumber(Boolean(unsigned));
     }, "longFromHash");
     function merge(dst, src, ifNotSet) {
@@ -2542,8 +2542,8 @@ var require_minimal = __commonJS({
       return dst;
     }
     __name(merge, "merge");
-    util.merge = merge;
-    util.lcFirst = /* @__PURE__ */ __name(function lcFirst(str) {
+    util2.merge = merge;
+    util2.lcFirst = /* @__PURE__ */ __name(function lcFirst(str) {
       return str.charAt(0).toLowerCase() + str.substring(1);
     }, "lcFirst");
     function newError(name) {
@@ -2592,9 +2592,9 @@ var require_minimal = __commonJS({
       return CustomError;
     }
     __name(newError, "newError");
-    util.newError = newError;
-    util.ProtocolError = newError("ProtocolError");
-    util.oneOfGetter = /* @__PURE__ */ __name(function getOneOf(fieldNames) {
+    util2.newError = newError;
+    util2.ProtocolError = newError("ProtocolError");
+    util2.oneOfGetter = /* @__PURE__ */ __name(function getOneOf(fieldNames) {
       var fieldMap = {};
       for (var i = 0; i < fieldNames.length; ++i)
         fieldMap[fieldNames[i]] = 1;
@@ -2604,30 +2604,30 @@ var require_minimal = __commonJS({
             return keys4[i2];
       };
     }, "getOneOf");
-    util.oneOfSetter = /* @__PURE__ */ __name(function setOneOf(fieldNames) {
+    util2.oneOfSetter = /* @__PURE__ */ __name(function setOneOf(fieldNames) {
       return function(name) {
         for (var i = 0; i < fieldNames.length; ++i)
           if (fieldNames[i] !== name)
             delete this[fieldNames[i]];
       };
     }, "setOneOf");
-    util.toJSONOptions = {
+    util2.toJSONOptions = {
       longs: String,
       enums: String,
       bytes: String,
       json: true
     };
-    util._configure = function() {
-      var Buffer2 = util.Buffer;
+    util2._configure = function() {
+      var Buffer2 = util2.Buffer;
       if (!Buffer2) {
-        util._Buffer_from = util._Buffer_allocUnsafe = null;
+        util2._Buffer_from = util2._Buffer_allocUnsafe = null;
         return;
       }
-      util._Buffer_from = Buffer2.from !== Uint8Array.from && Buffer2.from || /* istanbul ignore next */
+      util2._Buffer_from = Buffer2.from !== Uint8Array.from && Buffer2.from || /* istanbul ignore next */
       /* @__PURE__ */ __name(function Buffer_from(value, encoding) {
         return new Buffer2(value, encoding);
       }, "Buffer_from");
-      util._Buffer_allocUnsafe = Buffer2.allocUnsafe || /* istanbul ignore next */
+      util2._Buffer_allocUnsafe = Buffer2.allocUnsafe || /* istanbul ignore next */
       /* @__PURE__ */ __name(function Buffer_allocUnsafe(size) {
         return new Buffer2(size);
       }, "Buffer_allocUnsafe");
@@ -2640,11 +2640,11 @@ var require_writer = __commonJS({
   "../../node_modules/.pnpm/protobufjs@7.2.6/node_modules/protobufjs/src/writer.js"(exports2, module2) {
     "use strict";
     module2.exports = Writer;
-    var util = require_minimal();
+    var util2 = require_minimal();
     var BufferWriter;
-    var LongBits = util.LongBits;
-    var base64 = util.base64;
-    var utf8 = util.utf8;
+    var LongBits = util2.LongBits;
+    var base64 = util2.base64;
+    var utf8 = util2.utf8;
     function Op(fn, len, val) {
       this.fn = fn;
       this.len = len;
@@ -2670,7 +2670,7 @@ var require_writer = __commonJS({
     }
     __name(Writer, "Writer");
     var create = /* @__PURE__ */ __name(function create2() {
-      return util.Buffer ? /* @__PURE__ */ __name(function create_buffer_setup() {
+      return util2.Buffer ? /* @__PURE__ */ __name(function create_buffer_setup() {
         return (Writer.create = /* @__PURE__ */ __name(function create_buffer() {
           return new BufferWriter();
         }, "create_buffer"))();
@@ -2680,10 +2680,10 @@ var require_writer = __commonJS({
     }, "create");
     Writer.create = create();
     Writer.alloc = /* @__PURE__ */ __name(function alloc(size) {
-      return new util.Array(size);
+      return new util2.Array(size);
     }, "alloc");
-    if (util.Array !== Array)
-      Writer.alloc = util.pool(Writer.alloc, util.Array.prototype.subarray);
+    if (util2.Array !== Array)
+      Writer.alloc = util2.pool(Writer.alloc, util2.Array.prototype.subarray);
     Writer.prototype._push = /* @__PURE__ */ __name(function push(fn, len, val) {
       this.tail = this.tail.next = new Op(fn, len, val);
       this.len += len;
@@ -2764,12 +2764,12 @@ var require_writer = __commonJS({
     }, "write_fixed64");
     Writer.prototype.sfixed64 = Writer.prototype.fixed64;
     Writer.prototype.float = /* @__PURE__ */ __name(function write_float(value) {
-      return this._push(util.float.writeFloatLE, 4, value);
+      return this._push(util2.float.writeFloatLE, 4, value);
     }, "write_float");
     Writer.prototype.double = /* @__PURE__ */ __name(function write_double(value) {
-      return this._push(util.float.writeDoubleLE, 8, value);
+      return this._push(util2.float.writeDoubleLE, 8, value);
     }, "write_double");
-    var writeBytes = util.Array.prototype.set ? /* @__PURE__ */ __name(function writeBytes_set(val, buf, pos) {
+    var writeBytes = util2.Array.prototype.set ? /* @__PURE__ */ __name(function writeBytes_set(val, buf, pos) {
       buf.set(val, pos);
     }, "writeBytes_set") : /* @__PURE__ */ __name(function writeBytes_for(val, buf, pos) {
       for (var i = 0; i < val.length; ++i)
@@ -2779,7 +2779,7 @@ var require_writer = __commonJS({
       var len = value.length >>> 0;
       if (!len)
         return this._push(writeByte, 1, 0);
-      if (util.isString(value)) {
+      if (util2.isString(value)) {
         var buf = Writer.alloc(len = base64.length(value));
         base64.decode(value, buf, 0);
         value = buf;
@@ -2842,14 +2842,14 @@ var require_writer_buffer = __commonJS({
     module2.exports = BufferWriter;
     var Writer = require_writer();
     (BufferWriter.prototype = Object.create(Writer.prototype)).constructor = BufferWriter;
-    var util = require_minimal();
+    var util2 = require_minimal();
     function BufferWriter() {
       Writer.call(this);
     }
     __name(BufferWriter, "BufferWriter");
     BufferWriter._configure = function() {
-      BufferWriter.alloc = util._Buffer_allocUnsafe;
-      BufferWriter.writeBytesBuffer = util.Buffer && util.Buffer.prototype instanceof Uint8Array && util.Buffer.prototype.set.name === "set" ? /* @__PURE__ */ __name(function writeBytesBuffer_set(val, buf, pos) {
+      BufferWriter.alloc = util2._Buffer_allocUnsafe;
+      BufferWriter.writeBytesBuffer = util2.Buffer && util2.Buffer.prototype instanceof Uint8Array && util2.Buffer.prototype.set.name === "set" ? /* @__PURE__ */ __name(function writeBytesBuffer_set(val, buf, pos) {
         buf.set(val, pos);
       }, "writeBytesBuffer_set") : /* @__PURE__ */ __name(function writeBytesBuffer_copy(val, buf, pos) {
         if (val.copy)
@@ -2860,8 +2860,8 @@ var require_writer_buffer = __commonJS({
       }, "writeBytesBuffer_copy");
     };
     BufferWriter.prototype.bytes = /* @__PURE__ */ __name(function write_bytes_buffer(value) {
-      if (util.isString(value))
-        value = util._Buffer_from(value, "base64");
+      if (util2.isString(value))
+        value = util2._Buffer_from(value, "base64");
       var len = value.length >>> 0;
       this.uint32(len);
       if (len)
@@ -2870,7 +2870,7 @@ var require_writer_buffer = __commonJS({
     }, "write_bytes_buffer");
     function writeStringBuffer(val, buf, pos) {
       if (val.length < 40)
-        util.utf8.write(val, buf, pos);
+        util2.utf8.write(val, buf, pos);
       else if (buf.utf8Write)
         buf.utf8Write(val, pos);
       else
@@ -2878,7 +2878,7 @@ var require_writer_buffer = __commonJS({
     }
     __name(writeStringBuffer, "writeStringBuffer");
     BufferWriter.prototype.string = /* @__PURE__ */ __name(function write_string_buffer(value) {
-      var len = util.Buffer.byteLength(value);
+      var len = util2.Buffer.byteLength(value);
       this.uint32(len);
       if (len)
         this._push(writeStringBuffer, len, value);
@@ -2893,10 +2893,10 @@ var require_reader = __commonJS({
   "../../node_modules/.pnpm/protobufjs@7.2.6/node_modules/protobufjs/src/reader.js"(exports2, module2) {
     "use strict";
     module2.exports = Reader;
-    var util = require_minimal();
+    var util2 = require_minimal();
     var BufferReader;
-    var LongBits = util.LongBits;
-    var utf8 = util.utf8;
+    var LongBits = util2.LongBits;
+    var utf8 = util2.utf8;
     function indexOutOfRange(reader, writeLength) {
       return RangeError("index out of range: " + reader.pos + " + " + (writeLength || 1) + " > " + reader.len);
     }
@@ -2917,15 +2917,15 @@ var require_reader = __commonJS({
       throw Error("illegal buffer");
     }, "create_array");
     var create = /* @__PURE__ */ __name(function create2() {
-      return util.Buffer ? /* @__PURE__ */ __name(function create_buffer_setup(buffer) {
+      return util2.Buffer ? /* @__PURE__ */ __name(function create_buffer_setup(buffer) {
         return (Reader.create = /* @__PURE__ */ __name(function create_buffer(buffer2) {
-          return util.Buffer.isBuffer(buffer2) ? new BufferReader(buffer2) : create_array(buffer2);
+          return util2.Buffer.isBuffer(buffer2) ? new BufferReader(buffer2) : create_array(buffer2);
         }, "create_buffer"))(buffer);
       }, "create_buffer_setup") : create_array;
     }, "create");
     Reader.create = create();
-    Reader.prototype._slice = util.Array.prototype.subarray || /* istanbul ignore next */
-    util.Array.prototype.slice;
+    Reader.prototype._slice = util2.Array.prototype.subarray || /* istanbul ignore next */
+    util2.Array.prototype.slice;
     Reader.prototype.uint32 = (/* @__PURE__ */ __name(function read_uint32_setup() {
       var value = 4294967295;
       return /* @__PURE__ */ __name(function read_uint32() {
@@ -3027,14 +3027,14 @@ var require_reader = __commonJS({
     Reader.prototype.float = /* @__PURE__ */ __name(function read_float() {
       if (this.pos + 4 > this.len)
         throw indexOutOfRange(this, 4);
-      var value = util.float.readFloatLE(this.buf, this.pos);
+      var value = util2.float.readFloatLE(this.buf, this.pos);
       this.pos += 4;
       return value;
     }, "read_float");
     Reader.prototype.double = /* @__PURE__ */ __name(function read_double() {
       if (this.pos + 8 > this.len)
         throw indexOutOfRange(this, 4);
-      var value = util.float.readDoubleLE(this.buf, this.pos);
+      var value = util2.float.readDoubleLE(this.buf, this.pos);
       this.pos += 8;
       return value;
     }, "read_double");
@@ -3046,7 +3046,7 @@ var require_reader = __commonJS({
       if (Array.isArray(this.buf))
         return this.buf.slice(start, end);
       if (start === end) {
-        var nativeBuffer = util.Buffer;
+        var nativeBuffer = util2.Buffer;
         return nativeBuffer ? nativeBuffer.alloc(0) : new this.buf.constructor(0);
       }
       return this._slice.call(this.buf, start, end);
@@ -3096,11 +3096,11 @@ var require_reader = __commonJS({
       BufferReader = BufferReader_;
       Reader.create = create();
       BufferReader._configure();
-      var fn = util.Long ? "toLong" : (
+      var fn = util2.Long ? "toLong" : (
         /* istanbul ignore next */
         "toNumber"
       );
-      util.merge(Reader.prototype, {
+      util2.merge(Reader.prototype, {
         int64: /* @__PURE__ */ __name(function read_int64() {
           return readLongVarint.call(this)[fn](false);
         }, "read_int64"),
@@ -3128,14 +3128,14 @@ var require_reader_buffer = __commonJS({
     module2.exports = BufferReader;
     var Reader = require_reader();
     (BufferReader.prototype = Object.create(Reader.prototype)).constructor = BufferReader;
-    var util = require_minimal();
+    var util2 = require_minimal();
     function BufferReader(buffer) {
       Reader.call(this, buffer);
     }
     __name(BufferReader, "BufferReader");
     BufferReader._configure = function() {
-      if (util.Buffer)
-        BufferReader.prototype._slice = util.Buffer.prototype.slice;
+      if (util2.Buffer)
+        BufferReader.prototype._slice = util2.Buffer.prototype.slice;
     };
     BufferReader.prototype.string = /* @__PURE__ */ __name(function read_string_buffer() {
       var len = this.uint32();
@@ -3150,12 +3150,12 @@ var require_service = __commonJS({
   "../../node_modules/.pnpm/protobufjs@7.2.6/node_modules/protobufjs/src/rpc/service.js"(exports2, module2) {
     "use strict";
     module2.exports = Service;
-    var util = require_minimal();
-    (Service.prototype = Object.create(util.EventEmitter.prototype)).constructor = Service;
+    var util2 = require_minimal();
+    (Service.prototype = Object.create(util2.EventEmitter.prototype)).constructor = Service;
     function Service(rpcImpl, requestDelimited, responseDelimited) {
       if (typeof rpcImpl !== "function")
         throw TypeError("rpcImpl must be a function");
-      util.EventEmitter.call(this);
+      util2.EventEmitter.call(this);
       this.rpcImpl = rpcImpl;
       this.requestDelimited = Boolean(requestDelimited);
       this.responseDelimited = Boolean(responseDelimited);
@@ -3166,7 +3166,7 @@ var require_service = __commonJS({
         throw TypeError("request must be specified");
       var self2 = this;
       if (!callback)
-        return util.asPromise(rpcCall, self2, method, requestCtor, responseCtor, request3);
+        return util2.asPromise(rpcCall, self2, method, requestCtor, responseCtor, request3);
       if (!self2.rpcImpl) {
         setTimeout(function() {
           callback(Error("already ended"));
@@ -4184,8 +4184,8 @@ var require_root = __commonJS({
           return resource;
         }();
         proto.trace = function() {
-          var trace4 = {};
-          trace4.v1 = function() {
+          var trace5 = {};
+          trace5.v1 = function() {
             var v1 = {};
             v1.TracesData = function() {
               function TracesData(properties) {
@@ -4597,7 +4597,7 @@ var require_root = __commonJS({
               return ScopeSpans;
             }();
             v1.Span = function() {
-              function Span2(properties) {
+              function Span3(properties) {
                 this.attributes = [];
                 this.events = [];
                 this.links = [];
@@ -4607,26 +4607,26 @@ var require_root = __commonJS({
                       this[keys4[i]] = properties[keys4[i]];
                 }
               }
-              __name(Span2, "Span");
-              Span2.prototype.traceId = null;
-              Span2.prototype.spanId = null;
-              Span2.prototype.traceState = null;
-              Span2.prototype.parentSpanId = null;
-              Span2.prototype.name = null;
-              Span2.prototype.kind = null;
-              Span2.prototype.startTimeUnixNano = null;
-              Span2.prototype.endTimeUnixNano = null;
-              Span2.prototype.attributes = $util.emptyArray;
-              Span2.prototype.droppedAttributesCount = null;
-              Span2.prototype.events = $util.emptyArray;
-              Span2.prototype.droppedEventsCount = null;
-              Span2.prototype.links = $util.emptyArray;
-              Span2.prototype.droppedLinksCount = null;
-              Span2.prototype.status = null;
-              Span2.create = /* @__PURE__ */ __name(function create(properties) {
-                return new Span2(properties);
+              __name(Span3, "Span");
+              Span3.prototype.traceId = null;
+              Span3.prototype.spanId = null;
+              Span3.prototype.traceState = null;
+              Span3.prototype.parentSpanId = null;
+              Span3.prototype.name = null;
+              Span3.prototype.kind = null;
+              Span3.prototype.startTimeUnixNano = null;
+              Span3.prototype.endTimeUnixNano = null;
+              Span3.prototype.attributes = $util.emptyArray;
+              Span3.prototype.droppedAttributesCount = null;
+              Span3.prototype.events = $util.emptyArray;
+              Span3.prototype.droppedEventsCount = null;
+              Span3.prototype.links = $util.emptyArray;
+              Span3.prototype.droppedLinksCount = null;
+              Span3.prototype.status = null;
+              Span3.create = /* @__PURE__ */ __name(function create(properties) {
+                return new Span3(properties);
               }, "create");
-              Span2.encode = /* @__PURE__ */ __name(function encode(message, writer) {
+              Span3.encode = /* @__PURE__ */ __name(function encode(message, writer) {
                 if (!writer)
                   writer = $Writer.create();
                 if (message.traceId != null && Object.hasOwnProperty.call(message, "traceId"))
@@ -4709,10 +4709,10 @@ var require_root = __commonJS({
                   ).fork()).ldelim();
                 return writer;
               }, "encode");
-              Span2.encodeDelimited = /* @__PURE__ */ __name(function encodeDelimited(message, writer) {
+              Span3.encodeDelimited = /* @__PURE__ */ __name(function encodeDelimited(message, writer) {
                 return this.encode(message, writer).ldelim();
               }, "encodeDelimited");
-              Span2.decode = /* @__PURE__ */ __name(function decode(reader, length) {
+              Span3.decode = /* @__PURE__ */ __name(function decode(reader, length) {
                 if (!(reader instanceof $Reader))
                   reader = $Reader.create(reader);
                 var end = length === void 0 ? reader.len : reader.pos + length, message = new $root.opentelemetry.proto.trace.v1.Span();
@@ -4792,12 +4792,12 @@ var require_root = __commonJS({
                 }
                 return message;
               }, "decode");
-              Span2.decodeDelimited = /* @__PURE__ */ __name(function decodeDelimited(reader) {
+              Span3.decodeDelimited = /* @__PURE__ */ __name(function decodeDelimited(reader) {
                 if (!(reader instanceof $Reader))
                   reader = new $Reader(reader);
                 return this.decode(reader, reader.uint32());
               }, "decodeDelimited");
-              Span2.verify = /* @__PURE__ */ __name(function verify(message) {
+              Span3.verify = /* @__PURE__ */ __name(function verify(message) {
                 if (typeof message !== "object" || message === null)
                   return "object expected";
                 if (message.traceId != null && message.hasOwnProperty("traceId")) {
@@ -4886,7 +4886,7 @@ var require_root = __commonJS({
                 }
                 return null;
               }, "verify");
-              Span2.fromObject = /* @__PURE__ */ __name(function fromObject(object) {
+              Span3.fromObject = /* @__PURE__ */ __name(function fromObject(object) {
                 if (object instanceof $root.opentelemetry.proto.trace.v1.Span)
                   return object;
                 var message = new $root.opentelemetry.proto.trace.v1.Span();
@@ -5007,7 +5007,7 @@ var require_root = __commonJS({
                 }
                 return message;
               }, "fromObject");
-              Span2.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+              Span3.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
                 if (!options3)
                   options3 = {};
                 var object = {};
@@ -5103,16 +5103,16 @@ var require_root = __commonJS({
                   object.status = $root.opentelemetry.proto.trace.v1.Status.toObject(message.status, options3);
                 return object;
               }, "toObject");
-              Span2.prototype.toJSON = /* @__PURE__ */ __name(function toJSON() {
+              Span3.prototype.toJSON = /* @__PURE__ */ __name(function toJSON() {
                 return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
               }, "toJSON");
-              Span2.getTypeUrl = /* @__PURE__ */ __name(function getTypeUrl(typeUrlPrefix) {
+              Span3.getTypeUrl = /* @__PURE__ */ __name(function getTypeUrl(typeUrlPrefix) {
                 if (typeUrlPrefix === void 0) {
                   typeUrlPrefix = "type.googleapis.com";
                 }
                 return typeUrlPrefix + "/opentelemetry.proto.trace.v1.Span";
               }, "getTypeUrl");
-              Span2.SpanKind = function() {
+              Span3.SpanKind = function() {
                 var valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "SPAN_KIND_UNSPECIFIED"] = 0;
                 values[valuesById[1] = "SPAN_KIND_INTERNAL"] = 1;
@@ -5122,7 +5122,7 @@ var require_root = __commonJS({
                 values[valuesById[5] = "SPAN_KIND_CONSUMER"] = 5;
                 return values;
               }();
-              Span2.Event = function() {
+              Span3.Event = function() {
                 function Event(properties) {
                   this.attributes = [];
                   if (properties) {
@@ -5303,7 +5303,7 @@ var require_root = __commonJS({
                 }, "getTypeUrl");
                 return Event;
               }();
-              Span2.Link = function() {
+              Span3.Link = function() {
                 function Link(properties) {
                   this.attributes = [];
                   if (properties) {
@@ -5508,7 +5508,7 @@ var require_root = __commonJS({
                 }, "getTypeUrl");
                 return Link;
               }();
-              return Span2;
+              return Span3;
             }();
             v1.Status = function() {
               function Status(properties) {
@@ -5649,13 +5649,13 @@ var require_root = __commonJS({
             }();
             return v1;
           }();
-          return trace4;
+          return trace5;
         }();
         proto.collector = function() {
           var collector = {};
           collector.trace = function() {
-            var trace4 = {};
-            trace4.v1 = function() {
+            var trace5 = {};
+            trace5.v1 = function() {
               var v1 = {};
               v1.TraceService = function() {
                 function TraceService(rpcImpl, requestDelimited, responseDelimited) {
@@ -5993,7 +5993,7 @@ var require_root = __commonJS({
               }();
               return v1;
             }();
-            return trace4;
+            return trace5;
           }();
           collector.metrics = function() {
             var metrics = {};
@@ -15580,6 +15580,7 @@ __export(src_exports, {
   chatTextSchema: () => chatTextSchema,
   chatTurnSchema: () => chatTurnSchema,
   config: () => config,
+  console: () => console2,
   convertSeverityTextToNumber: () => convertSeverityTextToNumber,
   convertSeverityValuesToLevel: () => convertSeverityValuesToLevel,
   createClient: () => createClient,
@@ -15598,12 +15599,15 @@ __export(src_exports, {
   getWorkflowByIdResSchema: () => getWorkflowByIdResSchema,
   getWorkflowsResSchema: () => getWorkflowsResSchema,
   instrument: () => instrument,
+  iudexAwsApiGateway: () => aws_api_gateway_exports,
+  iudexAwsLambda: () => aws_lambda_exports,
   iudexConsole: () => console_exports,
   iudexFastify: () => fastify_exports,
   iudexPino: () => pino_exports,
   iudexPinoHttp: () => pino_http_exports,
   iudexTrpc: () => trpc_exports,
   mapIudexToOpenAi: () => mapIudexToOpenAi,
+  nativeConsole: () => nativeConsole,
   nextMessage: () => nextMessage,
   postWorkflowsReqSchema: () => postWorkflowsReqSchema,
   postWorkflowsResSchema: () => postWorkflowsResSchema,
@@ -16620,7 +16624,8 @@ var import_lodash4 = __toESM(require("lodash"));
 var import_semantic_conventions2 = require("@opentelemetry/semantic-conventions");
 var import_api_logs = require("@opentelemetry/api-logs");
 var import_lodash = __toESM(require("lodash"));
-var config = { isInstrumented: false, oldConsole: { ...console } };
+var config = { isInstrumented: false, nativeConsole: { ...console } };
+var nativeConsole = config.nativeConsole;
 function convertSeverityTextToNumber(severityText) {
   if (severityText == void 0) {
     return;
@@ -16712,13 +16717,14 @@ function emitOtelLog({
 __name(emitOtelLog, "emitOtelLog");
 
 // src/instrumentation/index.ts
-var import_api19 = require("@opentelemetry/api");
+var import_api21 = require("@opentelemetry/api");
 
 // src/instrumentation/console.ts
 var console_exports = {};
 __export(console_exports, {
   instrumentConsole: () => instrumentConsole
 });
+var import_util8 = __toESM(require("util"));
 function instrumentConsole() {
   const { log, error, warn, info, debug, timeLog, timeEnd } = console;
   [
@@ -16742,11 +16748,16 @@ function instrumentConsole() {
           return {};
         })
       );
-      if (contentWoCtx.length === 1) {
-        emitOtelLog({ level, body: contentWoCtx[0], attributes: contentCtx });
-      } else {
-        emitOtelLog({ level, body: contentWoCtx.join(" "), attributes: contentCtx });
-      }
+      const prettyContentWoCtx = contentWoCtx.map((c) => {
+        if (typeof c === "object") {
+          try {
+            return import_util8.default.inspect(c);
+          } catch {
+          }
+        }
+        return c;
+      });
+      emitOtelLog({ level, body: prettyContentWoCtx.join(" "), attributes: contentCtx });
     };
   });
 }
@@ -16784,6 +16795,66 @@ function traceloopInstrumentations() {
   return instrumentations;
 }
 __name(traceloopInstrumentations, "traceloopInstrumentations");
+
+// src/instrumentation/trace.ts
+var import_api19 = require("@opentelemetry/api");
+function withTracing(fn, ctx = {}) {
+  if (!config.isInstrumented) {
+    return fn;
+  }
+  const { name, trackArgs = true, attributes, setSpan } = ctx;
+  const tracer = import_api19.trace.getTracer("default");
+  return function(...args2) {
+    return tracer.startActiveSpan(name || fn.name || "<anonymous>", (span) => {
+      try {
+        if (attributes) {
+          span.setAttributes(attributes);
+        }
+        if (trackArgs) {
+          if (args2.length === 1) {
+            span.setAttribute("arg", args2[0]);
+          } else if (args2.length > 1) {
+            span.setAttribute("args", args2);
+          }
+        }
+        const ret = fn(...args2);
+        if (ret.then) {
+          if (setSpan) {
+            return ret.then((res) => {
+              setSpan(span, ret);
+              return res;
+            });
+          }
+          return ret.then((res) => {
+            span.setStatus({ code: import_api19.SpanStatusCode.OK });
+            return res;
+          }).catch((err) => {
+            span.setStatus({ code: import_api19.SpanStatusCode.ERROR, message: String(err) });
+            span.recordException(err);
+            emitOtelLog({ level: "ERROR", body: err });
+            throw err;
+          }).finally(() => {
+            span.end();
+          });
+        }
+        if (setSpan) {
+          setSpan(span, ret);
+          return ret;
+        }
+        span.setStatus({ code: import_api19.SpanStatusCode.OK });
+        span.end();
+        return ret;
+      } catch (err) {
+        span.setStatus({ code: import_api19.SpanStatusCode.ERROR, message: String(err) });
+        span.recordException(err);
+        emitOtelLog({ level: "ERROR", body: err });
+        span.end();
+        throw err;
+      }
+    });
+  };
+}
+__name(withTracing, "withTracing");
 
 // src/instrumentation/pino.ts
 var pino_exports = {};
@@ -17008,10 +17079,54 @@ var iudexFastify = {
   logger
 };
 
+// src/instrumentation/aws-api-gateway.ts
+var aws_api_gateway_exports = {};
+__export(aws_api_gateway_exports, {
+  withTracing: () => withTracing2
+});
+var import_api20 = require("@opentelemetry/api");
+function withTracing2(fn, ctx) {
+  return withTracing(fn, {
+    name: ctx.name,
+    setSpan: (span, ret) => ret.then((res) => {
+      if (res.statusCode && res.statusCode >= 400) {
+        span.setStatus({ code: import_api20.SpanStatusCode.ERROR, message: res.body });
+        span.setAttribute("statusCode", res.statusCode);
+        emitOtelLog({ level: "ERROR", body: `${ctx.name} ${res.body}` });
+      } else {
+        span.setStatus({ code: import_api20.SpanStatusCode.OK });
+        emitOtelLog({ level: "INFO", body: `${ctx.name} Succeeded` });
+      }
+    }).catch((err) => {
+      span.setStatus({ code: import_api20.SpanStatusCode.ERROR, message: String(err) });
+      span.setAttribute("statusCode", 500);
+      span.recordException(err);
+      emitOtelLog({ level: "ERROR", body: `${ctx.name} ${String(err)}` });
+      throw err;
+    }).finally(() => {
+      span.end();
+    })
+  });
+}
+__name(withTracing2, "withTracing");
+
+// src/instrumentation/aws-lambda.ts
+var aws_lambda_exports = {};
+__export(aws_lambda_exports, {
+  withTracing: () => withTracing3
+});
+function withTracing3(fn, ctx) {
+  return withTracing(fn, {
+    name: ctx.name
+  });
+}
+__name(withTracing3, "withTracing");
+
 // src/instrumentation/index.ts
+var console2 = nativeConsole;
 if (process.env.IUDEX_DEBUG) {
-  console.log("IUDEX_DEBUG on. Setting diag logger to console.");
-  import_api19.diag.setLogger(new import_api19.DiagConsoleLogger(), import_api19.DiagLogLevel.DEBUG);
+  console2.log("IUDEX_DEBUG on. Setting diag logger to console.");
+  import_api21.diag.setLogger(new import_api21.DiagConsoleLogger(), import_api21.DiagLogLevel.DEBUG);
 }
 function instrument({
   baseUrl = process.env.IUDEX_EXPORTER_OTLP_ENDPOINT || process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "https://api.iudex.ai",
@@ -17027,7 +17142,7 @@ function instrument({
   if (config.isInstrumented)
     return;
   if (!iudexApiKey) {
-    console.warn(
+    console2.warn(
       `The IUDEX_API_KEY environment variable is missing or empty. Provide IUDEX_API_KEY to the environment on load OR instrument with the iudexApiKey option. Example: \`instrument{ iudexApiKey: 'My_API_Key' })\``
     );
     return;
@@ -17093,67 +17208,16 @@ function instrument({
       const tracerProvider = new import_sdk_trace_node.NodeTracerProvider({ resource: mergedResource });
       tracerProvider.register();
       tracerProvider.addSpanProcessor(spanProcessors[0]);
-      import_api19.trace.setGlobalTracerProvider(tracerProvider);
+      import_api21.trace.setGlobalTracerProvider(tracerProvider);
     }
   };
 }
 __name(instrument, "instrument");
 function trackAttribute(key, value) {
-  const activeSpan = import_api19.trace.getActiveSpan();
+  const activeSpan = import_api21.trace.getActiveSpan();
   activeSpan?.setAttribute(key, value);
 }
 __name(trackAttribute, "trackAttribute");
-function withTracing(fn, ctx = {}) {
-  if (!config.isInstrumented) {
-    return fn;
-  }
-  const { name, trackArgs = true, attributes } = ctx;
-  const tracer = import_api19.trace.getTracer("default");
-  return function(...args2) {
-    return tracer.startActiveSpan(name || fn.name || "<anonymous>", (span) => {
-      try {
-        if (attributes) {
-          span.setAttributes(attributes);
-        }
-        if (trackArgs) {
-          if (args2.length === 1) {
-            span.setAttribute("arg", args2[0]);
-          } else if (args2.length > 1) {
-            span.setAttribute("args", args2);
-          }
-        }
-        const ret = fn(...args2);
-        if (ret?.then) {
-          return ret.then((res) => {
-            span.setStatus({ code: import_api19.SpanStatusCode.OK });
-            return res;
-          }).catch((err) => {
-            span.setStatus({
-              code: import_api19.SpanStatusCode.ERROR,
-              message: err?.message
-            });
-            span.recordException(err);
-            throw err;
-          }).finally(() => {
-            span.end();
-          });
-        }
-        span.setStatus({ code: import_api19.SpanStatusCode.OK });
-        return ret;
-      } catch (err) {
-        span.setStatus({
-          code: import_api19.SpanStatusCode.ERROR,
-          message: err?.message
-        });
-        span.recordException(err);
-        throw err;
-      } finally {
-        span.end();
-      }
-    });
-  };
-}
-__name(withTracing, "withTracing");
 
 // src/index.ts
 var DEFAULT_BASE_URL = "https://api.iudex.ai";
@@ -17481,6 +17545,7 @@ __name(preOrderTraversal, "preOrderTraversal");
   chatTextSchema,
   chatTurnSchema,
   config,
+  console,
   convertSeverityTextToNumber,
   convertSeverityValuesToLevel,
   createClient,
@@ -17499,12 +17564,15 @@ __name(preOrderTraversal, "preOrderTraversal");
   getWorkflowByIdResSchema,
   getWorkflowsResSchema,
   instrument,
+  iudexAwsApiGateway,
+  iudexAwsLambda,
   iudexConsole,
   iudexFastify,
   iudexPino,
   iudexPinoHttp,
   iudexTrpc,
   mapIudexToOpenAi,
+  nativeConsole,
   nextMessage,
   postWorkflowsReqSchema,
   postWorkflowsResSchema,

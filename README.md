@@ -10,6 +10,7 @@ Next generation observability.
     - [Express](#express)
     - [Fastify](#fastify)
     - [Lambda](#lambda)
+      - [With API Gateway](#with-api-gateway)
     - [Pino](#pino)
       - [Multiple Destinations](#multiple-destinations)
     - [Console](#console)
@@ -88,7 +89,8 @@ const fastify = Fastify({
 1. Add this code snippet to the top of your handler file.
 
 ```typescript
-import { instrument, withTracing } from 'iudex';
+import { instrument, iudexAwsLambda } from 'iudex';
+const { withTracing } = iudexAwsLambda;
 instrument({
   serviceName: <your_service_name>,
   githubUrl: <your_github_url_here>,  // optional, also optionally pulls from process.env.GITHUB_URL
@@ -101,6 +103,18 @@ export const handler = withTracing(
   // Your handler function goes here
 );
 ```
+
+#### With API Gateway
+If you use AWS API Gateway along with lambdas, instead import `iudexAwsApiGateway` and wrap your lambda functions the same way using `withTracing`.
+```typescript
+import { instrument, iudexAwsApiGateway } from 'iudex';
+const { withTracing } = iudexAwsApiGateway;
+instrument({
+  serviceName: <your_service_name>,
+  githubUrl: <your_github_url_here>,  // optional, also optionally pulls from process.env.GITHUB_URL
+});
+```
+
 
 ### Pino
 It is required that you call `instrument` before instantiating the pino `logger`. Add Iudex params which will add `iudex` as an output destination for pino.
@@ -138,6 +152,13 @@ instrument({
   githubUrl: <your_github_url_here>,  // optionally pulls from process.env.GITHUB_URL
 });
 ```
+
+Objects with the key `ctx` will have values in `ctx` added as attributes to the log. Example:
+```typescript
+console.log('hello', { ctx: { userId: '123' } })
+```
+will create a log line with the `userId` attribute set to `123`.
+
 
 ### Custom logger
 Use `emitOtelLog` to send logs to `iudex`. You have have called `instrument` somewhere before `emitOtelLog`.

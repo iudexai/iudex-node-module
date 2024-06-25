@@ -26,9 +26,9 @@ import {
 import { instrumentConsole } from './console.js';
 import { PinoHttpInstrumentation } from './pino-http.js';
 import { traceloopInstrumentations } from './traceloop.js';
+import { nativeConsole } from './utils.js';
 
 export * from './utils.js';
-import { nativeConsole } from './utils.js';
 export * from './trace.js';
 export * as iudexPino from './pino.js';
 export * as iudexPinoHttp from './pino-http.js';
@@ -36,6 +36,7 @@ export * as iudexFastify from './fastify.js';
 export * as iudexConsole from './console.js';
 export * as iudexTrpc from './trpc.js';
 export * as iudexAwsApiGateway from './aws-api-gateway.js';
+export * as iudexAwsLambda from './aws-lambda.js';
 
 /**
  * Native console, if you want to use it without logging
