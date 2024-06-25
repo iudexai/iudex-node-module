@@ -1,5 +1,8 @@
 import * as R from 'ramda';
-import { emitOtelLog } from './utils.js';
+import util from 'util';
+
+import { emitOtelLog, nativeConsole } from './utils.js';
+
 
 export function instrumentConsole() {
   const { log, error, warn, info, debug, timeLog, timeEnd } = console;
@@ -14,11 +17,14 @@ export function instrumentConsole() {
   ] as const).forEach(({ name, logger, level }) => {
 
     console[name] = function (...content: any[]) {
+      // Log to console
       logger(...content);
+
+      // Separate out context (attributes) from content
       const contentWoCtx = content
-        .filter((c) => typeof c !== 'object' || !('ctx' in c || 'authCtx' in c));
+        .filter((c) => !isObject(c) || !('ctx' in c || 'authCtx' in c));
       const contentCtx = R.mergeAll(content
-        .filter((c) => typeof c === 'object' && ('ctx' in c || 'authCtx' in c))
+        .filter((c) => isObject(c) && ('ctx' in c || 'authCtx' in c))
         .map(c => {
           if (c.ctx) return c.ctx;
           if (c.authCtx) return c.authCtx;
@@ -26,11 +32,22 @@ export function instrumentConsole() {
         }),
       );
 
-      if (contentWoCtx.length === 1) {
-        emitOtelLog({ level, body: contentWoCtx[0], attributes: contentCtx });
-      } else {
-        emitOtelLog({ level, body: contentWoCtx.join(' '), attributes: contentCtx });
-      }
+      // Pretty print pobjects
+      const prettyContentWoCtx = contentWoCtx.map((c) => {
+        if (typeof c === 'object') {
+          try {
+            return util.inspect(c);
+          } catch {/* ignore */}
+        }
+        return c;
+      });
+
+      // Emit as otel
+      emitOtelLog({ level, body: prettyContentWoCtx.join(' '), attributes: contentCtx });
     };
   });
+}
+
+function isObject(obj: any): obj is Record<string, any> {
+  return typeof obj === 'object' && !Array.isArray(obj) && obj !== null;
 }

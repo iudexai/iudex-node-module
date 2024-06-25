@@ -2487,7 +2487,7 @@ var require_minimal = __commonJS({
     util.isString = /* @__PURE__ */ __name(function isString(value) {
       return typeof value === "string" || value instanceof String;
     }, "isString");
-    util.isObject = /* @__PURE__ */ __name(function isObject2(value) {
+    util.isObject = /* @__PURE__ */ __name(function isObject3(value) {
       return value && typeof value === "object";
     }, "isObject");
     util.isset = /**
@@ -16732,9 +16732,9 @@ function instrumentConsole() {
   ].forEach(({ name, logger: logger2, level }) => {
     console[name] = function(...content) {
       logger2(...content);
-      const contentWoCtx = content.filter((c) => typeof c !== "object" || !("ctx" in c || "authCtx" in c));
+      const contentWoCtx = content.filter((c) => !isObject(c) || !("ctx" in c || "authCtx" in c));
       const contentCtx = mergeAll_default(
-        content.filter((c) => typeof c === "object" && ("ctx" in c || "authCtx" in c)).map((c) => {
+        content.filter((c) => isObject(c) && ("ctx" in c || "authCtx" in c)).map((c) => {
           if (c.ctx)
             return c.ctx;
           if (c.authCtx)
@@ -16751,6 +16751,10 @@ function instrumentConsole() {
   });
 }
 __name(instrumentConsole, "instrumentConsole");
+function isObject(obj) {
+  return typeof obj === "object" && !Array.isArray(obj) && obj !== null;
+}
+__name(isObject, "isObject");
 
 // src/instrumentation/traceloop.ts
 var import_instrumentation_anthropic = require("@traceloop/instrumentation-anthropic");
@@ -16847,7 +16851,7 @@ var trpc_exports = {};
 __export(trpc_exports, {
   config: () => config3,
   extractTrpcReqInputs: () => extractTrpcReqInputs,
-  isObject: () => isObject,
+  isObject: () => isObject2,
   isTrpcRequest: () => isTrpcRequest,
   iudexTrpc: () => iudexTrpc,
   trpcReqMessage: () => trpcReqMessage
@@ -16870,10 +16874,10 @@ function extractTrpcReqInputs(req) {
     const searchParams = new URLSearchParams(inputStr);
     const queryInput = searchParams.get("input");
     const inputs2 = (queryInput ? JSON.parse(queryInput) : {}) || {};
-    return isObject(inputs2) ? inputs2 : { 0: inputs2 };
+    return isObject2(inputs2) ? inputs2 : { 0: inputs2 };
   }
   const inputs = req.body;
-  return isObject(inputs) ? inputs : { 0: inputs };
+  return isObject2(inputs) ? inputs : { 0: inputs };
 }
 __name(extractTrpcReqInputs, "extractTrpcReqInputs");
 function trpcReqMessage(req, res) {
@@ -16906,10 +16910,10 @@ function jsonStrOrEmpty(obj) {
   return obj ? JSON.stringify(obj, null, 4) : "";
 }
 __name(jsonStrOrEmpty, "jsonStrOrEmpty");
-function isObject(value) {
+function isObject2(value) {
   return !!value && !Array.isArray(value) && typeof value === "object";
 }
-__name(isObject, "isObject");
+__name(isObject2, "isObject");
 
 // src/instrumentation/pino-http.ts
 var options2 = {
@@ -17062,9 +17066,9 @@ function instrument({
       // Instrument OTel auto
       (0, import_auto_instrumentations_node.getNodeAutoInstrumentations)({
         "@opentelemetry/instrumentation-fs": { enabled: false },
+        "@opentelemetry/instrumentation-net": { enabled: false },
         "@opentelemetry/instrumentation-express": {
           spanNameHook(info) {
-            console.error("EXPXXXXXXXXXXINFO", info);
             return `${info.request.method} ${info.route}`;
           }
         }

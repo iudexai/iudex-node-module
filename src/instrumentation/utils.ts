@@ -7,7 +7,10 @@ import { logs } from '@opentelemetry/api-logs';
 
 import _ from 'lodash';
 
-export const config = { isInstrumented: false, oldConsole: { ...console } };
+export const config = { isInstrumented: false, nativeConsole: { ...console } };
+
+// Native console
+export const nativeConsole = config.nativeConsole;
 
 export function convertSeverityTextToNumber(severityText: string | undefined) {
   if (severityText == undefined) {
@@ -140,3 +143,4 @@ export function emitOtelLog({
     attributes: _.omitBy(attrs, _.isNil),
   });
 }
+
