@@ -15626,6 +15626,7 @@ __export(src_exports, {
   taskSequencedSchema: () => taskSequencedSchema,
   taskSequencingSchema: () => taskSequencingSchema,
   trackAttribute: () => trackAttribute,
+  useTracing: () => useTracing,
   withTracing: () => withTracing,
   workflowInfoSchema: () => workflowInfoSchema,
   workflowMetadataSchema: () => workflowMetadataSchema,
@@ -16855,6 +16856,10 @@ function withTracing(fn, ctx = {}) {
   };
 }
 __name(withTracing, "withTracing");
+function useTracing(fn, ctx = {}) {
+  return withTracing(fn, ctx)();
+}
+__name(useTracing, "useTracing");
 
 // src/instrumentation/pino.ts
 var pino_exports = {};
@@ -17591,6 +17596,7 @@ __name(preOrderTraversal, "preOrderTraversal");
   taskSequencedSchema,
   taskSequencingSchema,
   trackAttribute,
+  useTracing,
   withTracing,
   workflowInfoSchema,
   workflowMetadataSchema,

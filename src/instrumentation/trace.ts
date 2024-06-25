@@ -15,7 +15,17 @@ export type TraceCtx = {
 };
 
 /**
- * Trace decorator
+ * Trace decorator. Instruments a function to be traced.
+ *
+ * Example:
+```
+const fn = withTracing(async () => {
+  console.log('hello');
+});
+
+await fn();
+```
+ *
  */
 export function withTracing<T extends (...args: any) => any>(
   fn: T,
@@ -93,4 +103,15 @@ export function withTracing<T extends (...args: any) => any>(
       }
     });
   } as T;
+}
+
+
+/**
+ * Starts a new trace from a function.
+ */
+export function useTracing<T extends (...args: any) => any>(
+  fn: T,
+  ctx: TraceCtx = {},
+): ReturnType<T> {
+  return withTracing(fn, ctx)();
 }

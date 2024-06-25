@@ -22,7 +22,12 @@ Next generation observability.
       - [Options](#options)
     - [emitOtelLog](#emitotellog)
       - [Options](#options-1)
-      - [trackAttribute](#trackattribute)
+    - [trackAttribute](#trackattribute)
+    - [withTracing](#withtracing)
+      - [Example](#example)
+      - [Arguments](#arguments)
+    - [useTracing](#usetracing)
+      - [Example](#example-1)
 
 
 # Getting Started
@@ -226,7 +231,7 @@ logger library, find its instrumentation instructions or manually call `emitOtel
 * `env?: string`
   * Sets the environment of the logs and traces
   * While optional, this is highly recommended because separating development vs production logs denoises both.
-  * By default
+  * By default uses `process.env.NODE_ENV`
 * `headers?: Record<string, string>`
   * Merges into the header object for the fetch that targets the `baseUrl`.
 * `settings?: Record<string, boolean>`
@@ -238,7 +243,7 @@ logger library, find its instrumentation instructions or manually call `emitOtel
 `emitOtelLog` is a function that sends a log to `iudex`.
 
 #### Options
-* `level: string;`
+* `level: string`
   * Sets level (`INFO`, `WARN`, `ERROR`, `FATAL`, `DEBUG`) of the log.
 * `body: any`
   * Sets the content of the log.
@@ -251,7 +256,46 @@ logger library, find its instrumentation instructions or manually call `emitOtel
     * We suggest sending function or file name.
   * Attributes cannot contain nonserializable objects.
 
-#### trackAttribute
+### trackAttribute
 `trackAttribute` adds an attribute to the current active span.
 * `key: string`
 * `value: any`
+
+### withTracing
+`withTracing` instruments a function by wrapping with a trace context. Wrapped functions can be called elsewhere and will always be traced.
+
+#### Example
+```typescript
+const myFunction = withTracing(async () => {
+  console.log('I am traced');
+}, { name: 'myFunction' });
+
+await myFunction();
+// console: I am traced
+```
+
+#### Arguments
+* `fn: Function`
+  * Function to trace.
+* `opts`
+  * `name?: string`
+    * Name of the trace.
+  * `trackArgs?: boolean`
+    * Toggles whether or not to track arguments passed into the function.
+    * Tracked args are stored in `attributes.arg` or `attributes.args` if there are multiple arguments.
+    * Defaults to false.
+  * `attributes?: Record<string, any>`
+    * Sets attributes of the trace.
+  * `setSpan?: (span: Span, ret: ReturnType<Function>) => void`
+    * Overrides handling the span.
+
+### useTracing
+`useTracing` instruments and runs a function with trace context. The arguments are the same as `withTracing`
+
+#### Example
+```typescript
+await withTracing(async () => {
+  console.log('I am traced');
+}, { name: 'myFunction' });
+
+// console: I am traced
