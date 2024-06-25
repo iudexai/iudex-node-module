@@ -25,7 +25,9 @@ import {
 } from '@opentelemetry/api';
 import { instrumentConsole } from './console.js';
 import { PinoHttpInstrumentation } from './pino-http.js';
-import * as traceloop from '@traceloop/node-server-sdk';
+import { traceloopInstrumentations } from './traceloop.js';
+import { ExpressInstrumentation } from '@opentelemetry/instrumentation-express';
+import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
 
 export * from './utils.js';
 export * as iudexPino from './pino.js';
@@ -107,18 +109,26 @@ export function instrument({
   const traceExporter = new OTLPTraceExporter({ url: baseUrl + '/v1/traces', headers });
   const spanProcessors = [new BatchSpanProcessor(traceExporter)];
 
-
-  // Instrument OTel auto
+  // Instrument
   const sdk = new NodeSDK({
     serviceName,
     resource,
     logRecordProcessor,
     spanProcessors,
     instrumentations: [
-      // new PinoHttpInstrumentation(),
+      // Instrument OTel auto
       getNodeAutoInstrumentations({
         '@opentelemetry/instrumentation-fs': { enabled: false },
+        '@opentelemetry/instrumentation-express': {
+          spanNameHook(info) {
+            console.error('EXPXXXXXXXXXXINFO', info);
+            return `${info.request.method} ${info.route}`;
+          },
+        },
       }),
+      // new PinoHttpInstrumentation(),
+      // Instrument ai stuff
+      traceloopInstrumentations(),
     ],
     autoDetectResources: true,
   });
@@ -128,15 +138,6 @@ export function instrument({
   if (settings.instrumentConsole || settings.instrumentConsole == undefined) {
     instrumentConsole();
   }
-
-  // Instrument ai stuff
-  traceloop.initialize({
-    appName: serviceName,
-    baseUrl: baseUrl + '/v1',
-    logLevel: 'info',
-    exporter: traceExporter,
-    traceloopSyncEnabled: false,
-  });
 
 
   // Set global flag
@@ -156,6 +157,11 @@ export function instrument({
       trace.setGlobalTracerProvider(tracerProvider);
     },
   };
+}
+
+export function trackAttribute(key: string, value: any) {
+  const activeSpan = trace.getActiveSpan();
+  activeSpan?.setAttribute(key, value);
 }
 
 /**
@@ -189,7 +195,7 @@ export function withTracing<T extends (...args: any) => any>(
         }
         const ret = fn(...args);
         // If its a promise, wait for it to resolve, follow async code path
-        if (ret.then) {
+        if (ret?.then) {
           return (ret as Promise<ReturnType<T>>)
             .then((res) => {
               span.setStatus({ code: SpanStatusCode.OK });

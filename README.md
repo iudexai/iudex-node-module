@@ -21,6 +21,7 @@ Next generation observability.
       - [Options](#options)
     - [emitOtelLog](#emitotellog)
       - [Options](#options-1)
+      - [trackAttribute](#trackattribute)
 
 
 # Getting Started
@@ -228,3 +229,8 @@ logger library, find its instrumentation instructions or manually call `emitOtel
     * We highly recommend sending at least userId and requestId.
     * We suggest sending function or file name.
   * Attributes cannot contain nonserializable objects.
+
+#### trackAttribute
+`trackAttribute` adds an attribute to the current active span.
+* `key: string`
+* `value: any`

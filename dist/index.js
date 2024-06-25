@@ -15621,6 +15621,7 @@ __export(src_exports, {
   taskSchema: () => taskSchema,
   taskSequencedSchema: () => taskSequencedSchema,
   taskSequencingSchema: () => taskSequencingSchema,
+  trackAttribute: () => trackAttribute,
   withTracing: () => withTracing,
   workflowInfoSchema: () => workflowInfoSchema,
   workflowMetadataSchema: () => workflowMetadataSchema,
@@ -16751,8 +16752,34 @@ function instrumentConsole() {
 }
 __name(instrumentConsole, "instrumentConsole");
 
-// src/instrumentation/index.ts
-var traceloop = __toESM(require("@traceloop/node-server-sdk"));
+// src/instrumentation/traceloop.ts
+var import_instrumentation_anthropic = require("@traceloop/instrumentation-anthropic");
+var import_instrumentation_openai = require("@traceloop/instrumentation-openai");
+var import_instrumentation_azure = require("@traceloop/instrumentation-azure");
+var import_instrumentation_llamaindex = require("@traceloop/instrumentation-llamaindex");
+var import_instrumentation_vertexai = require("@traceloop/instrumentation-vertexai");
+var import_instrumentation_bedrock = require("@traceloop/instrumentation-bedrock");
+var import_instrumentation_cohere = require("@traceloop/instrumentation-cohere");
+var import_instrumentation_pinecone = require("@traceloop/instrumentation-pinecone");
+var import_instrumentation_langchain = require("@traceloop/instrumentation-langchain");
+var import_instrumentation_chromadb = require("@traceloop/instrumentation-chromadb");
+function traceloopInstrumentations() {
+  const instrumentations = [
+    new import_instrumentation_anthropic.AnthropicInstrumentation(),
+    new import_instrumentation_openai.OpenAIInstrumentation(),
+    new import_instrumentation_azure.AzureOpenAIInstrumentation(),
+    new import_instrumentation_llamaindex.LlamaIndexInstrumentation(),
+    new import_instrumentation_vertexai.AIPlatformInstrumentation(),
+    new import_instrumentation_vertexai.VertexAIInstrumentation(),
+    new import_instrumentation_bedrock.BedrockInstrumentation(),
+    new import_instrumentation_cohere.CohereInstrumentation(),
+    new import_instrumentation_pinecone.PineconeInstrumentation(),
+    new import_instrumentation_langchain.LangChainInstrumentation(),
+    new import_instrumentation_chromadb.ChromaDBInstrumentation()
+  ];
+  return instrumentations;
+}
+__name(traceloopInstrumentations, "traceloopInstrumentations");
 
 // src/instrumentation/pino.ts
 var pino_exports = {};
@@ -17032,10 +17059,19 @@ function instrument({
     logRecordProcessor,
     spanProcessors,
     instrumentations: [
-      // new PinoHttpInstrumentation(),
+      // Instrument OTel auto
       (0, import_auto_instrumentations_node.getNodeAutoInstrumentations)({
-        "@opentelemetry/instrumentation-fs": { enabled: false }
-      })
+        "@opentelemetry/instrumentation-fs": { enabled: false },
+        "@opentelemetry/instrumentation-express": {
+          spanNameHook(info) {
+            console.error("EXPXXXXXXXXXXINFO", info);
+            return `${info.request.method} ${info.route}`;
+          }
+        }
+      }),
+      // new PinoHttpInstrumentation(),
+      // Instrument ai stuff
+      traceloopInstrumentations()
     ],
     autoDetectResources: true
   });
@@ -17043,13 +17079,6 @@ function instrument({
   if (settings.instrumentConsole || settings.instrumentConsole == void 0) {
     instrumentConsole();
   }
-  traceloop.initialize({
-    appName: serviceName,
-    baseUrl: baseUrl + "/v1",
-    logLevel: "info",
-    exporter: traceExporter,
-    traceloopSyncEnabled: false
-  });
   config.isInstrumented = true;
   return {
     updateResource(newResource) {
@@ -17065,6 +17094,11 @@ function instrument({
   };
 }
 __name(instrument, "instrument");
+function trackAttribute(key, value) {
+  const activeSpan = import_api19.trace.getActiveSpan();
+  activeSpan?.setAttribute(key, value);
+}
+__name(trackAttribute, "trackAttribute");
 function withTracing(fn, ctx = {}) {
   if (!config.isInstrumented) {
     return fn;
@@ -17085,7 +17119,7 @@ function withTracing(fn, ctx = {}) {
           }
         }
         const ret = fn(...args2);
-        if (ret.then) {
+        if (ret?.then) {
           return ret.then((res) => {
             span.setStatus({ code: import_api19.SpanStatusCode.OK });
             return res;
@@ -17484,6 +17518,7 @@ __name(preOrderTraversal, "preOrderTraversal");
   taskSchema,
   taskSequencedSchema,
   taskSequencingSchema,
+  trackAttribute,
   withTracing,
   workflowInfoSchema,
   workflowMetadataSchema,

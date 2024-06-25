@@ -3,13 +3,11 @@ import {
   InstrumentationNodeModuleDefinition,
   safeExecuteInTheMiddle,
 } from '@opentelemetry/instrumentation';
-import { PinoHttpInstrumentationConfig } from './pino-http.types';
+import { InstrumentationConfig } from '@opentelemetry/instrumentation';
 // import { PACKAGE_NAME, PACKAGE_VERSION } from './version';
 
-import { iudexPino } from './pino.js';
 import { iudexTrpc } from './trpc.js';
 import { IncomingMessage, ServerResponse } from 'http';
-import { custom } from 'zod';
 
 export const options = {
   customSuccessMessage: (req: IncomingMessage, res: ServerResponse) => {
@@ -27,6 +25,11 @@ export const options = {
 export const iudexPinoHttp = {
   options,
 };
+
+
+export interface PinoHttpInstrumentationConfig extends InstrumentationConfig {
+}
+
 
 /**
  * @deprecated Experimental, don't use

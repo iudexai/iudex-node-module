@@ -19,6 +19,7 @@ export declare function instrument({ baseUrl, iudexApiKey, serviceName, instance
 }): {
     updateResource(newResource: Record<string, any>): void;
 } | undefined;
+export declare function trackAttribute(key: string, value: any): void;
 /**
  * Trace decorator
  */

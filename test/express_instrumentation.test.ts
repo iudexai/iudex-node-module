@@ -1,13 +1,13 @@
 import 'dotenv/config';
-import { instrument, iudexPino, iudexPinoHttp } from '../src/instrumentation/index';
+import { instrument, iudexPino, iudexPinoHttp, withTracing } from '../src/instrumentation/index';
 instrument({
   serviceName: 'test-express-instrumentation',
   githubUrl: 'https://github.com/iudexai/ghost-shell',
   baseUrl: 'https://pgrev2bga0.execute-api.us-west-2.amazonaws.com',
-  // baseUrl: 'https://api.iudex.ai',
+  env: 'production',
 });
 
-import express, { Request, Express } from 'express';
+import express from 'express';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { pinoHttp } from 'pino-http';
 import { pino } from 'pino';
@@ -31,11 +31,34 @@ function rollTheDice(rolls: number, min: number, max: number) {
   return result;
 }
 
+const tracedFn = withTracing(function _tracedFn(depth: number) {
+  console.log('tracedFn at depth:', depth);
+  if (depth <= 0) {
+    logger.info(depth, 'tracedFn finished');
+    return;
+  }
+  if (Math.random() < 0.5) {
+    tracedFn(depth - 1);
+    tracedFn(depth - 2);
+  } else {
+    tracedFn(depth - 1);
+  }
+});
+
+const errorTracedFn = withTracing(function _errorTracedFn(depth: number) {
+  console.log('errorTracedFn at depth:', depth);
+  if (depth <= 0) {
+    logger.info(depth, 'errorTracedFn finished');
+    throw Error('errorTracedFn error');
+  }
+  errorTracedFn(depth - 1);
+});
+
 
 /** app.ts **/
 
 const PORT = parseInt(process.env.PORT || '8080');
-const app: Express = express();
+const app = express();
 app.use(pinoHttp({ logger, ...iudexPinoHttp.options }));
 // app.use(pinoHttp());
 
@@ -55,6 +78,11 @@ app.get('/roll', (req, res) => {
   res.send(JSON.stringify(outcomes));
 });
 
+app.get('/nested', (req, res) => {
+  tracedFn(rollOnce(3,6));
+  errorTracedFn(rollOnce(2,4));
+  res.send('nested route');
+});
 
 /** TRPC **/
 
