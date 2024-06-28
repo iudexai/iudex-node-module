@@ -90,19 +90,32 @@ const t = initTRPC.create();
 
 const router = t.router;
 const publicProcedure = t.procedure;
+const loggedProcedure = publicProcedure.use(async (opts, next) => {
+  const start = Date.now();
+
+  const result = await opts.next();
+
+  const durationMs = Date.now() - start;
+  const meta = { path: opts.path, type: opts.type, durationMs };
+
+  result.ok
+    ? console.log('OK request timing:', meta)
+    : console.error('Non-OK request timing', meta);
+  return result;
+});
 const appRouter = router({
-  userList: publicProcedure
+  userList: loggedProcedure
     .query(async () => {
       return [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }];
     }),
   // /trpc/userById,userById?batch=1&input=%7B%220%22%3A%2201%22%2C%221%22%3A%2202%22%7D
-  userById: publicProcedure
+  userById: loggedProcedure
     .input(z.string())
     .query(async (opts) => {
       const { input } = opts;
       return { id: input, name: 'Alice' };
     }),
-  userCreate: publicProcedure
+  userCreate: loggedProcedure
     .input(z.object({ name: z.string() }))
     .mutation(async (opts) => {
       const { input } = opts;

@@ -8,7 +8,7 @@ export default defineConfig({
     resolve: true,
   },
   splitting: false,
-  sourcemap: true,
+  sourcemap: false,
   clean: true,
   keepNames: true,
   terserOptions: {

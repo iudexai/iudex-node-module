@@ -9,13 +9,14 @@ Next generation observability.
     - [Autoinstrument](#autoinstrument)
     - [Express](#express)
     - [Fastify](#fastify)
+    - [TRPC](#trpc)
     - [Lambda](#lambda)
       - [With API Gateway](#with-api-gateway)
     - [Pino](#pino)
       - [Multiple Destinations](#multiple-destinations)
     - [Console](#console)
     - [Custom logger](#custom-logger)
-    - [Any function](#any-function)
+    - [Tracing functions](#tracing-functions)
 - [Slack Alerts](#slack-alerts)
 - [API reference](#api-reference)
     - [instrument](#instrument)
@@ -31,33 +32,92 @@ Next generation observability.
 
 
 # Getting Started
-Instrumenting your JavaScript or TypeScript codebase with Iudex just takes a few steps.
-
-[Supported autoinstrumentations](https://github.com/open-telemetry/opentelemetry-js-contrib/blob/main/metapackages/auto-instrumentations-node/README.md#supported-instrumentations) include: console * cassandra-driver * express * http * graphql * ioredis * knex * koa * memcahced * mongodb * mongoose * mysql * mysql2 * nestjs * pg * redis * restify * socket.io * undici.
-
-Check out the [Autoinstrument](#autoinstrument) section for installation instructions.
-
-For libraries that are not autoinstrumented, follow the instructions from the table of contents for that specific library.
+Instrumenting your code with Iudex just takes a few steps.
 
 1. Install dependencies.
 ```bash
 npm install iudex
 ```
-2. Follow the instructions below for your frameworks.
-3. Make sure the app has access to the environment variable `IUDEX_API_KEY`. You can manually add this to `instrument` as well if you use something like a secrets manager.
+2. Follow the below instructions for your frameworks or use autoinstrumentation.
+3. Make sure your app has access to the environment variable `IUDEX_API_KEY`. You can manually add this to `instrument` as well if you use something like a secrets manager.
 4. You should be all set! Go to [https://app.iudex.ai/](https://app.iudex.ai/) and enter your API key.
 5. Go to [https://app.iudex.ai/logs](https://app.iudex.ai/logs) and press `Search` to view your logs.
 
 
 ### Autoinstrument
-Add this code snippet to the top your entry point file (likely `index.ts`). Skip this step if you already call `instrument` on your server.
-```typescript
+[Supported libraries from OTel](https://github.com/open-telemetry/opentelemetry-js-contrib/tree/main/metapackages/auto-instrumentations-node#supported-instrumentations):
 
+✅ amqplib
+✅ aws-lambda
+✅ aws-sdk
+✅ bunyan
+✅ cassandra-driver
+✅ connect
+✅ cucumber
+✅ dataloader
+✅ dns
+✅ express
+✅ fastify
+✅ generic-pool
+✅ graphql
+✅ grpc
+✅ hapi
+✅ http
+✅ ioredis
+✅ knex
+✅ koa
+✅ lru-memoizer
+✅ memcached
+✅ mongodb
+✅ mongoose
+✅ mysql
+✅ mysql2
+✅ nestjs-core
+✅ net
+✅ pg
+✅ pino
+✅ redis
+✅ restify
+✅ socket.io
+✅ undici
+✅ winston
+
+[Supported libraries from OpenLLMetry](https://github.com/traceloop/openllmetry-js/tree/main):
+
+✅ @azure/openai
+✅ @anthropic-ai/sdk
+✅ @aws-sdk/client-bedrock-runtime
+✅ @google-cloud/vertexai
+✅ @qdrant/js-client-rest
+✅ chromadb
+✅ cohere-ai
+✅ langchain
+✅ llamaindex
+✅ openai
+✅ pinecone-client
+
+Supported libraries:
+
+⏳ aws-api-gateway
+✅ console
+⏳ pino-http
+⏳ trpc
+
+
+Add this code to the top your entrypoint file (likely `index.ts`).
+```typescript
 import { instrument, iudexFastify } from 'iudex';
 instrument({
-  serviceName: <your_service_name>,
+  serviceName: <your_service_name>, // highly encouraged
+  env: <your_environment>, // optional
 });
 ```
+You should be all set! Iudex will now record logs and trace the entire life cycle for each request.
+
+Go to [https://app.iudex.ai/](https://app.iudex.ai/) to start viewing your logs and traces!
+
+For libraries that are not autoinstrumented or if your project uses `"type": "module"`, follow the instructions from the table of contents for that specific library.
+
 
 ### Express
 Add this code snippet to the top of your server file (likely `app.ts` or `index.ts`).
@@ -66,7 +126,6 @@ Add this code snippet to the top of your server file (likely `app.ts` or `index.
 import { instrument } from 'iudex';
 instrument({
   serviceName: <your_service_name>,
-  githubUrl: <your_github_url_here>,  // optionally pulls from process.env.GITHUB_URL
 });
 ```
 
@@ -77,7 +136,6 @@ Add this code snippet to the top of your server file (likely `server.ts`), add `
 import { instrument, iudexFastify } from 'iudex';
 instrument({
   serviceName: <your_service_name>,
-  githubUrl: <your_github_url_here>,  // optionally pulls from process.env.GITHUB_URL
 });
 
 //...
@@ -90,6 +148,20 @@ const fastify = Fastify({
 });
 ```
 
+### TRPC
+TRPC instrumentation automatically works with `pino-http` on your server.
+
+If you want to log using custom middleware, you can write your own middleware.
+```typescript
+const loggedProcedure = publicProcedure.use(withTracing((opts) => {
+  trackAttribute('path', opts.path);
+  trackAttribute('type', opts.type);
+  return opts.next();
+}));
+```
+We are in the process of making this better.
+
+
 ### Lambda
 1. Add this code snippet to the top of your handler file.
 
@@ -98,7 +170,6 @@ import { instrument, iudexAwsLambda } from 'iudex';
 const { withTracing } = iudexAwsLambda;
 instrument({
   serviceName: <your_service_name>,
-  githubUrl: <your_github_url_here>,  // optional, also optionally pulls from process.env.GITHUB_URL
 });
 ```
 
@@ -116,7 +187,6 @@ import { instrument, iudexAwsApiGateway } from 'iudex';
 const { withTracing } = iudexAwsApiGateway;
 instrument({
   serviceName: <your_service_name>,
-  githubUrl: <your_github_url_here>,  // optional, also optionally pulls from process.env.GITHUB_URL
 });
 ```
 
@@ -154,7 +224,6 @@ Add this code snippet to the top your entry point file (likely `index.ts`). Skip
 import { instrument, iudexFastify } from 'iudex';
 instrument({
   serviceName: <your_service_name>,
-  githubUrl: <your_github_url_here>,  // optionally pulls from process.env.GITHUB_URL
 });
 ```
 
@@ -183,8 +252,19 @@ function createLogger(level: keyof typeof console) {
 ```
 
 
-### Any function
-Its recommended that you trace
+### Tracing functions
+Its recommended that you trace functions that are not called extremely frequently and that tends to be an "entry point" for complex functionality. Examples of this are API routes, service controllers, and database clients. You can trace your function by wrapping it with `withTracing`.
+
+```typescript
+const myFunction = withTracing(async () => {
+  console.log('I am traced');
+}, { name: 'myFunction', trackArgs: true });
+
+await myFunction();
+// console: I am traced
+```
+
+Anytime `myFunction` is called, it will create a span layer in a trace. `trackArgs` will also track the arguments for the function. Tracked arguments will be truncated at 5000 characters. If you want to track specific parameters, it is recommended that you log them at the beginning of the function.
 
 
 # Slack Alerts
@@ -194,7 +274,8 @@ First visit [https://app.iudex.ai/logs](https://app.iudex.ai/logs) and click on 
 
 Once installed to your workspace, tag your logs with the `iudex.slack_channel_id` attribute.
 ```typescript
-logger.info('Hello from Slack!', { 'iudex.slack_channel_id': 'YOUR_SLACK_CHANNEL_ID' })
+logger.info({ 'iudex.slack_channel_id': 'YOUR_SLACK_CHANNEL_ID' }, 'Hello from Slack!');
+console.log('Hello from Slack!', { ctx: { 'iudex.slack_channel_id': 'YOUR_SLACK_CHANNEL_ID' } });
 ```
 Your channel ID can be found by clicking the name of the channel in the top left, then at the bottom of the dialog that pops up.
 

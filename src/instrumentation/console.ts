@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 import util from 'util';
 
-import { emitOtelLog, nativeConsole } from './utils.js';
+import { emitOtelLog } from './utils.js';
 
 
 export function instrumentConsole() {

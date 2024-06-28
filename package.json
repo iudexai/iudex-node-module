@@ -1,6 +1,6 @@
 {
   "name": "iudex",
-  "version": "0.14.9",
+  "version": "0.14.10",
   "description": "Iudex client",
   "scripts": {
     "build": "tsup && tsc --declaration --emitDeclarationOnly",
@@ -22,7 +22,8 @@
     "logger",
     "traces",
     "observability",
-    "openai"
+    "openai",
+    "node"
   ],
   "author": "Iudex",
   "license": "MIT",
@@ -79,7 +80,6 @@
     "@traceloop/instrumentation-openai": "^0.8.8",
     "@traceloop/instrumentation-pinecone": "^0.8.8",
     "@traceloop/instrumentation-vertexai": "^0.8.8",
-    "@traceloop/node-server-sdk": "^0.8.9",
     "@types/lodash": "^4.17.5",
     "function-json-schema": "^1.0.4",
     "import-in-the-middle": "^1.8.1",
