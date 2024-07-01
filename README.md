@@ -1,6 +1,6 @@
 # Iudex Node
 
-Next generation observability. For browser / worker compatible Iudex, use [iudex-web](https://github.com/iudexai/iudex-node-module#readme)
+Next generation observability. For browser / worker compatible Iudex, use [iudex-web](https://github.com/iudexai/iudex-web#readme)
 
 ### Table of contents
 - [Iudex Node](#iudex-node)
