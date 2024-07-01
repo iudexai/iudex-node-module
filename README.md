@@ -1,9 +1,9 @@
-# Iudex
+# Iudex Node
 
-Next generation observability.
+Next generation observability. For browser / worker compatible Iudex, use [iudex-web](https://github.com/iudexai/iudex-node-module#readme)
 
 ### Table of contents
-- [Iudex](#iudex)
+- [Iudex Node](#iudex-node)
     - [Table of contents](#table-of-contents)
 - [Getting Started](#getting-started)
     - [Autoinstrument](#autoinstrument)
@@ -106,7 +106,7 @@ Supported libraries:
 
 Add this code to the top your entrypoint file (likely `index.ts`).
 ```typescript
-import { instrument, iudexFastify } from 'iudex';
+import { instrument } from 'iudex';
 instrument({
   serviceName: <your_service_name>, // highly encouraged
   env: <your_environment>, // optional
@@ -137,8 +137,6 @@ import { instrument, iudexFastify } from 'iudex';
 instrument({
   serviceName: <your_service_name>,
 });
-
-//...
 
 const fastify = Fastify({
   logger: {
