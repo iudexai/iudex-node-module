@@ -27,6 +27,7 @@ import { instrumentConsole } from './console.js';
 import { PinoHttpInstrumentation } from './pino-http.js';
 import { traceloopInstrumentations } from './traceloop.js';
 import { nativeConsole } from './utils.js';
+import { registerInstrumentations } from '@opentelemetry/instrumentation';
 
 export * from './utils.js';
 export * from './trace.js';
@@ -117,27 +118,39 @@ export function instrument({
   const traceExporter = new OTLPTraceExporter({ url: baseUrl + '/v1/traces', headers });
   const spanProcessors = [new BatchSpanProcessor(traceExporter)];
 
+  const tracerProvider = new NodeTracerProvider({ resource });
+  tracerProvider.register();
+  tracerProvider.addSpanProcessor(spanProcessors[0]);
+  trace.setGlobalTracerProvider(tracerProvider);
+
+  const instrumentations = [
+    // Instrument OTel auto
+    ...getNodeAutoInstrumentations({
+      '@opentelemetry/instrumentation-fs': { enabled: false },
+      '@opentelemetry/instrumentation-net': { enabled: false },
+      '@opentelemetry/instrumentation-express': {
+        spanNameHook(info) {
+          return `${info.request.method} ${info.route}`;
+        },
+      },
+      '@opentelemetry/instrumentation-mongoose': {
+        dbStatementSerializer(operation, payload) {
+          return JSON.stringify({ operation, ...payload });
+        },
+      },
+    }),
+    // new PinoHttpInstrumentation(),
+    // Instrument ai stuff
+    ...traceloopInstrumentations(),
+  ];
+  registerInstrumentations({ instrumentations });
+
   // Instrument
   const sdk = new NodeSDK({
     serviceName,
     resource,
     logRecordProcessor,
     spanProcessors,
-    instrumentations: [
-      // Instrument OTel auto
-      getNodeAutoInstrumentations({
-        '@opentelemetry/instrumentation-fs': { enabled: false },
-        '@opentelemetry/instrumentation-net': { enabled: false},
-        '@opentelemetry/instrumentation-express': {
-          spanNameHook(info) {
-            return `${info.request.method} ${info.route}`;
-          },
-        },
-      }),
-      // new PinoHttpInstrumentation(),
-      // Instrument ai stuff
-      traceloopInstrumentations(),
-    ],
     autoDetectResources: true,
   });
   sdk.start();

@@ -11,7 +11,7 @@ export function instrumentConsole() {
     { name: 'error', logger: error, level: 'ERROR' },
     { name: 'warn', logger: warn, level: 'WARN' },
     { name: 'info', logger: info, level: 'INFO' },
-    { name: 'debug', logger: debug, level: 'DEBUG'},
+    { name: 'debug', logger: debug, level: 'DEBUG' },
     { name: 'timeLog', logger: timeLog, level: 'INFO' },
     { name: 'timeEnd', logger: timeEnd, level: 'INFO' },
   ] as const).forEach(({ name, logger, level }) => {

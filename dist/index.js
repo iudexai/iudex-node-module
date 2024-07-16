@@ -16797,6 +16797,9 @@ function traceloopInstrumentations() {
 }
 __name(traceloopInstrumentations, "traceloopInstrumentations");
 
+// src/instrumentation/index.ts
+var import_instrumentation2 = require("@opentelemetry/instrumentation");
+
 // src/instrumentation/trace.ts
 var import_api19 = require("@opentelemetry/api");
 function withTracing(fn, ctx = {}) {
@@ -17177,26 +17180,36 @@ function instrument({
   import_api_logs2.logs.setGlobalLoggerProvider(loggerProvider);
   const traceExporter = new import_exporter_trace_otlp_proto.OTLPTraceExporter({ url: baseUrl + "/v1/traces", headers });
   const spanProcessors = [new import_sdk_trace_node.BatchSpanProcessor(traceExporter)];
+  const tracerProvider = new import_sdk_trace_node.NodeTracerProvider({ resource });
+  tracerProvider.register();
+  tracerProvider.addSpanProcessor(spanProcessors[0]);
+  import_api21.trace.setGlobalTracerProvider(tracerProvider);
+  const instrumentations = [
+    // Instrument OTel auto
+    ...(0, import_auto_instrumentations_node.getNodeAutoInstrumentations)({
+      "@opentelemetry/instrumentation-fs": { enabled: false },
+      "@opentelemetry/instrumentation-net": { enabled: false },
+      "@opentelemetry/instrumentation-express": {
+        spanNameHook(info) {
+          return `${info.request.method} ${info.route}`;
+        }
+      },
+      "@opentelemetry/instrumentation-mongoose": {
+        dbStatementSerializer(operation, payload) {
+          return JSON.stringify({ operation, ...payload });
+        }
+      }
+    }),
+    // new PinoHttpInstrumentation(),
+    // Instrument ai stuff
+    ...traceloopInstrumentations()
+  ];
+  (0, import_instrumentation2.registerInstrumentations)({ instrumentations });
   const sdk = new import_sdk_node.NodeSDK({
     serviceName,
     resource,
     logRecordProcessor,
     spanProcessors,
-    instrumentations: [
-      // Instrument OTel auto
-      (0, import_auto_instrumentations_node.getNodeAutoInstrumentations)({
-        "@opentelemetry/instrumentation-fs": { enabled: false },
-        "@opentelemetry/instrumentation-net": { enabled: false },
-        "@opentelemetry/instrumentation-express": {
-          spanNameHook(info) {
-            return `${info.request.method} ${info.route}`;
-          }
-        }
-      }),
-      // new PinoHttpInstrumentation(),
-      // Instrument ai stuff
-      traceloopInstrumentations()
-    ],
     autoDetectResources: true
   });
   sdk.start();
@@ -17210,10 +17223,10 @@ function instrument({
       const loggerProvider2 = new import_sdk_logs.LoggerProvider({ resource: mergedResource });
       loggerProvider2.addLogRecordProcessor(logRecordProcessor);
       import_api_logs2.logs.setGlobalLoggerProvider(loggerProvider2);
-      const tracerProvider = new import_sdk_trace_node.NodeTracerProvider({ resource: mergedResource });
-      tracerProvider.register();
-      tracerProvider.addSpanProcessor(spanProcessors[0]);
-      import_api21.trace.setGlobalTracerProvider(tracerProvider);
+      const tracerProvider2 = new import_sdk_trace_node.NodeTracerProvider({ resource: mergedResource });
+      tracerProvider2.register();
+      tracerProvider2.addSpanProcessor(spanProcessors[0]);
+      import_api21.trace.setGlobalTracerProvider(tracerProvider2);
     }
   };
 }
