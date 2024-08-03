@@ -15572,6 +15572,8 @@ __export(src_exports, {
   TerminalTaskStatuses: () => TerminalTaskStatuses,
   WorkflowStatus: () => WorkflowStatus,
   baseTaskSchema: () => baseTaskSchema,
+  buildHeaders: () => buildHeaders,
+  buildResource: () => buildResource,
   chatErrorSchema: () => chatErrorSchema,
   chatFunctionCallSchema: () => chatFunctionCallSchema,
   chatFunctionReturnSchema: () => chatFunctionReturnSchema,
@@ -15586,6 +15588,7 @@ __export(src_exports, {
   createClient: () => createClient,
   createFunctionClient: () => createFunctionClient,
   createWorkflowClient: () => createWorkflowClient,
+  defaultInstrumentConfig: () => defaultInstrumentConfig,
   emitOtelLog: () => emitOtelLog,
   extractMessageTextContent: () => extractMessageTextContent,
   feasibilityCheckSchema: () => feasibilityCheckSchema,
@@ -16727,6 +16730,8 @@ __export(console_exports, {
 });
 var import_util8 = __toESM(require("util"));
 function instrumentConsole() {
+  if (console._instrumented)
+    return;
   const { log, error, warn, info, debug, timeLog, timeEnd } = console;
   [
     { name: "log", logger: log, level: "INFO" },
@@ -16761,6 +16766,7 @@ function instrumentConsole() {
       emitOtelLog({ level, body: prettyContentWoCtx.join(" "), attributes: contentCtx });
     };
   });
+  console._instrumented = true;
 }
 __name(instrumentConsole, "instrumentConsole");
 function isObject(obj) {
@@ -16796,6 +16802,9 @@ function traceloopInstrumentations() {
   return instrumentations;
 }
 __name(traceloopInstrumentations, "traceloopInstrumentations");
+
+// src/instrumentation/index.ts
+var import_instrumentation2 = require("@opentelemetry/instrumentation");
 
 // src/instrumentation/trace.ts
 var import_api19 = require("@opentelemetry/api");
@@ -17100,7 +17109,6 @@ function withTracing2(fn, ctx) {
         emitOtelLog({ level: "ERROR", body: `${ctx.name} ${res.body}` });
       } else {
         span.setStatus({ code: import_api20.SpanStatusCode.OK });
-        emitOtelLog({ level: "INFO", body: `${ctx.name} Succeeded` });
       }
     }).catch((err) => {
       span.setStatus({ code: import_api20.SpanStatusCode.ERROR, message: String(err) });
@@ -17133,70 +17141,90 @@ if (process.env.IUDEX_DEBUG) {
   console2.log("IUDEX_DEBUG on. Setting diag logger to console.");
   import_api21.diag.setLogger(new import_api21.DiagConsoleLogger(), import_api21.DiagLogLevel.DEBUG);
 }
-function instrument({
-  baseUrl = process.env.IUDEX_EXPORTER_OTLP_ENDPOINT || process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "https://api.iudex.ai",
-  iudexApiKey = process.env.IUDEX_API_KEY,
-  serviceName = process.env.OTEL_SERVICE_NAME || "unknown-service",
-  instanceId,
-  gitCommit = process.env.GIT_COMMIT,
-  githubUrl = process.env.GITHUB_URL,
-  env = process.env.NODE_ENV,
-  headers: configHeaders = {},
-  settings = {}
-} = {}) {
+function defaultInstrumentConfig() {
+  if (typeof process === "undefined") {
+    global.process = { env: {} };
+  }
+  if (typeof process.env === "undefined") {
+    global.process.env = {};
+  }
+  return {
+    baseUrl: process.env.IUDEX_EXPORTER_OTLP_ENDPOINT || process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "https://api.iudex.ai",
+    iudexApiKey: process.env.IUDEX_API_KEY,
+    publicWriteOnlyIudexApiKey: process.env.PUBLIC_WRITE_ONLY_IUDEX_API_KEY || process.env.NEXT_PUBLIC_WRITE_ONLY_IUDEX_API_KEY,
+    serviceName: process.env.OTEL_SERVICE_NAME || "unknown-service",
+    gitCommit: process.env.GIT_COMMIT,
+    githubUrl: process.env.GITHUB_URL,
+    env: process.env.NODE_ENV,
+    headers: {},
+    settings: {}
+  };
+}
+__name(defaultInstrumentConfig, "defaultInstrumentConfig");
+function instrument(instrumentConfig = {}) {
   if (config.isInstrumented)
     return;
-  if (!iudexApiKey) {
+  const {
+    baseUrl,
+    iudexApiKey,
+    publicWriteOnlyIudexApiKey,
+    serviceName,
+    instanceId,
+    gitCommit,
+    githubUrl,
+    env,
+    headers: configHeaders,
+    settings
+  } = { ...defaultInstrumentConfig(), ...instrumentConfig };
+  if (!publicWriteOnlyIudexApiKey && !iudexApiKey) {
     console2.warn(
-      `The IUDEX_API_KEY environment variable is missing or empty. Provide IUDEX_API_KEY to the environment on load OR instrument with the iudexApiKey option. Example: \`instrument{ iudexApiKey: 'My_API_Key' })\``
+      `The PUBLIC_WRITE_ONLY_IUDEX_API_KEY environment variable is missing or empty. Provide PUBLIC_WRITE_ONLY_IUDEX_API_KEY to the environment on load OR instrument with the publicWriteOnlyIudexApiKey option. Example: \`instrument{ publicWriteOnlyIudexApiKey: 'My_API_Key' })\``
     );
     return;
   }
-  const headers = {
-    "x-api-key": iudexApiKey,
-    ...configHeaders
-  };
-  if (!gitCommit) {
-    try {
-      const { execSync } = require("child_process");
-      gitCommit = execSync("git rev-parse HEAD").toString().trim();
-    } catch (e) {
-    }
+  let url2 = baseUrl;
+  if (url2 == null || url2 === "undefined" || url2 === "null") {
+    url2 = "https://api.iudex.ai";
   }
-  const resource = new import_resources.Resource(import_lodash4.default.omitBy({
-    [import_semantic_conventions5.SEMRESATTRS_SERVICE_NAME]: serviceName,
-    [import_semantic_conventions5.SEMRESATTRS_SERVICE_INSTANCE_ID]: instanceId,
-    "git.commit": gitCommit,
-    "github.url": githubUrl,
-    "env": env
-  }, import_lodash4.default.isNil));
+  const headers = buildHeaders({ iudexApiKey, publicWriteOnlyIudexApiKey, headers: configHeaders });
+  const resource = buildResource({ serviceName, instanceId, gitCommit, githubUrl, env });
   const logExporter = new OTLPLogExporter({ url: baseUrl + "/v1/logs", headers });
   const logRecordProcessor = new import_sdk_logs.BatchLogRecordProcessor(logExporter);
   const loggerProvider = new import_sdk_logs.LoggerProvider({ resource });
   loggerProvider.addLogRecordProcessor(logRecordProcessor);
   import_api_logs2.logs.setGlobalLoggerProvider(loggerProvider);
   const traceExporter = new import_exporter_trace_otlp_proto.OTLPTraceExporter({ url: baseUrl + "/v1/traces", headers });
-  const spanProcessors = [new import_sdk_trace_node.BatchSpanProcessor(traceExporter)];
+  const spanProcessor = new import_sdk_trace_node.BatchSpanProcessor(traceExporter);
+  const tracerProvider = new import_sdk_trace_node.NodeTracerProvider({ resource });
+  tracerProvider.register();
+  tracerProvider.addSpanProcessor(spanProcessor);
+  import_api21.trace.setGlobalTracerProvider(tracerProvider);
+  const instrumentations = [
+    // Instrument OTel auto
+    ...(0, import_auto_instrumentations_node.getNodeAutoInstrumentations)({
+      "@opentelemetry/instrumentation-fs": { enabled: false },
+      "@opentelemetry/instrumentation-net": { enabled: false },
+      "@opentelemetry/instrumentation-express": {
+        spanNameHook(info) {
+          return `${info.request.method} ${info.route}`;
+        }
+      },
+      "@opentelemetry/instrumentation-mongoose": {
+        dbStatementSerializer(operation, payload) {
+          return JSON.stringify({ operation, ...payload });
+        }
+      }
+    }),
+    // new PinoHttpInstrumentation(),
+    // Instrument ai stuff
+    ...traceloopInstrumentations()
+  ];
+  (0, import_instrumentation2.registerInstrumentations)({ instrumentations });
   const sdk = new import_sdk_node.NodeSDK({
     serviceName,
     resource,
     logRecordProcessor,
-    spanProcessors,
-    instrumentations: [
-      // Instrument OTel auto
-      (0, import_auto_instrumentations_node.getNodeAutoInstrumentations)({
-        "@opentelemetry/instrumentation-fs": { enabled: false },
-        "@opentelemetry/instrumentation-net": { enabled: false },
-        "@opentelemetry/instrumentation-express": {
-          spanNameHook(info) {
-            return `${info.request.method} ${info.route}`;
-          }
-        }
-      }),
-      // new PinoHttpInstrumentation(),
-      // Instrument ai stuff
-      traceloopInstrumentations()
-    ],
+    spanProcessor,
     autoDetectResources: true
   });
   sdk.start();
@@ -17210,10 +17238,10 @@ function instrument({
       const loggerProvider2 = new import_sdk_logs.LoggerProvider({ resource: mergedResource });
       loggerProvider2.addLogRecordProcessor(logRecordProcessor);
       import_api_logs2.logs.setGlobalLoggerProvider(loggerProvider2);
-      const tracerProvider = new import_sdk_trace_node.NodeTracerProvider({ resource: mergedResource });
-      tracerProvider.register();
-      tracerProvider.addSpanProcessor(spanProcessors[0]);
-      import_api21.trace.setGlobalTracerProvider(tracerProvider);
+      const tracerProvider2 = new import_sdk_trace_node.NodeTracerProvider({ resource: mergedResource });
+      tracerProvider2.register();
+      tracerProvider2.addSpanProcessor(spanProcessor);
+      import_api21.trace.setGlobalTracerProvider(tracerProvider2);
     }
   };
 }
@@ -17223,6 +17251,39 @@ function trackAttribute(key, value) {
   activeSpan?.setAttribute(key, value);
 }
 __name(trackAttribute, "trackAttribute");
+function buildHeaders(instrumentConfig) {
+  const {
+    iudexApiKey,
+    publicWriteOnlyIudexApiKey,
+    headers: configHeaders
+  } = { ...defaultInstrumentConfig(), ...instrumentConfig };
+  const headers = { ...configHeaders };
+  if (publicWriteOnlyIudexApiKey) {
+    headers["x-write-only-api-key"] = publicWriteOnlyIudexApiKey;
+  }
+  if (iudexApiKey) {
+    headers["x-api-key"] = iudexApiKey;
+  }
+  return headers;
+}
+__name(buildHeaders, "buildHeaders");
+function buildResource(instrumentConfig) {
+  const {
+    serviceName,
+    instanceId,
+    gitCommit,
+    githubUrl,
+    env
+  } = { ...defaultInstrumentConfig(), ...instrumentConfig };
+  return new import_resources.Resource(import_lodash4.default.omitBy({
+    [import_semantic_conventions5.SEMRESATTRS_SERVICE_NAME]: serviceName,
+    [import_semantic_conventions5.SEMRESATTRS_SERVICE_INSTANCE_ID]: instanceId,
+    "git.commit": gitCommit,
+    "github.url": githubUrl,
+    "env": env
+  }, import_lodash4.default.isNil));
+}
+__name(buildResource, "buildResource");
 
 // src/index.ts
 var DEFAULT_BASE_URL = "https://api.iudex.ai";
@@ -17542,6 +17603,8 @@ __name(preOrderTraversal, "preOrderTraversal");
   TerminalTaskStatuses,
   WorkflowStatus,
   baseTaskSchema,
+  buildHeaders,
+  buildResource,
   chatErrorSchema,
   chatFunctionCallSchema,
   chatFunctionReturnSchema,
@@ -17556,6 +17619,7 @@ __name(preOrderTraversal, "preOrderTraversal");
   createClient,
   createFunctionClient,
   createWorkflowClient,
+  defaultInstrumentConfig,
   emitOtelLog,
   extractMessageTextContent,
   feasibilityCheckSchema,

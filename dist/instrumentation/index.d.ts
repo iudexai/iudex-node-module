@@ -1,5 +1,6 @@
 /// <reference types="node" />
 /// <reference types="node" />
+import { Resource } from '@opentelemetry/resources';
 export * from './utils.js';
 export * from './trace.js';
 export * as iudexPino from './pino.js';
@@ -58,9 +59,10 @@ export declare const console: {
     profile(label?: string | undefined): void;
     profileEnd(label?: string | undefined): void;
 };
-export declare function instrument({ baseUrl, iudexApiKey, serviceName, instanceId, gitCommit, githubUrl, env, headers: configHeaders, settings, }?: {
+export type InstrumentConfig = {
     baseUrl?: string;
     iudexApiKey?: string;
+    publicWriteOnlyIudexApiKey?: string;
     serviceName?: string;
     instanceId?: string;
     gitCommit?: string;
@@ -69,8 +71,24 @@ export declare function instrument({ baseUrl, iudexApiKey, serviceName, instance
     headers?: Record<string, string>;
     settings?: Partial<{
         instrumentConsole: boolean;
+        instrumentWindow: boolean;
+        instrumentXhr: boolean;
     }>;
-}): {
+};
+export declare function defaultInstrumentConfig(): {
+    baseUrl: string;
+    iudexApiKey: string | undefined;
+    publicWriteOnlyIudexApiKey: string | undefined;
+    serviceName: string;
+    gitCommit: string | undefined;
+    githubUrl: string | undefined;
+    env: string | undefined;
+    headers: {};
+    settings: {};
+};
+export declare function instrument(instrumentConfig?: InstrumentConfig): {
     updateResource(newResource: Record<string, any>): void;
 } | undefined;
 export declare function trackAttribute(key: string, value: any): void;
+export declare function buildHeaders(instrumentConfig: Pick<InstrumentConfig, 'iudexApiKey' | 'publicWriteOnlyIudexApiKey' | 'headers'>): Record<string, string>;
+export declare function buildResource(instrumentConfig: Pick<InstrumentConfig, 'serviceName' | 'instanceId' | 'gitCommit' | 'githubUrl' | 'env'>): Resource;

@@ -110,6 +110,7 @@ import { instrument } from 'iudex';
 instrument({
   serviceName: <your_service_name>, // highly encouraged
   env: <your_environment>, // optional
+  publicWriteOnlyIudexApiKey: <your_PUBLIC_WRITE_ONLY_key_goes_here> // only commit your WRITE ONLY key in code
 });
 ```
 You should be all set! Iudex will now record logs and trace the entire life cycle for each request.
@@ -125,7 +126,9 @@ Add this code snippet to the top of your server file (likely `app.ts` or `index.
 ```typescript
 import { instrument } from 'iudex';
 instrument({
-  serviceName: <your_service_name>,
+  serviceName: <your_service_name>, // highly encouraged
+  env: <your_environment>, // optional
+  publicWriteOnlyIudexApiKey: <your_PUBLIC_WRITE_ONLY_key_goes_here> // only commit your WRITE ONLY key in code
 });
 ```
 
@@ -135,7 +138,9 @@ Add this code snippet to the top of your server file (likely `server.ts`), add `
 ```typescript
 import { instrument, iudexFastify } from 'iudex';
 instrument({
-  serviceName: <your_service_name>,
+  serviceName: <your_service_name>, // highly encouraged
+  env: <your_environment>, // optional
+  publicWriteOnlyIudexApiKey: <your_PUBLIC_WRITE_ONLY_key_goes_here> // only commit your WRITE ONLY key in code
 });
 
 const fastify = Fastify({
@@ -167,7 +172,9 @@ We are in the process of making this better.
 import { instrument, iudexAwsLambda } from 'iudex';
 const { withTracing } = iudexAwsLambda;
 instrument({
-  serviceName: <your_service_name>,
+  serviceName: <your_service_name>, // highly encouraged
+  env: <your_environment>, // optional
+  publicWriteOnlyIudexApiKey: <your_PUBLIC_WRITE_ONLY_key_goes_here> // only commit your WRITE ONLY key in code
 });
 ```
 
@@ -184,7 +191,9 @@ If you use AWS API Gateway along with lambdas, instead import `iudexAwsApiGatewa
 import { instrument, iudexAwsApiGateway } from 'iudex';
 const { withTracing } = iudexAwsApiGateway;
 instrument({
-  serviceName: <your_service_name>,
+  serviceName: <your_service_name>, // highly encouraged
+  env: <your_environment>, // optional
+  publicWriteOnlyIudexApiKey: <your_PUBLIC_WRITE_ONLY_key_goes_here> // only commit your WRITE ONLY key in code
 });
 ```
 
@@ -221,7 +230,9 @@ Add this code snippet to the top your entry point file (likely `index.ts`). Skip
 ```typescript
 import { instrument, iudexFastify } from 'iudex';
 instrument({
-  serviceName: <your_service_name>,
+  serviceName: <your_service_name>, // highly encouraged
+  env: <your_environment>, // optional
+  publicWriteOnlyIudexApiKey: <your_PUBLIC_WRITE_ONLY_key_goes_here> // only commit your WRITE ONLY key in code
 });
 ```
 
@@ -266,18 +277,21 @@ Anytime `myFunction` is called, it will create a span layer in a trace. `trackAr
 
 
 # Slack Alerts
-You can easily configure Slack alerts on a per-log basis.
+You can easily configure Slack alerts on a per-log basis with custom filters an logic by adding it in code.
 
-First visit [https://app.iudex.ai/logs](https://app.iudex.ai/logs) and click on the `Add to Slack` button in the top right.
+1. Visit [https://app.iudex.ai/logs](https://app.iudex.ai/logs) and click on the `Add to Slack` button in the top right.
 
-Once installed to your workspace, tag your logs with the `iudex.slack_channel_id` attribute.
+2.  Once installed to your workspace, tag your logs with the `iudex.slack_channel_id` attribute.
 ```typescript
+// Example using logger
 logger.info({ 'iudex.slack_channel_id': 'YOUR_SLACK_CHANNEL_ID' }, 'Hello from Slack!');
+// Example using console, you must set { ctx }
 console.log('Hello from Slack!', { ctx: { 'iudex.slack_channel_id': 'YOUR_SLACK_CHANNEL_ID' } });
 ```
-Your channel ID can be found by clicking the name of the channel in the top left, then at the bottom of the dialog that pops up.
 
-As long as the channel is public or you've invited the Iudex app, logs will be sent as messages to their tagged channel any time they are logged.
+3. Your channel ID can be found by clicking the name of the channel in the top left, then at the bottom of the dialog that pops up.
+
+4. As long as the channel is public or you've invited the IUDEX app, logs will be sent as messages to their tagged channel any time they are logged.
 
 
 # API reference

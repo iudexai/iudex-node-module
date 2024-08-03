@@ -27,6 +27,7 @@ import { instrumentConsole } from './console.js';
 import { PinoHttpInstrumentation } from './pino-http.js';
 import { traceloopInstrumentations } from './traceloop.js';
 import { nativeConsole } from './utils.js';
+import { registerInstrumentations } from '@opentelemetry/instrumentation';
 
 export * from './utils.js';
 export * from './trace.js';
@@ -49,62 +50,81 @@ if (process.env.IUDEX_DEBUG) {
   diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
 }
 
-export function instrument({
-  baseUrl = process.env.IUDEX_EXPORTER_OTLP_ENDPOINT
-    || process.env.OTEL_EXPORTER_OTLP_ENDPOINT
-    || 'https://api.iudex.ai',
-  iudexApiKey = process.env.IUDEX_API_KEY,
-  serviceName = process.env.OTEL_SERVICE_NAME || 'unknown-service',
-  instanceId,
-  gitCommit = process.env.GIT_COMMIT,
-  githubUrl = process.env.GITHUB_URL,
-  env = process.env.NODE_ENV,
-  headers: configHeaders = {},
-  settings = {},
-}: {
+export type InstrumentConfig = {
   baseUrl?: string;
   iudexApiKey?: string;
+  publicWriteOnlyIudexApiKey?: string;
   serviceName?: string;
   instanceId?: string;
   gitCommit?: string;
   githubUrl?: string;
   env?: string;
   headers?: Record<string, string>;
-  settings?: Partial<{ instrumentConsole: boolean }>;
-} = {}) {
+  settings?: Partial<{
+    instrumentConsole: boolean,
+    instrumentWindow: boolean,
+    instrumentXhr: boolean,
+  }>;
+};
+
+export function defaultInstrumentConfig() {
+  if (typeof process === 'undefined') {
+    (global as any).process = { env: {} };
+  }
+
+  if (typeof process.env === 'undefined') {
+    (global as any).process.env = {};
+  }
+
+  return {
+    baseUrl: process.env.IUDEX_EXPORTER_OTLP_ENDPOINT
+    || process.env.OTEL_EXPORTER_OTLP_ENDPOINT
+    || 'https://api.iudex.ai',
+    iudexApiKey: process.env.IUDEX_API_KEY,
+    publicWriteOnlyIudexApiKey: process.env.PUBLIC_WRITE_ONLY_IUDEX_API_KEY
+    || process.env.NEXT_PUBLIC_WRITE_ONLY_IUDEX_API_KEY,
+    serviceName: process.env.OTEL_SERVICE_NAME || 'unknown-service',
+    gitCommit: process.env.GIT_COMMIT,
+    githubUrl: process.env.GITHUB_URL,
+    env: process.env.NODE_ENV,
+    headers: {},
+    settings: {},
+  } satisfies InstrumentConfig;
+}
+
+export function instrument(instrumentConfig: InstrumentConfig = {}) {
   if (config.isInstrumented) return;
 
-  if (!iudexApiKey) {
+  const {
+    baseUrl,
+    iudexApiKey,
+    publicWriteOnlyIudexApiKey,
+    serviceName,
+    instanceId,
+    gitCommit,
+    githubUrl,
+    env,
+    headers: configHeaders,
+    settings,
+  }: InstrumentConfig = { ...defaultInstrumentConfig(), ...instrumentConfig };
+
+  if (!publicWriteOnlyIudexApiKey && !iudexApiKey) {
     console.warn(
-      `The IUDEX_API_KEY environment variable is missing or empty.` +
-      ` Provide IUDEX_API_KEY to the environment on load` +
-      ` OR instrument with the iudexApiKey option.` +
-      ` Example: \`instrument{ iudexApiKey: 'My_API_Key' })\``,
+      `The PUBLIC_WRITE_ONLY_IUDEX_API_KEY environment variable is missing or empty.` +
+      ` Provide PUBLIC_WRITE_ONLY_IUDEX_API_KEY to the environment on load` +
+      ` OR instrument with the publicWriteOnlyIudexApiKey option.` +
+      ` Example: \`instrument{ publicWriteOnlyIudexApiKey: 'My_API_Key' })\``,
     );
     return;
   }
 
-  const headers: Record<string, string> = {
-    'x-api-key': iudexApiKey,
-    ...configHeaders,
-  };
-
-  if (!gitCommit) {
-    try {
-      const { execSync } = require('child_process');
-      gitCommit = execSync('git rev-parse HEAD').toString().trim();
-    } catch (e) {
-      // Swallow the error
-    }
+  let url: any = baseUrl;
+  if (url == null || url === 'undefined' || url === 'null') {
+    url = 'https://api.iudex.ai';
   }
 
-  const resource = new Resource(_.omitBy({
-    [SEMRESATTRS_SERVICE_NAME]: serviceName,
-    [SEMRESATTRS_SERVICE_INSTANCE_ID]: instanceId,
-    'git.commit': gitCommit,
-    'github.url': githubUrl,
-    'env': env,
-  }, _.isNil));
+  const headers = buildHeaders({ iudexApiKey, publicWriteOnlyIudexApiKey, headers: configHeaders });
+  const resource = buildResource({ serviceName, instanceId, gitCommit, githubUrl, env });
 
   // Configure logger
   const logExporter = new OTLPLogExporter({ url: baseUrl + '/v1/logs', headers });
@@ -115,29 +135,41 @@ export function instrument({
 
   // Configure tracer
   const traceExporter = new OTLPTraceExporter({ url: baseUrl + '/v1/traces', headers });
-  const spanProcessors = [new BatchSpanProcessor(traceExporter)];
+  const spanProcessor = new BatchSpanProcessor(traceExporter);
+
+  const tracerProvider = new NodeTracerProvider({ resource });
+  tracerProvider.register();
+  tracerProvider.addSpanProcessor(spanProcessor);
+  trace.setGlobalTracerProvider(tracerProvider);
+
+  const instrumentations = [
+    // Instrument OTel auto
+    ...getNodeAutoInstrumentations({
+      '@opentelemetry/instrumentation-fs': { enabled: false },
+      '@opentelemetry/instrumentation-net': { enabled: false },
+      '@opentelemetry/instrumentation-express': {
+        spanNameHook(info) {
+          return `${info.request.method} ${info.route}`;
+        },
+      },
+      '@opentelemetry/instrumentation-mongoose': {
+        dbStatementSerializer(operation, payload) {
+          return JSON.stringify({ operation, ...payload });
+        },
+      },
+    }),
+    // new PinoHttpInstrumentation(),
+    // Instrument ai stuff
+    ...traceloopInstrumentations(),
+  ];
+  registerInstrumentations({ instrumentations });
 
   // Instrument
   const sdk = new NodeSDK({
     serviceName,
     resource,
     logRecordProcessor,
-    spanProcessors,
-    instrumentations: [
-      // Instrument OTel auto
-      getNodeAutoInstrumentations({
-        '@opentelemetry/instrumentation-fs': { enabled: false },
-        '@opentelemetry/instrumentation-net': { enabled: false},
-        '@opentelemetry/instrumentation-express': {
-          spanNameHook(info) {
-            return `${info.request.method} ${info.route}`;
-          },
-        },
-      }),
-      // new PinoHttpInstrumentation(),
-      // Instrument ai stuff
-      traceloopInstrumentations(),
-    ],
+    spanProcessor,
     autoDetectResources: true,
   });
   sdk.start();
@@ -161,7 +193,7 @@ export function instrument({
 
       const tracerProvider = new NodeTracerProvider({ resource: mergedResource });
       tracerProvider.register();
-      tracerProvider.addSpanProcessor(spanProcessors[0]);
+      tracerProvider.addSpanProcessor(spanProcessor);
       trace.setGlobalTracerProvider(tracerProvider);
     },
   };
@@ -170,4 +202,50 @@ export function instrument({
 export function trackAttribute(key: string, value: any) {
   const activeSpan = trace.getActiveSpan();
   activeSpan?.setAttribute(key, value);
+}
+
+
+export function buildHeaders(
+  instrumentConfig: Pick<
+    InstrumentConfig,
+    'iudexApiKey' | 'publicWriteOnlyIudexApiKey' | 'headers'
+  >,
+): Record<string, string> {
+  const {
+    iudexApiKey,
+    publicWriteOnlyIudexApiKey,
+    headers: configHeaders,
+  } = { ...defaultInstrumentConfig(), ...instrumentConfig };
+
+  const headers: Record<string, string> = { ...configHeaders };
+  if (publicWriteOnlyIudexApiKey) {
+    headers['x-write-only-api-key'] = publicWriteOnlyIudexApiKey;
+  }
+  if (iudexApiKey) {
+    headers['x-api-key'] = iudexApiKey;
+  }
+  return headers;
+}
+
+export function buildResource(
+  instrumentConfig: Pick<
+    InstrumentConfig,
+    'serviceName' | 'instanceId' | 'gitCommit' | 'githubUrl' | 'env'
+  >,
+): Resource {
+  const {
+    serviceName,
+    instanceId,
+    gitCommit,
+    githubUrl,
+    env,
+  } = { ...defaultInstrumentConfig(), ...instrumentConfig };
+
+  return new Resource(_.omitBy({
+    [SEMRESATTRS_SERVICE_NAME]: serviceName,
+    [SEMRESATTRS_SERVICE_INSTANCE_ID]: instanceId,
+    'git.commit': gitCommit,
+    'github.url': githubUrl,
+    'env': env,
+  }, _.isNil));
 }

@@ -21,7 +21,6 @@ export function withTracing(
           emitOtelLog({ level: 'ERROR', body: `${ctx.name} ${res.body}` });
         } else {
           span.setStatus({ code: SpanStatusCode.OK });
-          emitOtelLog({ level: 'INFO', body: `${ctx.name} Succeeded` });
         }
       })
       .catch((err) => {
