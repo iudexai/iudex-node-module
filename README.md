@@ -1,9 +1,9 @@
-# Iudex Node
+# IUDEX Node
 
-Next generation observability. For browser / worker compatible Iudex, use [iudex-web](https://github.com/iudexai/iudex-web#readme)
+Next generation observability. For browser / worker compatible IUDEX, use [iudex-web](https://github.com/iudexai/iudex-web#readme)
 
 ### Table of contents
-- [Iudex Node](#iudex-node)
+- [IUDEX Node](#iudex-node)
     - [Table of contents](#table-of-contents)
 - [Getting Started](#getting-started)
     - [Autoinstrument](#autoinstrument)
@@ -108,10 +108,12 @@ Add this code to the top your entrypoint file (likely `index.ts`).
 ```typescript
 import { instrument } from 'iudex';
 instrument({
-  serviceName: <your_service_name>, // highly encouraged
-  env: <your_environment>, // optional
-  publicWriteOnlyIudexApiKey: <your_PUBLIC_WRITE_ONLY_key_goes_here> // only commit your WRITE ONLY key in code
+  serviceName: 'YOUR_SERVICE_NAME', // highly encouraged
+  env: 'prod', // dev, local, etc
+  publicWriteOnlyIudexApiKey: 'YOUR_PUBLIC_WRITE_ONLY_KEY', // only ever commit your WRITE ONLY key
 });
+
+// ^ run above your other imports
 ```
 You should be all set! Iudex will now record logs and trace the entire life cycle for each request.
 
@@ -126,10 +128,12 @@ Add this code snippet to the top of your server file (likely `app.ts` or `index.
 ```typescript
 import { instrument } from 'iudex';
 instrument({
-  serviceName: <your_service_name>, // highly encouraged
-  env: <your_environment>, // optional
-  publicWriteOnlyIudexApiKey: <your_PUBLIC_WRITE_ONLY_key_goes_here> // only commit your WRITE ONLY key in code
+  serviceName: 'YOUR_SERVICE_NAME', // highly encouraged
+  env: 'prod', // dev, local, etc
+  publicWriteOnlyIudexApiKey: 'YOUR_PUBLIC_WRITE_ONLY_KEY', // only ever commit your WRITE ONLY key
 });
+
+// ^ run above your other imports
 ```
 
 ### Fastify
@@ -138,10 +142,12 @@ Add this code snippet to the top of your server file (likely `server.ts`), add `
 ```typescript
 import { instrument, iudexFastify } from 'iudex';
 instrument({
-  serviceName: <your_service_name>, // highly encouraged
-  env: <your_environment>, // optional
-  publicWriteOnlyIudexApiKey: <your_PUBLIC_WRITE_ONLY_key_goes_here> // only commit your WRITE ONLY key in code
+  serviceName: 'YOUR_SERVICE_NAME', // highly encouraged
+  env: 'prod', // dev, local, etc
+  publicWriteOnlyIudexApiKey: 'YOUR_PUBLIC_WRITE_ONLY_KEY', // only ever commit your WRITE ONLY key
 });
+
+// ^ run above your other imports
 
 const fastify = Fastify({
   logger: {
@@ -172,10 +178,12 @@ We are in the process of making this better.
 import { instrument, iudexAwsLambda } from 'iudex';
 const { withTracing } = iudexAwsLambda;
 instrument({
-  serviceName: <your_service_name>, // highly encouraged
-  env: <your_environment>, // optional
-  publicWriteOnlyIudexApiKey: <your_PUBLIC_WRITE_ONLY_key_goes_here> // only commit your WRITE ONLY key in code
+  serviceName: 'YOUR_SERVICE_NAME', // highly encouraged
+  env: 'prod', // dev, local, etc
+  publicWriteOnlyIudexApiKey: 'YOUR_PUBLIC_WRITE_ONLY_KEY', // only ever commit your WRITE ONLY key
 });
+
+// ^ run above your other imports
 ```
 
 2. Wrap all lambda functions you want traced with `withTracing`.
@@ -191,18 +199,20 @@ If you use AWS API Gateway along with lambdas, instead import `iudexAwsApiGatewa
 import { instrument, iudexAwsApiGateway } from 'iudex';
 const { withTracing } = iudexAwsApiGateway;
 instrument({
-  serviceName: <your_service_name>, // highly encouraged
-  env: <your_environment>, // optional
-  publicWriteOnlyIudexApiKey: <your_PUBLIC_WRITE_ONLY_key_goes_here> // only commit your WRITE ONLY key in code
+  serviceName: 'YOUR_SERVICE_NAME', // highly encouraged
+  env: 'prod', // dev, local, etc
+  publicWriteOnlyIudexApiKey: 'YOUR_PUBLIC_WRITE_ONLY_KEY', // only ever commit your WRITE ONLY key
 });
+
+// ^ run above your other imports
 ```
 
 
 ### Pino
 It is required that you call `instrument` before instantiating the pino `logger`. Add Iudex params which will add `iudex` as an output destination for pino.
 ```typescript
-import pino from 'pino';
 import { iudexPino } from 'iudex';
+import pino from 'pino';
 
 const logger = pino(...iudexPino.args);
 ```
@@ -213,8 +223,8 @@ If you have configured pino options or destinations, use `iudexPino.options` and
 * `iudexPino.destination` sets the `write` property
 
 ```typescript
-import pino from 'pino';
 import { iudexPino } from 'iudex';
+import pino from 'pino';
 
 const write = str => {
   iudexPino.destination.write(str);
@@ -228,12 +238,14 @@ const logger = pino(iudexPino.options, { write });
 Add this code snippet to the top your entry point file (likely `index.ts`). Skip this step if you already call `instrument` on your server.
 
 ```typescript
-import { instrument, iudexFastify } from 'iudex';
+import { instrument } from 'iudex';
 instrument({
-  serviceName: <your_service_name>, // highly encouraged
-  env: <your_environment>, // optional
-  publicWriteOnlyIudexApiKey: <your_PUBLIC_WRITE_ONLY_key_goes_here> // only commit your WRITE ONLY key in code
+  serviceName: 'YOUR_SERVICE_NAME', // highly encouraged
+  env: 'prod', // dev, local, etc
+  publicWriteOnlyIudexApiKey: 'YOUR_PUBLIC_WRITE_ONLY_KEY', // only ever commit your WRITE ONLY key
 });
+
+// ^ run above your other imports
 ```
 
 Objects with the key `ctx` will have values in `ctx` added as attributes to the log. Example:
@@ -265,6 +277,8 @@ function createLogger(level: keyof typeof console) {
 Its recommended that you trace functions that are not called extremely frequently and that tends to be an "entry point" for complex functionality. Examples of this are API routes, service controllers, and database clients. You can trace your function by wrapping it with `withTracing`.
 
 ```typescript
+import { withTracing } from 'iudex';
+
 const myFunction = withTracing(async () => {
   console.log('I am traced');
 }, { name: 'myFunction', trackArgs: true });
@@ -359,6 +373,8 @@ logger library, find its instrumentation instructions or manually call `emitOtel
 
 #### Example
 ```typescript
+import { withTracing } from 'iudex';
+
 const myFunction = withTracing(async () => {
   console.log('I am traced');
 }, { name: 'myFunction' });
@@ -387,7 +403,9 @@ await myFunction();
 
 #### Example
 ```typescript
-await withTracing(async () => {
+import { useTracing } from 'iudex';
+
+await useTracing(async () => {
   console.log('I am traced');
 }, { name: 'myFunction' });
 

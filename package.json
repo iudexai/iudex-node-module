@@ -1,6 +1,6 @@
 {
   "name": "iudex",
-  "version": "0.14.13",
+  "version": "0.14.14",
   "description": "Iudex client",
   "scripts": {
     "build": "tsup && tsc --declaration --emitDeclarationOnly",
