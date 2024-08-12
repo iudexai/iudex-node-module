@@ -2,49 +2,14 @@
 
 Next generation observability. For browser / worker compatible IUDEX, use [iudex-web](https://github.com/iudexai/iudex-web#readme)
 
-### Table of contents
-- [IUDEX Node](#iudex-node)
-    - [Table of contents](#table-of-contents)
-- [Getting Started](#getting-started)
-    - [Autoinstrument](#autoinstrument)
-    - [Express](#express)
-    - [Fastify](#fastify)
-    - [TRPC](#trpc)
-    - [Lambda](#lambda)
-      - [With API Gateway](#with-api-gateway)
-    - [Pino](#pino)
-      - [Multiple Destinations](#multiple-destinations)
-    - [Console](#console)
-    - [Custom logger](#custom-logger)
-    - [Tracing functions](#tracing-functions)
-- [Slack Alerts](#slack-alerts)
-- [API reference](#api-reference)
-    - [instrument](#instrument)
-      - [Options](#options)
-    - [emitOtelLog](#emitotellog)
-      - [Options](#options-1)
-    - [trackAttribute](#trackattribute)
-    - [withTracing](#withtracing)
-      - [Example](#example)
-      - [Arguments](#arguments)
-    - [useTracing](#usetracing)
-      - [Example](#example-1)
 
+### Supported libraries
 
-# Getting Started
-Instrumenting your code with Iudex just takes a few steps.
+✅ aws-api-gateway
+✅ console
+✅ pino-http
+✅ trpc
 
-1. Install dependencies.
-```bash
-npm install iudex
-```
-2. Follow the below instructions for your frameworks or use autoinstrumentation.
-3. Make sure your app has access to the environment variable `IUDEX_API_KEY`. You can manually add this to `instrument` as well if you use something like a secrets manager.
-4. You should be all set! Go to [https://app.iudex.ai/](https://app.iudex.ai/) and enter your API key.
-5. Go to [https://app.iudex.ai/logs](https://app.iudex.ai/logs) and press `Search` to view your logs.
-
-
-### Autoinstrument
 [Supported libraries from OTel](https://github.com/open-telemetry/opentelemetry-js-contrib/tree/main/metapackages/auto-instrumentations-node#supported-instrumentations):
 
 ✅ amqplib
@@ -96,14 +61,50 @@ npm install iudex
 ✅ openai
 ✅ pinecone-client
 
-Supported libraries:
 
-⏳ aws-api-gateway
-✅ console
-⏳ pino-http
-⏳ trpc
+### Table of contents
+- [IUDEX Node](#iudex-node)
+    - [Supported libraries](#supported-libraries)
+    - [Table of contents](#table-of-contents)
+- [Getting Started](#getting-started)
+    - [Autoinstrumented libraries](#autoinstrumented-libraries)
+    - [Express](#express)
+    - [Fastify](#fastify)
+    - [TRPC](#trpc)
+    - [Lambda](#lambda)
+      - [With API Gateway](#with-api-gateway)
+    - [Pino](#pino)
+      - [Multiple Destinations](#multiple-destinations)
+    - [Console](#console)
+    - [Custom logger](#custom-logger)
+    - [Tracing functions](#tracing-functions)
+- [Slack Alerts](#slack-alerts)
+- [API reference](#api-reference)
+    - [instrument](#instrument)
+      - [Options](#options)
+    - [emitOtelLog](#emitotellog)
+      - [Options](#options-1)
+    - [trackAttribute](#trackattribute)
+    - [withTracing](#withtracing)
+      - [Example](#example)
+      - [Arguments](#arguments)
+    - [useTracing](#usetracing)
+      - [Example](#example-1)
 
 
+# Getting Started
+Instrumenting your code with Iudex just takes a few steps.
+
+1. Install dependencies.
+```bash
+npm install iudex
+```
+2. Follow the below instructions for your frameworks or use autoinstrumentation.
+3. Make sure your app has access to the environment variable `IUDEX_API_KEY`. You can manually add this to `instrument` as well if you use something like a secrets manager.
+4. You should be all set! Go to [https://app.iudex.ai/](https://app.iudex.ai/) and enter your API key.
+5. Go to [https://app.iudex.ai/logs](https://app.iudex.ai/logs) and press `Search` to view your logs.
+
+### Autoinstrumented libraries
 Add this code to the top your entrypoint file (likely `index.ts`).
 ```typescript
 import { instrument } from 'iudex';
