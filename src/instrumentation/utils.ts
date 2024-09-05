@@ -96,6 +96,52 @@ export function getCallerInfo(frameDepth: number): {
 
   return {};
 }
+
+/**
+ * Flattens nested object keys into dot-separated strings.
+ * e.g. {a.b.c: 1, a.d: 2, e: 3}
+ */
+export function flattenObject(
+  obj?: Record<string, any>,
+  parentKey = '',
+  result: Record<string, any> = {},
+  seen: Set<any> = new Set(),
+  // Truncates after this many keys in an object
+  maxObjectKeys = 30,
+  // Truncates after this depth
+  maxDepth = 4,
+) {
+  if (!obj) return;
+
+  if (maxDepth < 0) {
+    result[parentKey] = '<max depth exceeded>';
+    return;
+  }
+
+  Object.entries(obj).forEach(([key, value], i) => {
+    if (i === maxObjectKeys) {
+      result[`${parentKey}.${key}._max_keys_exceeded`] = '<max keys exceeded>';
+      return;
+    }
+    if (i > maxObjectKeys) {
+      return;
+    }
+    const newKey = parentKey ? `${parentKey}.${key}` : key;
+    if (seen.has(value)) {
+      result[newKey] = '<circular>';
+      return;
+    }
+    if (typeof value === 'object' && value !== null && !Array.isArray(obj[key])) {
+      seen.add(value);
+      flattenObject(value, newKey, result, seen, maxObjectKeys, maxDepth - 1);
+    } else {
+      result[newKey] = value;
+    }
+  });
+
+  return result;
+}
+
 /*
 REGEX test cases
 at getCallerInfo (/Users/username/.../instrumentation.ts:96:15)

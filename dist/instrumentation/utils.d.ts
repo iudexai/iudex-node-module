@@ -100,6 +100,11 @@ export declare function getCallerInfo(frameDepth: number): {
     lineNum?: number;
     caller?: string;
 };
+/**
+ * Flattens nested object keys into dot-separated strings.
+ * e.g. {a.b.c: 1, a.d: 2, e: 3}
+ */
+export declare function flattenObject(obj?: Record<string, any>, parentKey?: string, result?: Record<string, any>, seen?: Set<any>, maxObjectKeys?: number, maxDepth?: number): Record<string, any> | undefined;
 export declare function emitOtelLog({ level, body, severityNumber, attributes, stackDepth, }: {
     level: string;
     body: any;

@@ -10,6 +10,8 @@ import { logs } from '@opentelemetry/api-logs';
 import {
   LoggerProvider,
   BatchLogRecordProcessor,
+  LogRecordProcessor,
+  LogRecord,
 } from '@opentelemetry/sdk-logs';
 import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-proto';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto';
@@ -28,6 +30,7 @@ import { PinoHttpInstrumentation } from './pino-http.js';
 import { traceloopInstrumentations } from './traceloop.js';
 import { nativeConsole } from './utils.js';
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
+import { logger } from './fastify.js';
 
 export * from './utils.js';
 export * from './trace.js';
@@ -65,6 +68,7 @@ export type InstrumentConfig = {
     instrumentWindow: boolean,
     instrumentXhr: boolean,
   }>;
+  redact?: RegExp | string | ((logRecord: LogRecord) => void);
 };
 
 export function defaultInstrumentConfig() {
@@ -106,6 +110,7 @@ export function instrument(instrumentConfig: InstrumentConfig = {}) {
     env,
     headers: configHeaders,
     settings,
+    redact,
   }: InstrumentConfig = { ...defaultInstrumentConfig(), ...instrumentConfig };
 
   if (!publicWriteOnlyIudexApiKey && !iudexApiKey) {
@@ -127,9 +132,13 @@ export function instrument(instrumentConfig: InstrumentConfig = {}) {
   const resource = buildResource({ serviceName, instanceId, gitCommit, githubUrl, env });
 
   // Configure logger
+  const loggerProvider = new LoggerProvider({ resource });
   const logExporter = new OTLPLogExporter({ url: baseUrl + '/v1/logs', headers });
   const logRecordProcessor = new BatchLogRecordProcessor(logExporter);
-  const loggerProvider = new LoggerProvider({ resource });
+  if (redact) {
+    const reactLogProcessor = new RedactLogProcessor(redact);
+    loggerProvider.addLogRecordProcessor(reactLogProcessor);
+  }
   loggerProvider.addLogRecordProcessor(logRecordProcessor);
   logs.setGlobalLoggerProvider(loggerProvider);
 
@@ -174,6 +183,11 @@ export function instrument(instrumentConfig: InstrumentConfig = {}) {
   });
   sdk.start();
 
+  // explicitly await shutdown to force flush
+  process.on('SIGTERM', async () => {
+    await sdk.shutdown();
+  });
+
   // Instrument console
   if (settings.instrumentConsole || settings.instrumentConsole == undefined) {
     instrumentConsole();
@@ -204,6 +218,38 @@ export function trackAttribute(key: string, value: any) {
   activeSpan?.setAttribute(key, value);
 }
 
+/**
+ * Adds attribute to current span
+ */
+export const setAttribute = trackAttribute;
+
+/**
+ * Sets status of current span
+ */
+export function setStatus(code: SpanStatusCode) {
+  const activeSpan = trace.getActiveSpan();
+  activeSpan?.setStatus({ code });
+}
+
+/**
+ * Sets error of the current span. Also sets status to error.
+ */
+export function setError(err: any) {
+  const activeSpan = trace.getActiveSpan();
+  if (!activeSpan) return;
+  activeSpan.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+  activeSpan.setAttribute('exception.message', err.message);
+  activeSpan.setAttribute('exception.stacktrace', err.stack);
+  activeSpan.recordException(err);
+}
+
+/**
+ * Sets status of current span
+ */
+export function setName(name: string) {
+  const activeSpan = trace.getActiveSpan();
+  activeSpan?.updateName(name);
+}
 
 export function buildHeaders(
   instrumentConfig: Pick<
@@ -248,4 +294,32 @@ export function buildResource(
     'github.url': githubUrl,
     'env': env,
   }, _.isNil));
+}
+
+class RedactLogProcessor implements LogRecordProcessor {
+  redactFn: (logRecord: LogRecord) => void;
+
+  constructor(
+    public redact: RegExp | string | ((logRecord: LogRecord) => void),
+  ) {
+    this.redactFn = typeof redact === 'function'
+      ? redact
+      : (logRecord: LogRecord) => {
+        if (typeof logRecord.body === 'string') {
+          logRecord.setBody(logRecord.body.replace(redact, 'REDACTED'));
+        }
+      };
+  }
+
+  onEmit(logRecord: LogRecord) {
+    this.redactFn(logRecord);
+  }
+
+  forceFlush() {
+    return Promise.resolve();
+  }
+
+  shutdown() {
+    return Promise.resolve();
+  }
 }

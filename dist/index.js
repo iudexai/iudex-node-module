@@ -24,7 +24,6 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
-var __reExport = (target, mod2, secondTarget) => (__copyProps(target, mod2, "default"), secondTarget && __copyProps(secondTarget, mod2, "default"));
 var __toESM = (mod2, isNodeMode, target) => (target = mod2 != null ? __create(__getProtoOf(mod2)) : {}, __copyProps(
   // If the importer is in node compatibility mode or this is not an ESM
   // file that has been converted to a CommonJS file using a Babel-
@@ -2536,9 +2535,9 @@ var require_minimal = __commonJS({
       return bits.toNumber(Boolean(unsigned));
     }, "longFromHash");
     function merge(dst, src, ifNotSet) {
-      for (var keys4 = Object.keys(src), i = 0; i < keys4.length; ++i)
-        if (dst[keys4[i]] === void 0 || !ifNotSet)
-          dst[keys4[i]] = src[keys4[i]];
+      for (var keys = Object.keys(src), i = 0; i < keys.length; ++i)
+        if (dst[keys[i]] === void 0 || !ifNotSet)
+          dst[keys[i]] = src[keys[i]];
       return dst;
     }
     __name(merge, "merge");
@@ -2599,9 +2598,9 @@ var require_minimal = __commonJS({
       for (var i = 0; i < fieldNames.length; ++i)
         fieldMap[fieldNames[i]] = 1;
       return function() {
-        for (var keys4 = Object.keys(this), i2 = keys4.length - 1; i2 > -1; --i2)
-          if (fieldMap[keys4[i2]] === 1 && this[keys4[i2]] !== void 0 && this[keys4[i2]] !== null)
-            return keys4[i2];
+        for (var keys = Object.keys(this), i2 = keys.length - 1; i2 > -1; --i2)
+          if (fieldMap[keys[i2]] === 1 && this[keys[i2]] !== void 0 && this[keys[i2]] !== null)
+            return keys[i2];
       };
     }, "getOneOf");
     util2.oneOfSetter = /* @__PURE__ */ __name(function setOneOf(fieldNames) {
@@ -3290,9 +3289,9 @@ var require_root = __commonJS({
             v1.AnyValue = function() {
               function AnyValue(properties) {
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(AnyValue, "AnyValue");
@@ -3557,9 +3556,9 @@ var require_root = __commonJS({
               function ArrayValue(properties) {
                 this.values = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(ArrayValue, "ArrayValue");
@@ -3664,9 +3663,9 @@ var require_root = __commonJS({
               function KeyValueList(properties) {
                 this.values = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(KeyValueList, "KeyValueList");
@@ -3770,9 +3769,9 @@ var require_root = __commonJS({
             v1.KeyValue = function() {
               function KeyValue(properties) {
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(KeyValue, "KeyValue");
@@ -3882,9 +3881,9 @@ var require_root = __commonJS({
               function InstrumentationScope(properties) {
                 this.attributes = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(InstrumentationScope, "InstrumentationScope");
@@ -4056,9 +4055,9 @@ var require_root = __commonJS({
               function Resource2(properties) {
                 this.attributes = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(Resource2, "Resource");
@@ -4191,9 +4190,9 @@ var require_root = __commonJS({
               function TracesData(properties) {
                 this.resourceSpans = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(TracesData, "TracesData");
@@ -4298,9 +4297,9 @@ var require_root = __commonJS({
               function ResourceSpans(properties) {
                 this.scopeSpans = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(ResourceSpans, "ResourceSpans");
@@ -4449,9 +4448,9 @@ var require_root = __commonJS({
               function ScopeSpans(properties) {
                 this.spans = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(ScopeSpans, "ScopeSpans");
@@ -4597,36 +4596,36 @@ var require_root = __commonJS({
               return ScopeSpans;
             }();
             v1.Span = function() {
-              function Span3(properties) {
+              function Span4(properties) {
                 this.attributes = [];
                 this.events = [];
                 this.links = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
-              __name(Span3, "Span");
-              Span3.prototype.traceId = null;
-              Span3.prototype.spanId = null;
-              Span3.prototype.traceState = null;
-              Span3.prototype.parentSpanId = null;
-              Span3.prototype.name = null;
-              Span3.prototype.kind = null;
-              Span3.prototype.startTimeUnixNano = null;
-              Span3.prototype.endTimeUnixNano = null;
-              Span3.prototype.attributes = $util.emptyArray;
-              Span3.prototype.droppedAttributesCount = null;
-              Span3.prototype.events = $util.emptyArray;
-              Span3.prototype.droppedEventsCount = null;
-              Span3.prototype.links = $util.emptyArray;
-              Span3.prototype.droppedLinksCount = null;
-              Span3.prototype.status = null;
-              Span3.create = /* @__PURE__ */ __name(function create(properties) {
-                return new Span3(properties);
+              __name(Span4, "Span");
+              Span4.prototype.traceId = null;
+              Span4.prototype.spanId = null;
+              Span4.prototype.traceState = null;
+              Span4.prototype.parentSpanId = null;
+              Span4.prototype.name = null;
+              Span4.prototype.kind = null;
+              Span4.prototype.startTimeUnixNano = null;
+              Span4.prototype.endTimeUnixNano = null;
+              Span4.prototype.attributes = $util.emptyArray;
+              Span4.prototype.droppedAttributesCount = null;
+              Span4.prototype.events = $util.emptyArray;
+              Span4.prototype.droppedEventsCount = null;
+              Span4.prototype.links = $util.emptyArray;
+              Span4.prototype.droppedLinksCount = null;
+              Span4.prototype.status = null;
+              Span4.create = /* @__PURE__ */ __name(function create(properties) {
+                return new Span4(properties);
               }, "create");
-              Span3.encode = /* @__PURE__ */ __name(function encode(message, writer) {
+              Span4.encode = /* @__PURE__ */ __name(function encode(message, writer) {
                 if (!writer)
                   writer = $Writer.create();
                 if (message.traceId != null && Object.hasOwnProperty.call(message, "traceId"))
@@ -4709,10 +4708,10 @@ var require_root = __commonJS({
                   ).fork()).ldelim();
                 return writer;
               }, "encode");
-              Span3.encodeDelimited = /* @__PURE__ */ __name(function encodeDelimited(message, writer) {
+              Span4.encodeDelimited = /* @__PURE__ */ __name(function encodeDelimited(message, writer) {
                 return this.encode(message, writer).ldelim();
               }, "encodeDelimited");
-              Span3.decode = /* @__PURE__ */ __name(function decode(reader, length) {
+              Span4.decode = /* @__PURE__ */ __name(function decode(reader, length) {
                 if (!(reader instanceof $Reader))
                   reader = $Reader.create(reader);
                 var end = length === void 0 ? reader.len : reader.pos + length, message = new $root.opentelemetry.proto.trace.v1.Span();
@@ -4792,12 +4791,12 @@ var require_root = __commonJS({
                 }
                 return message;
               }, "decode");
-              Span3.decodeDelimited = /* @__PURE__ */ __name(function decodeDelimited(reader) {
+              Span4.decodeDelimited = /* @__PURE__ */ __name(function decodeDelimited(reader) {
                 if (!(reader instanceof $Reader))
                   reader = new $Reader(reader);
                 return this.decode(reader, reader.uint32());
               }, "decodeDelimited");
-              Span3.verify = /* @__PURE__ */ __name(function verify(message) {
+              Span4.verify = /* @__PURE__ */ __name(function verify(message) {
                 if (typeof message !== "object" || message === null)
                   return "object expected";
                 if (message.traceId != null && message.hasOwnProperty("traceId")) {
@@ -4886,7 +4885,7 @@ var require_root = __commonJS({
                 }
                 return null;
               }, "verify");
-              Span3.fromObject = /* @__PURE__ */ __name(function fromObject(object) {
+              Span4.fromObject = /* @__PURE__ */ __name(function fromObject(object) {
                 if (object instanceof $root.opentelemetry.proto.trace.v1.Span)
                   return object;
                 var message = new $root.opentelemetry.proto.trace.v1.Span();
@@ -5007,7 +5006,7 @@ var require_root = __commonJS({
                 }
                 return message;
               }, "fromObject");
-              Span3.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+              Span4.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
                 if (!options3)
                   options3 = {};
                 var object = {};
@@ -5103,16 +5102,16 @@ var require_root = __commonJS({
                   object.status = $root.opentelemetry.proto.trace.v1.Status.toObject(message.status, options3);
                 return object;
               }, "toObject");
-              Span3.prototype.toJSON = /* @__PURE__ */ __name(function toJSON() {
+              Span4.prototype.toJSON = /* @__PURE__ */ __name(function toJSON() {
                 return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
               }, "toJSON");
-              Span3.getTypeUrl = /* @__PURE__ */ __name(function getTypeUrl(typeUrlPrefix) {
+              Span4.getTypeUrl = /* @__PURE__ */ __name(function getTypeUrl(typeUrlPrefix) {
                 if (typeUrlPrefix === void 0) {
                   typeUrlPrefix = "type.googleapis.com";
                 }
                 return typeUrlPrefix + "/opentelemetry.proto.trace.v1.Span";
               }, "getTypeUrl");
-              Span3.SpanKind = function() {
+              Span4.SpanKind = function() {
                 var valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "SPAN_KIND_UNSPECIFIED"] = 0;
                 values[valuesById[1] = "SPAN_KIND_INTERNAL"] = 1;
@@ -5122,13 +5121,13 @@ var require_root = __commonJS({
                 values[valuesById[5] = "SPAN_KIND_CONSUMER"] = 5;
                 return values;
               }();
-              Span3.Event = function() {
+              Span4.Event = function() {
                 function Event(properties) {
                   this.attributes = [];
                   if (properties) {
-                    for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                      if (properties[keys4[i]] != null)
-                        this[keys4[i]] = properties[keys4[i]];
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                      if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
                   }
                 }
                 __name(Event, "Event");
@@ -5303,13 +5302,13 @@ var require_root = __commonJS({
                 }, "getTypeUrl");
                 return Event;
               }();
-              Span3.Link = function() {
+              Span4.Link = function() {
                 function Link(properties) {
                   this.attributes = [];
                   if (properties) {
-                    for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                      if (properties[keys4[i]] != null)
-                        this[keys4[i]] = properties[keys4[i]];
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                      if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
                   }
                 }
                 __name(Link, "Link");
@@ -5508,14 +5507,14 @@ var require_root = __commonJS({
                 }, "getTypeUrl");
                 return Link;
               }();
-              return Span3;
+              return Span4;
             }();
             v1.Status = function() {
               function Status(properties) {
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(Status, "Status");
@@ -5675,9 +5674,9 @@ var require_root = __commonJS({
                 function ExportTraceServiceRequest(properties) {
                   this.resourceSpans = [];
                   if (properties) {
-                    for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                      if (properties[keys4[i]] != null)
-                        this[keys4[i]] = properties[keys4[i]];
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                      if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
                   }
                 }
                 __name(ExportTraceServiceRequest, "ExportTraceServiceRequest");
@@ -5781,9 +5780,9 @@ var require_root = __commonJS({
               v1.ExportTraceServiceResponse = function() {
                 function ExportTraceServiceResponse(properties) {
                   if (properties) {
-                    for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                      if (properties[keys4[i]] != null)
-                        this[keys4[i]] = properties[keys4[i]];
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                      if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
                   }
                 }
                 __name(ExportTraceServiceResponse, "ExportTraceServiceResponse");
@@ -5872,9 +5871,9 @@ var require_root = __commonJS({
               v1.ExportTracePartialSuccess = function() {
                 function ExportTracePartialSuccess(properties) {
                   if (properties) {
-                    for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                      if (properties[keys4[i]] != null)
-                        this[keys4[i]] = properties[keys4[i]];
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                      if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
                   }
                 }
                 __name(ExportTracePartialSuccess, "ExportTracePartialSuccess");
@@ -6017,9 +6016,9 @@ var require_root = __commonJS({
                 function ExportMetricsServiceRequest(properties) {
                   this.resourceMetrics = [];
                   if (properties) {
-                    for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                      if (properties[keys4[i]] != null)
-                        this[keys4[i]] = properties[keys4[i]];
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                      if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
                   }
                 }
                 __name(ExportMetricsServiceRequest, "ExportMetricsServiceRequest");
@@ -6123,9 +6122,9 @@ var require_root = __commonJS({
               v1.ExportMetricsServiceResponse = function() {
                 function ExportMetricsServiceResponse(properties) {
                   if (properties) {
-                    for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                      if (properties[keys4[i]] != null)
-                        this[keys4[i]] = properties[keys4[i]];
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                      if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
                   }
                 }
                 __name(ExportMetricsServiceResponse, "ExportMetricsServiceResponse");
@@ -6214,9 +6213,9 @@ var require_root = __commonJS({
               v1.ExportMetricsPartialSuccess = function() {
                 function ExportMetricsPartialSuccess(properties) {
                   if (properties) {
-                    for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                      if (properties[keys4[i]] != null)
-                        this[keys4[i]] = properties[keys4[i]];
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                      if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
                   }
                 }
                 __name(ExportMetricsPartialSuccess, "ExportMetricsPartialSuccess");
@@ -6359,9 +6358,9 @@ var require_root = __commonJS({
                 function ExportLogsServiceRequest(properties) {
                   this.resourceLogs = [];
                   if (properties) {
-                    for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                      if (properties[keys4[i]] != null)
-                        this[keys4[i]] = properties[keys4[i]];
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                      if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
                   }
                 }
                 __name(ExportLogsServiceRequest, "ExportLogsServiceRequest");
@@ -6465,9 +6464,9 @@ var require_root = __commonJS({
               v1.ExportLogsServiceResponse = function() {
                 function ExportLogsServiceResponse(properties) {
                   if (properties) {
-                    for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                      if (properties[keys4[i]] != null)
-                        this[keys4[i]] = properties[keys4[i]];
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                      if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
                   }
                 }
                 __name(ExportLogsServiceResponse, "ExportLogsServiceResponse");
@@ -6556,9 +6555,9 @@ var require_root = __commonJS({
               v1.ExportLogsPartialSuccess = function() {
                 function ExportLogsPartialSuccess(properties) {
                   if (properties) {
-                    for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                      if (properties[keys4[i]] != null)
-                        this[keys4[i]] = properties[keys4[i]];
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                      if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
                   }
                 }
                 __name(ExportLogsPartialSuccess, "ExportLogsPartialSuccess");
@@ -6689,9 +6688,9 @@ var require_root = __commonJS({
               function MetricsData(properties) {
                 this.resourceMetrics = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(MetricsData, "MetricsData");
@@ -6796,9 +6795,9 @@ var require_root = __commonJS({
               function ResourceMetrics(properties) {
                 this.scopeMetrics = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(ResourceMetrics, "ResourceMetrics");
@@ -6947,9 +6946,9 @@ var require_root = __commonJS({
               function ScopeMetrics(properties) {
                 this.metrics = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(ScopeMetrics, "ScopeMetrics");
@@ -7097,9 +7096,9 @@ var require_root = __commonJS({
             v1.Metric = function() {
               function Metric(properties) {
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(Metric, "Metric");
@@ -7378,9 +7377,9 @@ var require_root = __commonJS({
               function Gauge(properties) {
                 this.dataPoints = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(Gauge, "Gauge");
@@ -7485,9 +7484,9 @@ var require_root = __commonJS({
               function Sum(properties) {
                 this.dataPoints = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(Sum, "Sum");
@@ -7655,9 +7654,9 @@ var require_root = __commonJS({
               function Histogram(properties) {
                 this.dataPoints = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(Histogram, "Histogram");
@@ -7805,9 +7804,9 @@ var require_root = __commonJS({
               function ExponentialHistogram(properties) {
                 this.dataPoints = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(ExponentialHistogram, "ExponentialHistogram");
@@ -7955,9 +7954,9 @@ var require_root = __commonJS({
               function Summary(properties) {
                 this.dataPoints = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(Summary, "Summary");
@@ -8076,9 +8075,9 @@ var require_root = __commonJS({
                 this.attributes = [];
                 this.exemplars = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(NumberDataPoint, "NumberDataPoint");
@@ -8377,9 +8376,9 @@ var require_root = __commonJS({
                 this.explicitBounds = [];
                 this.exemplars = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(HistogramDataPoint, "HistogramDataPoint");
@@ -8819,9 +8818,9 @@ var require_root = __commonJS({
                 this.attributes = [];
                 this.exemplars = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(ExponentialHistogramDataPoint, "ExponentialHistogramDataPoint");
@@ -9284,9 +9283,9 @@ var require_root = __commonJS({
                 function Buckets(properties) {
                   this.bucketCounts = [];
                   if (properties) {
-                    for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                      if (properties[keys4[i]] != null)
-                        this[keys4[i]] = properties[keys4[i]];
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                      if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
                   }
                 }
                 __name(Buckets, "Buckets");
@@ -9427,9 +9426,9 @@ var require_root = __commonJS({
                 this.attributes = [];
                 this.quantileValues = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(SummaryDataPoint, "SummaryDataPoint");
@@ -9712,9 +9711,9 @@ var require_root = __commonJS({
               SummaryDataPoint.ValueAtQuantile = function() {
                 function ValueAtQuantile(properties) {
                   if (properties) {
-                    for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                      if (properties[keys4[i]] != null)
-                        this[keys4[i]] = properties[keys4[i]];
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                      if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
                   }
                 }
                 __name(ValueAtQuantile, "ValueAtQuantile");
@@ -9822,9 +9821,9 @@ var require_root = __commonJS({
               function Exemplar(properties) {
                 this.filteredAttributes = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(Exemplar, "Exemplar");
@@ -10094,9 +10093,9 @@ var require_root = __commonJS({
               function LogsData(properties) {
                 this.resourceLogs = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(LogsData, "LogsData");
@@ -10201,9 +10200,9 @@ var require_root = __commonJS({
               function ResourceLogs(properties) {
                 this.scopeLogs = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(ResourceLogs, "ResourceLogs");
@@ -10352,9 +10351,9 @@ var require_root = __commonJS({
               function ScopeLogs(properties) {
                 this.logRecords = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
               __name(ScopeLogs, "ScopeLogs");
@@ -10535,29 +10534,29 @@ var require_root = __commonJS({
               return values;
             }();
             v1.LogRecord = function() {
-              function LogRecord(properties) {
+              function LogRecord2(properties) {
                 this.attributes = [];
                 if (properties) {
-                  for (var keys4 = Object.keys(properties), i = 0; i < keys4.length; ++i)
-                    if (properties[keys4[i]] != null)
-                      this[keys4[i]] = properties[keys4[i]];
+                  for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                      this[keys[i]] = properties[keys[i]];
                 }
               }
-              __name(LogRecord, "LogRecord");
-              LogRecord.prototype.timeUnixNano = null;
-              LogRecord.prototype.observedTimeUnixNano = null;
-              LogRecord.prototype.severityNumber = null;
-              LogRecord.prototype.severityText = null;
-              LogRecord.prototype.body = null;
-              LogRecord.prototype.attributes = $util.emptyArray;
-              LogRecord.prototype.droppedAttributesCount = null;
-              LogRecord.prototype.flags = null;
-              LogRecord.prototype.traceId = null;
-              LogRecord.prototype.spanId = null;
-              LogRecord.create = /* @__PURE__ */ __name(function create(properties) {
-                return new LogRecord(properties);
+              __name(LogRecord2, "LogRecord");
+              LogRecord2.prototype.timeUnixNano = null;
+              LogRecord2.prototype.observedTimeUnixNano = null;
+              LogRecord2.prototype.severityNumber = null;
+              LogRecord2.prototype.severityText = null;
+              LogRecord2.prototype.body = null;
+              LogRecord2.prototype.attributes = $util.emptyArray;
+              LogRecord2.prototype.droppedAttributesCount = null;
+              LogRecord2.prototype.flags = null;
+              LogRecord2.prototype.traceId = null;
+              LogRecord2.prototype.spanId = null;
+              LogRecord2.create = /* @__PURE__ */ __name(function create(properties) {
+                return new LogRecord2(properties);
               }, "create");
-              LogRecord.encode = /* @__PURE__ */ __name(function encode(message, writer) {
+              LogRecord2.encode = /* @__PURE__ */ __name(function encode(message, writer) {
                 if (!writer)
                   writer = $Writer.create();
                 if (message.timeUnixNano != null && Object.hasOwnProperty.call(message, "timeUnixNano"))
@@ -10613,10 +10612,10 @@ var require_root = __commonJS({
                   ).fixed64(message.observedTimeUnixNano);
                 return writer;
               }, "encode");
-              LogRecord.encodeDelimited = /* @__PURE__ */ __name(function encodeDelimited(message, writer) {
+              LogRecord2.encodeDelimited = /* @__PURE__ */ __name(function encodeDelimited(message, writer) {
                 return this.encode(message, writer).ldelim();
               }, "encodeDelimited");
-              LogRecord.decode = /* @__PURE__ */ __name(function decode(reader, length) {
+              LogRecord2.decode = /* @__PURE__ */ __name(function decode(reader, length) {
                 if (!(reader instanceof $Reader))
                   reader = $Reader.create(reader);
                 var end = length === void 0 ? reader.len : reader.pos + length, message = new $root.opentelemetry.proto.logs.v1.LogRecord();
@@ -10672,12 +10671,12 @@ var require_root = __commonJS({
                 }
                 return message;
               }, "decode");
-              LogRecord.decodeDelimited = /* @__PURE__ */ __name(function decodeDelimited(reader) {
+              LogRecord2.decodeDelimited = /* @__PURE__ */ __name(function decodeDelimited(reader) {
                 if (!(reader instanceof $Reader))
                   reader = new $Reader(reader);
                 return this.decode(reader, reader.uint32());
               }, "decodeDelimited");
-              LogRecord.verify = /* @__PURE__ */ __name(function verify(message) {
+              LogRecord2.verify = /* @__PURE__ */ __name(function verify(message) {
                 if (typeof message !== "object" || message === null)
                   return "object expected";
                 if (message.timeUnixNano != null && message.hasOwnProperty("timeUnixNano")) {
@@ -10755,7 +10754,7 @@ var require_root = __commonJS({
                 }
                 return null;
               }, "verify");
-              LogRecord.fromObject = /* @__PURE__ */ __name(function fromObject(object) {
+              LogRecord2.fromObject = /* @__PURE__ */ __name(function fromObject(object) {
                 if (object instanceof $root.opentelemetry.proto.logs.v1.LogRecord)
                   return object;
                 var message = new $root.opentelemetry.proto.logs.v1.LogRecord();
@@ -10922,7 +10921,7 @@ var require_root = __commonJS({
                 }
                 return message;
               }, "fromObject");
-              LogRecord.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
+              LogRecord2.toObject = /* @__PURE__ */ __name(function toObject(message, options3) {
                 if (!options3)
                   options3 = {};
                 var object = {};
@@ -10990,16 +10989,16 @@ var require_root = __commonJS({
                     object.observedTimeUnixNano = options3.longs === String ? $util.Long.prototype.toString.call(message.observedTimeUnixNano) : options3.longs === Number ? new $util.LongBits(message.observedTimeUnixNano.low >>> 0, message.observedTimeUnixNano.high >>> 0).toNumber() : message.observedTimeUnixNano;
                 return object;
               }, "toObject");
-              LogRecord.prototype.toJSON = /* @__PURE__ */ __name(function toJSON() {
+              LogRecord2.prototype.toJSON = /* @__PURE__ */ __name(function toJSON() {
                 return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
               }, "toJSON");
-              LogRecord.getTypeUrl = /* @__PURE__ */ __name(function getTypeUrl(typeUrlPrefix) {
+              LogRecord2.getTypeUrl = /* @__PURE__ */ __name(function getTypeUrl(typeUrlPrefix) {
                 if (typeUrlPrefix === void 0) {
                   typeUrlPrefix = "type.googleapis.com";
                 }
                 return typeUrlPrefix + "/opentelemetry.proto.logs.v1.LogRecord";
               }, "getTypeUrl");
-              return LogRecord;
+              return LogRecord2;
             }();
             return v1;
           }();
@@ -11192,14 +11191,14 @@ var require_err = __commonJS({
     var { messageWithCauses, stackWithCauses, isErrorLike } = require_err_helpers();
     var { pinoErrProto, pinoErrorSymbols } = require_err_proto();
     var { seen } = pinoErrorSymbols;
-    var { toString: toString2 } = Object.prototype;
+    var { toString } = Object.prototype;
     function errSerializer(err) {
       if (!isErrorLike(err)) {
         return err;
       }
       err[seen] = void 0;
       const _err = Object.create(pinoErrProto);
-      _err.type = toString2.call(err.constructor) === "[object Function]" ? err.constructor.name : err.name;
+      _err.type = toString.call(err.constructor) === "[object Function]" ? err.constructor.name : err.name;
       _err.message = messageWithCauses(err);
       _err.stack = stackWithCauses(err);
       if (Array.isArray(err.errors)) {
@@ -11233,14 +11232,14 @@ var require_err_with_cause = __commonJS({
     var { isErrorLike } = require_err_helpers();
     var { pinoErrProto, pinoErrorSymbols } = require_err_proto();
     var { seen } = pinoErrorSymbols;
-    var { toString: toString2 } = Object.prototype;
+    var { toString } = Object.prototype;
     function errWithCauseSerializer(err) {
       if (!isErrorLike(err)) {
         return err;
       }
       err[seen] = void 0;
       const _err = Object.create(pinoErrProto);
-      _err.type = toString2.call(err.constructor) === "[object Function]" ? err.constructor.name : err.name;
+      _err.type = toString.call(err.constructor) === "[object Function]" ? err.constructor.name : err.name;
       _err.message = err.message;
       _err.stack = err.stack;
       if (Array.isArray(err.errors)) {
@@ -11696,12 +11695,12 @@ var require_modifiers = __commonJS({
       nestedRedact,
       nestedRestore
     };
-    function groupRestore({ keys: keys4, values, target }) {
+    function groupRestore({ keys, values, target }) {
       if (target == null || typeof target === "string")
         return;
-      const length = keys4.length;
+      const length = keys.length;
       for (var i = 0; i < length; i++) {
-        const k = keys4[i];
+        const k = keys[i];
         target[k] = values[i];
       }
     }
@@ -11710,13 +11709,13 @@ var require_modifiers = __commonJS({
       const target = get(o, path);
       if (target == null || typeof target === "string")
         return { keys: null, values: null, target, flat: true };
-      const keys4 = Object.keys(target);
-      const keysLength = keys4.length;
+      const keys = Object.keys(target);
+      const keysLength = keys.length;
       const pathLength = path.length;
       const pathWithKey = censorFctTakesPath ? [...path] : void 0;
       const values = new Array(keysLength);
       for (var i = 0; i < keysLength; i++) {
-        const key = keys4[i];
+        const key = keys[i];
         values[i] = target[key];
         if (censorFctTakesPath) {
           pathWithKey[pathLength] = key;
@@ -11727,7 +11726,7 @@ var require_modifiers = __commonJS({
           target[key] = censor;
         }
       }
-      return { keys: keys4, values, target, flat: true };
+      return { keys, values, target, flat: true };
     }
     __name(groupRedact, "groupRedact");
     function nestedRestore(instructions) {
@@ -11745,10 +11744,10 @@ var require_modifiers = __commonJS({
       const target = get(o, path);
       if (target == null)
         return;
-      const keys4 = Object.keys(target);
-      const keysLength = keys4.length;
+      const keys = Object.keys(target);
+      const keysLength = keys.length;
       for (var i = 0; i < keysLength; i++) {
-        const key = keys4[i];
+        const key = keys[i];
         specialSet(store, target, key, path, ns, censor, isCensorFct, censorFctTakesPath);
       }
       return store;
@@ -14798,8 +14797,8 @@ ${originalIndentation}`;
               stack.pop();
               return `[${res}]`;
             }
-            let keys4 = Object.keys(value);
-            const keyLength = keys4.length;
+            let keys = Object.keys(value);
+            const keyLength = keys.length;
             if (keyLength === 0) {
               return "{}";
             }
@@ -14816,11 +14815,11 @@ ${indentation}`;
             }
             const maximumPropertiesToStringify = Math.min(keyLength, maximumBreadth);
             if (deterministic && !isTypedArrayWithEntries(value)) {
-              keys4 = insertSort(keys4);
+              keys = insertSort(keys);
             }
             stack.push(value);
             for (let i = 0; i < maximumPropertiesToStringify; i++) {
-              const key2 = keys4[i];
+              const key2 = keys[i];
               const tmp = stringifyFnReplacer(key2, value, stack, replacer, spacer, indentation);
               if (tmp !== void 0) {
                 res += `${separator}${strEscape(key2)}:${whitespace}${tmp}`;
@@ -14998,8 +14997,8 @@ ${originalIndentation}`;
               stack.pop();
               return `[${res2}]`;
             }
-            let keys4 = Object.keys(value);
-            const keyLength = keys4.length;
+            let keys = Object.keys(value);
+            const keyLength = keys.length;
             if (keyLength === 0) {
               return "{}";
             }
@@ -15014,16 +15013,16 @@ ${indentation}`;
             let maximumPropertiesToStringify = Math.min(keyLength, maximumBreadth);
             if (isTypedArrayWithEntries(value)) {
               res += stringifyTypedArray(value, join, maximumBreadth);
-              keys4 = keys4.slice(value.length);
+              keys = keys.slice(value.length);
               maximumPropertiesToStringify -= value.length;
               separator = join;
             }
             if (deterministic) {
-              keys4 = insertSort(keys4);
+              keys = insertSort(keys);
             }
             stack.push(value);
             for (let i = 0; i < maximumPropertiesToStringify; i++) {
-              const key2 = keys4[i];
+              const key2 = keys[i];
               const tmp = stringifyIndent(key2, value[key2], stack, spacer, indentation);
               if (tmp !== void 0) {
                 res += `${separator}${strEscape(key2)}: ${tmp}`;
@@ -15103,8 +15102,8 @@ ${originalIndentation}`;
               stack.pop();
               return `[${res}]`;
             }
-            let keys4 = Object.keys(value);
-            const keyLength = keys4.length;
+            let keys = Object.keys(value);
+            const keyLength = keys.length;
             if (keyLength === 0) {
               return "{}";
             }
@@ -15115,16 +15114,16 @@ ${originalIndentation}`;
             let maximumPropertiesToStringify = Math.min(keyLength, maximumBreadth);
             if (isTypedArrayWithEntries(value)) {
               res += stringifyTypedArray(value, ",", maximumBreadth);
-              keys4 = keys4.slice(value.length);
+              keys = keys.slice(value.length);
               maximumPropertiesToStringify -= value.length;
               separator = ",";
             }
             if (deterministic) {
-              keys4 = insertSort(keys4);
+              keys = insertSort(keys);
             }
             stack.push(value);
             for (let i = 0; i < maximumPropertiesToStringify; i++) {
-              const key2 = keys4[i];
+              const key2 = keys[i];
               const tmp = stringifySimple(key2, value[key2], stack);
               if (tmp !== void 0) {
                 res += `${separator}${strEscape(key2)}:${tmp}`;
@@ -15564,43 +15563,16 @@ var require_pino = __commonJS({
 // src/index.ts
 var src_exports = {};
 __export(src_exports, {
-  DEFAULT_BASE_URL: () => DEFAULT_BASE_URL,
-  Feasibility: () => Feasibility,
-  Iudex: () => Iudex,
-  Resolution: () => Resolution,
-  TaskStatus: () => TaskStatus,
-  TerminalTaskStatuses: () => TerminalTaskStatuses,
-  WorkflowStatus: () => WorkflowStatus,
-  baseTaskSchema: () => baseTaskSchema,
   buildHeaders: () => buildHeaders,
   buildResource: () => buildResource,
-  chatErrorSchema: () => chatErrorSchema,
-  chatFunctionCallSchema: () => chatFunctionCallSchema,
-  chatFunctionReturnSchema: () => chatFunctionReturnSchema,
-  chatImageSchema: () => chatImageSchema,
-  chatListSchema: () => chatListSchema,
-  chatTextSchema: () => chatTextSchema,
-  chatTurnSchema: () => chatTurnSchema,
   config: () => config,
   console: () => console2,
   convertSeverityTextToNumber: () => convertSeverityTextToNumber,
   convertSeverityValuesToLevel: () => convertSeverityValuesToLevel,
-  createClient: () => createClient,
-  createFunctionClient: () => createFunctionClient,
-  createWorkflowClient: () => createWorkflowClient,
   defaultInstrumentConfig: () => defaultInstrumentConfig,
   emitOtelLog: () => emitOtelLog,
-  extractMessageTextContent: () => extractMessageTextContent,
-  feasibilityCheckSchema: () => feasibilityCheckSchema,
-  fetchGetWorkflowById: () => fetchGetWorkflowById,
-  fetchGetWorkflows: () => fetchGetWorkflows,
-  fetchPostWorkflows: () => fetchPostWorkflows,
+  flattenObject: () => flattenObject,
   getCallerInfo: () => getCallerInfo,
-  getFirstTaskByStatus: () => getFirstTaskByStatus,
-  getLastTaskByStatus: () => getLastTaskByStatus,
-  getWorkflowByIdReqSchema: () => getWorkflowByIdReqSchema,
-  getWorkflowByIdResSchema: () => getWorkflowByIdResSchema,
-  getWorkflowsResSchema: () => getWorkflowsResSchema,
   instrument: () => instrument,
   iudexAwsApiGateway: () => aws_api_gateway_exports,
   iudexAwsLambda: () => aws_lambda_exports,
@@ -15609,605 +15581,16 @@ __export(src_exports, {
   iudexPino: () => pino_exports,
   iudexPinoHttp: () => pino_http_exports,
   iudexTrpc: () => trpc_exports,
-  mapIudexToOpenAi: () => mapIudexToOpenAi,
   nativeConsole: () => nativeConsole,
-  nextMessage: () => nextMessage,
-  postWorkflowsReqSchema: () => postWorkflowsReqSchema,
-  postWorkflowsResSchema: () => postWorkflowsResSchema,
-  preOrderTraversal: () => preOrderTraversal,
-  putFunctionJsons: () => putFunctionJsons,
-  resolutionCheckSchema: () => resolutionCheckSchema,
-  returnFunctionCall: () => returnFunctionCall,
-  reversePreOrderTraversal: () => reversePreOrderTraversal,
-  startWorkflow: () => startWorkflow,
-  taskErroredSchema: () => taskErroredSchema,
-  taskExecutingSchema: () => taskExecutingSchema,
-  taskPendingSchema: () => taskPendingSchema,
-  taskPlanningSchema: () => taskPlanningSchema,
-  taskResolvedSchema: () => taskResolvedSchema,
-  taskSchema: () => taskSchema,
-  taskSequencedSchema: () => taskSequencedSchema,
-  taskSequencingSchema: () => taskSequencingSchema,
+  setAttribute: () => setAttribute,
+  setError: () => setError,
+  setName: () => setName,
+  setStatus: () => setStatus,
   trackAttribute: () => trackAttribute,
   useTracing: () => useTracing,
-  withTracing: () => withTracing,
-  workflowInfoSchema: () => workflowInfoSchema,
-  workflowMetadataSchema: () => workflowMetadataSchema,
-  workflowSchema: () => workflowSchema
+  withTracing: () => withTracing
 });
 module.exports = __toCommonJS(src_exports);
-__reExport(src_exports, require("function-json-schema"), module.exports);
-
-// src/utils.ts
-function setTimeoutPromise(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-__name(setTimeoutPromise, "setTimeoutPromise");
-function poll(fn, args2, {
-  maxTries,
-  tries,
-  waitMs
-} = { maxTries: 60, tries: 0, waitMs: 1e3 }) {
-  if (tries >= maxTries) {
-    throw Error(
-      `Polling failed after ${maxTries} tries for function ${fn.name}.`
-    );
-  }
-  return fn(...args2).then((res) => {
-    if (res == null) {
-      return setTimeoutPromise(waitMs).then(() => poll(fn, args2, { maxTries, tries: tries + 1, waitMs }));
-    }
-    return res;
-  });
-}
-__name(poll, "poll");
-function deconstructedPromise() {
-  let promiseResolve;
-  let promiseReject;
-  const promise = new Promise((resolve, reject) => {
-    promiseResolve = resolve;
-    promiseReject = reject;
-  });
-  return {
-    promise,
-    resolve: promiseResolve,
-    reject: promiseReject
-  };
-}
-__name(deconstructedPromise, "deconstructedPromise");
-
-// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_isPlaceholder.js
-function _isPlaceholder(a) {
-  return a != null && typeof a === "object" && a["@@functional/placeholder"] === true;
-}
-__name(_isPlaceholder, "_isPlaceholder");
-
-// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_curry1.js
-function _curry1(fn) {
-  return /* @__PURE__ */ __name(function f1(a) {
-    if (arguments.length === 0 || _isPlaceholder(a)) {
-      return f1;
-    } else {
-      return fn.apply(this, arguments);
-    }
-  }, "f1");
-}
-__name(_curry1, "_curry1");
-
-// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_curry2.js
-function _curry2(fn) {
-  return /* @__PURE__ */ __name(function f2(a, b) {
-    switch (arguments.length) {
-      case 0:
-        return f2;
-      case 1:
-        return _isPlaceholder(a) ? f2 : _curry1(function(_b) {
-          return fn(a, _b);
-        });
-      default:
-        return _isPlaceholder(a) && _isPlaceholder(b) ? f2 : _isPlaceholder(a) ? _curry1(function(_a2) {
-          return fn(_a2, b);
-        }) : _isPlaceholder(b) ? _curry1(function(_b) {
-          return fn(a, _b);
-        }) : fn(a, b);
-    }
-  }, "f2");
-}
-__name(_curry2, "_curry2");
-
-// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_isArray.js
-var isArray_default = Array.isArray || /* @__PURE__ */ __name(function _isArray(val) {
-  return val != null && val.length >= 0 && Object.prototype.toString.call(val) === "[object Array]";
-}, "_isArray");
-
-// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_has.js
-function _has(prop, obj) {
-  return Object.prototype.hasOwnProperty.call(obj, prop);
-}
-__name(_has, "_has");
-
-// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_isArguments.js
-var toString = Object.prototype.toString;
-var _isArguments = /* @__PURE__ */ function() {
-  return toString.call(arguments) === "[object Arguments]" ? /* @__PURE__ */ __name(function _isArguments2(x) {
-    return toString.call(x) === "[object Arguments]";
-  }, "_isArguments") : /* @__PURE__ */ __name(function _isArguments2(x) {
-    return _has("callee", x);
-  }, "_isArguments");
-}();
-var isArguments_default = _isArguments;
-
-// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/keys.js
-var hasEnumBug = !/* @__PURE__ */ {
-  toString: null
-}.propertyIsEnumerable("toString");
-var nonEnumerableProps = ["constructor", "valueOf", "isPrototypeOf", "toString", "propertyIsEnumerable", "hasOwnProperty", "toLocaleString"];
-var hasArgsEnumBug = /* @__PURE__ */ function() {
-  "use strict";
-  return arguments.propertyIsEnumerable("length");
-}();
-var contains = /* @__PURE__ */ __name(function contains2(list, item) {
-  var idx = 0;
-  while (idx < list.length) {
-    if (list[idx] === item) {
-      return true;
-    }
-    idx += 1;
-  }
-  return false;
-}, "contains");
-var keys = typeof Object.keys === "function" && !hasArgsEnumBug ? /* @__PURE__ */ _curry1(/* @__PURE__ */ __name(function keys2(obj) {
-  return Object(obj) !== obj ? [] : Object.keys(obj);
-}, "keys")) : /* @__PURE__ */ _curry1(/* @__PURE__ */ __name(function keys3(obj) {
-  if (Object(obj) !== obj) {
-    return [];
-  }
-  var prop, nIdx;
-  var ks = [];
-  var checkArgsLength = hasArgsEnumBug && isArguments_default(obj);
-  for (prop in obj) {
-    if (_has(prop, obj) && (!checkArgsLength || prop !== "length")) {
-      ks[ks.length] = prop;
-    }
-  }
-  if (hasEnumBug) {
-    nIdx = nonEnumerableProps.length - 1;
-    while (nIdx >= 0) {
-      prop = nonEnumerableProps[nIdx];
-      if (_has(prop, obj) && !contains(ks, prop)) {
-        ks[ks.length] = prop;
-      }
-      nIdx -= 1;
-    }
-  }
-  return ks;
-}, "keys"));
-var keys_default = keys;
-
-// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_toISOString.js
-var pad = /* @__PURE__ */ __name(function pad2(n) {
-  return (n < 10 ? "0" : "") + n;
-}, "pad");
-var _toISOString = typeof Date.prototype.toISOString === "function" ? /* @__PURE__ */ __name(function _toISOString2(d) {
-  return d.toISOString();
-}, "_toISOString") : /* @__PURE__ */ __name(function _toISOString3(d) {
-  return d.getUTCFullYear() + "-" + pad(d.getUTCMonth() + 1) + "-" + pad(d.getUTCDate()) + "T" + pad(d.getUTCHours()) + ":" + pad(d.getUTCMinutes()) + ":" + pad(d.getUTCSeconds()) + "." + (d.getUTCMilliseconds() / 1e3).toFixed(3).slice(2, 5) + "Z";
-}, "_toISOString");
-
-// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_arrayReduce.js
-function _arrayReduce(reducer, acc, list) {
-  var index = 0;
-  var length = list.length;
-  while (index < length) {
-    acc = reducer(acc, list[index]);
-    index += 1;
-  }
-  return acc;
-}
-__name(_arrayReduce, "_arrayReduce");
-
-// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_isInteger.js
-var isInteger_default = Number.isInteger || /* @__PURE__ */ __name(function _isInteger(n) {
-  return n << 0 === n;
-}, "_isInteger");
-
-// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_objectAssign.js
-function _objectAssign(target) {
-  if (target == null) {
-    throw new TypeError("Cannot convert undefined or null to object");
-  }
-  var output = Object(target);
-  var idx = 1;
-  var length = arguments.length;
-  while (idx < length) {
-    var source = arguments[idx];
-    if (source != null) {
-      for (var nextKey in source) {
-        if (_has(nextKey, source)) {
-          output[nextKey] = source[nextKey];
-        }
-      }
-    }
-    idx += 1;
-  }
-  return output;
-}
-__name(_objectAssign, "_objectAssign");
-var objectAssign_default = typeof Object.assign === "function" ? Object.assign : _objectAssign;
-
-// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/mapObjIndexed.js
-var mapObjIndexed = /* @__PURE__ */ _curry2(/* @__PURE__ */ __name(function mapObjIndexed2(fn, obj) {
-  return _arrayReduce(function(acc, key) {
-    acc[key] = fn(obj[key], key, obj);
-    return acc;
-  }, {}, keys_default(obj));
-}, "mapObjIndexed"));
-var mapObjIndexed_default = mapObjIndexed;
-
-// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/mergeAll.js
-var mergeAll = /* @__PURE__ */ _curry1(/* @__PURE__ */ __name(function mergeAll2(list) {
-  return objectAssign_default.apply(null, [{}].concat(list));
-}, "mergeAll"));
-var mergeAll_default = mergeAll;
-
-// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/trim.js
-var hasProtoTrim = typeof String.prototype.trim === "function";
-
-// src/clients/function-client.ts
-function checkResponse(r) {
-  if (!r.ok) {
-    throw Error(`Request ${r.url} failed with ${r.status}: ${r.statusText}`);
-  }
-  if (r.status === 204) {
-    return Promise.resolve();
-  }
-  return r.json();
-}
-__name(checkResponse, "checkResponse");
-function throwOnApiError(json) {
-  if (json?.message === "Service Unavailable") {
-    throw Error(json.message);
-  }
-  return json;
-}
-__name(throwOnApiError, "throwOnApiError");
-function unwrapApi(json) {
-  if (json?.body && typeof json.body === "string" && json.body.startsWith("{") && json.body.endsWith("}")) {
-    return JSON.parse(json.body);
-  }
-  return json;
-}
-__name(unwrapApi, "unwrapApi");
-function parseIudexResponse(r) {
-  return checkResponse(r).then(throwOnApiError).then(unwrapApi).then((v) => {
-    if (process.env.DEBUG_MODE) {
-      console.log((/* @__PURE__ */ new Date()).toISOString(), "Response:", v);
-    }
-    return v;
-  }).catch((e) => {
-    throw Error(`Request ${r.url} failed with ${r.status}: ${e.message}`);
-  });
-}
-__name(parseIudexResponse, "parseIudexResponse");
-function createFunctionClient(baseUrl, apiKey) {
-  const fns = {
-    returnFunctionCall,
-    nextMessage,
-    startWorkflow,
-    putFunctionJsons
-  };
-  return mapObjIndexed_default((fn) => fn(baseUrl, apiKey), fns);
-}
-__name(createFunctionClient, "createFunctionClient");
-function returnFunctionCall(baseUrl, apiKey) {
-  return function(functionCallId, functionReturn) {
-    const bodyJson = {
-      functionCallId,
-      functionReturn
-    };
-    return fetch(baseUrl + "/function_calls/" + functionCallId + "/return", {
-      method: "PUT",
-      headers: { "x-api-key": `${apiKey}` },
-      body: JSON.stringify(bodyJson)
-    }).then(parseIudexResponse);
-  };
-}
-__name(returnFunctionCall, "returnFunctionCall");
-function nextMessage(baseUrl, apiKey) {
-  return function(workflowId) {
-    return fetch(baseUrl + "/workflows/" + workflowId + "/next_message", {
-      method: "GET",
-      headers: { "x-api-key": `${apiKey}` }
-    }).then(parseIudexResponse);
-  };
-}
-__name(nextMessage, "nextMessage");
-function startWorkflow(baseUrl, apiKey) {
-  return function(query, modules) {
-    return fetch(baseUrl + "/workflows", {
-      method: "POST",
-      headers: { "x-api-key": `${apiKey}` },
-      body: JSON.stringify({ query, modules })
-    }).then(parseIudexResponse);
-  };
-}
-__name(startWorkflow, "startWorkflow");
-function putFunctionJsons(baseUrl, apiKey) {
-  return function(jsons, module2) {
-    const bodyJson = { jsons, module: module2 };
-    return fetch(baseUrl + "/function_jsons", {
-      method: "PUT",
-      headers: { "x-api-key": `${apiKey}` },
-      body: JSON.stringify(bodyJson)
-    }).then(parseIudexResponse);
-  };
-}
-__name(putFunctionJsons, "putFunctionJsons");
-
-// src/clients/workflow-client.ts
-function createWorkflowClient(baseUrl, apiKey) {
-  const fns = {
-    fetchGetWorkflows,
-    fetchGetWorkflowById,
-    fetchPostWorkflows
-  };
-  return mapObjIndexed_default((fn) => fn(baseUrl, apiKey), fns);
-}
-__name(createWorkflowClient, "createWorkflowClient");
-async function checkResponseStatus(res) {
-  const body = await res.json();
-  if (!res.ok) {
-    const error = body.error || res.statusText || body.message;
-    throw new Error(`Request failed with: ${error}`);
-  }
-  return body;
-}
-__name(checkResponseStatus, "checkResponseStatus");
-function fetchGetWorkflows(baseUrl, apiKey) {
-  return function() {
-    return fetch(`${baseUrl}/workflows`, {
-      method: "GET",
-      headers: { "x-api-key": apiKey }
-    }).then(checkResponseStatus);
-  };
-}
-__name(fetchGetWorkflows, "fetchGetWorkflows");
-function fetchGetWorkflowById(baseUrl, apiKey) {
-  return function(req) {
-    return fetch(`${baseUrl}/workflows/${req.workflowId}`, {
-      method: "GET",
-      headers: { "x-api-key": apiKey }
-    }).then(checkResponseStatus);
-  };
-}
-__name(fetchGetWorkflowById, "fetchGetWorkflowById");
-function fetchPostWorkflows(baseUrl, apiKey) {
-  return function(req) {
-    return fetch(`${baseUrl}/workflows`, {
-      method: "POST",
-      body: JSON.stringify(req),
-      headers: { "x-api-key": apiKey }
-    }).then(checkResponseStatus);
-  };
-}
-__name(fetchPostWorkflows, "fetchPostWorkflows");
-
-// src/clients/workflow-schemas.ts
-var import_zod3 = __toESM(require("zod"));
-
-// src/types/task-types.ts
-var import_zod = __toESM(require("zod"));
-var TaskStatus = {
-  // Queued state
-  Pending: "Pending",
-  // awaiting processing
-  // Processing states
-  Planning: "Planning",
-  // in programmer
-  Executing: "Executing",
-  // in executor
-  Sequencing: "Sequencing",
-  // in sequencer
-  // Terminal states
-  Resolved: "Resolved",
-  // execution resolved task
-  Sequenced: "Sequenced",
-  // no resolution; sequuencer created subtasks
-  Errored: "Errored"
-  // unrecoverable error during processing
-};
-var TerminalTaskStatuses = [
-  TaskStatus.Resolved,
-  TaskStatus.Sequenced,
-  TaskStatus.Errored
-];
-var baseTaskSchema = import_zod.default.object({
-  id: import_zod.default.string(),
-  description: import_zod.default.string(),
-  status: import_zod.default.nativeEnum(TaskStatus),
-  stepIndex: import_zod.default.number(),
-  depth: import_zod.default.number(),
-  numRewrites: import_zod.default.number()
-});
-var Feasibility = {
-  Feasible: "Feasible",
-  Rewritable: "Rewritable",
-  Infeasible: "Infeasible"
-};
-var feasibilityCheckSchema = import_zod.default.object({
-  feasibility: import_zod.default.nativeEnum(Feasibility),
-  reason: import_zod.default.coerce.string(),
-  fix: import_zod.default.string().optional()
-});
-var Resolution = {
-  Resolved: "Resolved",
-  Rewritable: "Rewritable",
-  Infeasible: "Infeasible"
-};
-var resolutionCheckSchema = import_zod.default.object({
-  resolution: import_zod.default.nativeEnum(Resolution),
-  reason: import_zod.default.coerce.string(),
-  fix: import_zod.default.string().optional()
-});
-var taskPendingSchema = baseTaskSchema.extend({
-  status: import_zod.default.literal(TaskStatus.Pending)
-});
-var taskPlanningSchema = baseTaskSchema.extend({
-  status: import_zod.default.literal(TaskStatus.Planning),
-  // present if rewriting
-  program: import_zod.default.string().optional(),
-  feasibilityCheck: feasibilityCheckSchema.optional(),
-  // present if rewriting from executor
-  resolutionCheck: resolutionCheckSchema.optional()
-});
-var taskExecutingSchema = baseTaskSchema.extend({
-  status: import_zod.default.literal(TaskStatus.Executing),
-  program: import_zod.default.string(),
-  usedFunctionNames: import_zod.default.array(import_zod.default.string()),
-  feasibilityCheck: feasibilityCheckSchema
-});
-var taskResolvedSchema = baseTaskSchema.extend({
-  status: import_zod.default.literal(TaskStatus.Resolved),
-  program: import_zod.default.string(),
-  usedFunctionNames: import_zod.default.array(import_zod.default.string()),
-  feasibilityCheck: feasibilityCheckSchema,
-  resolutionCheck: resolutionCheckSchema
-});
-var taskSequencingSchema = baseTaskSchema.extend({
-  status: import_zod.default.literal(TaskStatus.Sequencing),
-  program: import_zod.default.string(),
-  feasibilityCheck: feasibilityCheckSchema,
-  // present if sequencing from executor
-  usedFunctionNames: import_zod.default.array(import_zod.default.string()).optional(),
-  resolutionCheck: resolutionCheckSchema.optional()
-});
-var taskSequencedSchema = baseTaskSchema.extend({
-  status: import_zod.default.literal(TaskStatus.Sequenced),
-  program: import_zod.default.string(),
-  subtasks: import_zod.default.lazy(() => taskSchema.array()),
-  feasibilityCheck: feasibilityCheckSchema,
-  usedFunctionNames: import_zod.default.array(import_zod.default.string()).optional(),
-  resolutionCheck: resolutionCheckSchema.optional()
-});
-var taskErroredSchema = baseTaskSchema.extend({
-  status: import_zod.default.literal(TaskStatus.Errored),
-  errorMsg: import_zod.default.string(),
-  errorName: import_zod.default.string(),
-  errorStack: import_zod.default.string().optional()
-});
-var taskSchema = import_zod.default.union([
-  taskPendingSchema,
-  taskPlanningSchema,
-  taskExecutingSchema,
-  taskResolvedSchema,
-  taskSequencingSchema,
-  taskSequencedSchema,
-  taskErroredSchema
-]);
-
-// src/types/workflow-types.ts
-var import_zod2 = __toESM(require("zod"));
-var WorkflowStatus = {
-  Running: "Running",
-  Completed: "Completed",
-  Failed: "Failed",
-  Paused: "Paused",
-  TimedOut: "TimedOut"
-};
-var workflowMetadataSchema = import_zod2.default.object({
-  maxFunctionMatches: import_zod2.default.number().optional()
-});
-var workflowSchema = import_zod2.default.object({
-  workflowId: import_zod2.default.string(),
-  root: taskSchema,
-  modules: import_zod2.default.array(import_zod2.default.string()).optional(),
-  createdAt: import_zod2.default.string(),
-  updatedAt: import_zod2.default.string(),
-  metadata: workflowMetadataSchema.optional(),
-  orgId: import_zod2.default.string()
-});
-var workflowInfoSchema = import_zod2.default.object({
-  workflowId: import_zod2.default.string(),
-  modules: import_zod2.default.array(import_zod2.default.string()).optional(),
-  createdAt: import_zod2.default.string(),
-  updatedAt: import_zod2.default.string(),
-  // Task summary
-  description: import_zod2.default.string(),
-  status: import_zod2.default.nativeEnum(WorkflowStatus),
-  numLeafTasks: import_zod2.default.number()
-});
-
-// src/clients/workflow-schemas.ts
-var getWorkflowsResSchema = import_zod3.default.object({
-  workflowInfos: import_zod3.default.array(workflowInfoSchema)
-});
-var getWorkflowByIdReqSchema = import_zod3.default.object({
-  workflowId: import_zod3.default.string()
-});
-var getWorkflowByIdResSchema = import_zod3.default.object({
-  workflow: taskSchema
-  // root task
-});
-var postWorkflowsReqSchema = import_zod3.default.object({
-  query: import_zod3.default.string(),
-  // Undefined means use all org modules. [] means use all modules.
-  modules: import_zod3.default.array(import_zod3.default.string()).optional(),
-  opts: import_zod3.default.object({
-    maxFunctionMatches: import_zod3.default.number().optional()
-  }).optional()
-});
-var postWorkflowsResSchema = import_zod3.default.object({
-  message: import_zod3.default.string(),
-  workflowId: import_zod3.default.string()
-});
-
-// src/types/chat-types.ts
-var import_zod4 = require("zod");
-var chatTurnBaseSchema = import_zod4.z.object({
-  id: import_zod4.z.string(),
-  type: import_zod4.z.string(),
-  sender: import_zod4.z.string(),
-  timestamp: import_zod4.z.string()
-});
-var chatTextSchema = chatTurnBaseSchema.extend({
-  type: import_zod4.z.literal("text"),
-  text: import_zod4.z.string()
-});
-var chatErrorSchema = chatTurnBaseSchema.extend({
-  type: import_zod4.z.literal("error"),
-  name: import_zod4.z.string(),
-  message: import_zod4.z.string(),
-  cause: import_zod4.z.string().optional(),
-  stack: import_zod4.z.string().optional()
-});
-var chatImageSchema = chatTurnBaseSchema.extend({
-  type: import_zod4.z.literal("image"),
-  image: import_zod4.z.string(),
-  description: import_zod4.z.string()
-});
-var chatListSchema = chatTurnBaseSchema.extend({
-  type: import_zod4.z.literal("list"),
-  list: import_zod4.z.array(import_zod4.z.string())
-});
-var chatFunctionCallSchema = chatTurnBaseSchema.extend({
-  type: import_zod4.z.literal("functionCall"),
-  functionCallId: import_zod4.z.string(),
-  functionName: import_zod4.z.string(),
-  functionArgs: import_zod4.z.record(import_zod4.z.unknown())
-});
-var chatFunctionReturnSchema = chatTurnBaseSchema.extend({
-  type: import_zod4.z.literal("functionReturn"),
-  functionCallId: import_zod4.z.string(),
-  functionReturn: import_zod4.z.string()
-});
-var chatTurnSchema = import_zod4.z.discriminatedUnion("type", [
-  chatTextSchema,
-  chatErrorSchema,
-  chatImageSchema,
-  chatListSchema,
-  chatFunctionCallSchema,
-  chatFunctionReturnSchema
-]);
 
 // src/instrumentation/index.ts
 var import_auto_instrumentations_node = require("@opentelemetry/auto-instrumentations-node");
@@ -16692,6 +16075,36 @@ function getCallerInfo(frameDepth) {
   return {};
 }
 __name(getCallerInfo, "getCallerInfo");
+function flattenObject(obj, parentKey = "", result = {}, seen = /* @__PURE__ */ new Set(), maxObjectKeys = 30, maxDepth = 4) {
+  if (!obj)
+    return;
+  if (maxDepth < 0) {
+    result[parentKey] = "<max depth exceeded>";
+    return;
+  }
+  Object.entries(obj).forEach(([key, value], i) => {
+    if (i === maxObjectKeys) {
+      result[`${parentKey}.${key}._max_keys_exceeded`] = "<max keys exceeded>";
+      return;
+    }
+    if (i > maxObjectKeys) {
+      return;
+    }
+    const newKey = parentKey ? `${parentKey}.${key}` : key;
+    if (seen.has(value)) {
+      result[newKey] = "<circular>";
+      return;
+    }
+    if (typeof value === "object" && value !== null && !Array.isArray(obj[key])) {
+      seen.add(value);
+      flattenObject(value, newKey, result, seen, maxObjectKeys, maxDepth - 1);
+    } else {
+      result[newKey] = value;
+    }
+  });
+  return result;
+}
+__name(flattenObject, "flattenObject");
 function emitOtelLog({
   level,
   body,
@@ -16728,6 +16141,85 @@ var console_exports = {};
 __export(console_exports, {
   instrumentConsole: () => instrumentConsole
 });
+
+// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_isPlaceholder.js
+function _isPlaceholder(a) {
+  return a != null && typeof a === "object" && a["@@functional/placeholder"] === true;
+}
+__name(_isPlaceholder, "_isPlaceholder");
+
+// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_curry1.js
+function _curry1(fn) {
+  return /* @__PURE__ */ __name(function f1(a) {
+    if (arguments.length === 0 || _isPlaceholder(a)) {
+      return f1;
+    } else {
+      return fn.apply(this, arguments);
+    }
+  }, "f1");
+}
+__name(_curry1, "_curry1");
+
+// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_isArray.js
+var isArray_default = Array.isArray || /* @__PURE__ */ __name(function _isArray(val) {
+  return val != null && val.length >= 0 && Object.prototype.toString.call(val) === "[object Array]";
+}, "_isArray");
+
+// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_has.js
+function _has(prop, obj) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+__name(_has, "_has");
+
+// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_toISOString.js
+var pad = /* @__PURE__ */ __name(function pad2(n) {
+  return (n < 10 ? "0" : "") + n;
+}, "pad");
+var _toISOString = typeof Date.prototype.toISOString === "function" ? /* @__PURE__ */ __name(function _toISOString2(d) {
+  return d.toISOString();
+}, "_toISOString") : /* @__PURE__ */ __name(function _toISOString3(d) {
+  return d.getUTCFullYear() + "-" + pad(d.getUTCMonth() + 1) + "-" + pad(d.getUTCDate()) + "T" + pad(d.getUTCHours()) + ":" + pad(d.getUTCMinutes()) + ":" + pad(d.getUTCSeconds()) + "." + (d.getUTCMilliseconds() / 1e3).toFixed(3).slice(2, 5) + "Z";
+}, "_toISOString");
+
+// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_isInteger.js
+var isInteger_default = Number.isInteger || /* @__PURE__ */ __name(function _isInteger(n) {
+  return n << 0 === n;
+}, "_isInteger");
+
+// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/internal/_objectAssign.js
+function _objectAssign(target) {
+  if (target == null) {
+    throw new TypeError("Cannot convert undefined or null to object");
+  }
+  var output = Object(target);
+  var idx = 1;
+  var length = arguments.length;
+  while (idx < length) {
+    var source = arguments[idx];
+    if (source != null) {
+      for (var nextKey in source) {
+        if (_has(nextKey, source)) {
+          output[nextKey] = source[nextKey];
+        }
+      }
+    }
+    idx += 1;
+  }
+  return output;
+}
+__name(_objectAssign, "_objectAssign");
+var objectAssign_default = typeof Object.assign === "function" ? Object.assign : _objectAssign;
+
+// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/mergeAll.js
+var mergeAll = /* @__PURE__ */ _curry1(/* @__PURE__ */ __name(function mergeAll2(list) {
+  return objectAssign_default.apply(null, [{}].concat(list));
+}, "mergeAll"));
+var mergeAll_default = mergeAll;
+
+// ../../node_modules/.pnpm/ramda@0.29.0/node_modules/ramda/es/trim.js
+var hasProtoTrim = typeof String.prototype.trim === "function";
+
+// src/instrumentation/console.ts
 var import_util8 = __toESM(require("util"));
 function instrumentConsole() {
   if (console._instrumented)
@@ -16809,38 +16301,49 @@ var import_instrumentation2 = require("@opentelemetry/instrumentation");
 // src/instrumentation/trace.ts
 var import_api19 = require("@opentelemetry/api");
 function withTracing(fn, ctx = {}) {
-  if (!config.isInstrumented) {
-    return fn;
-  }
-  const { name, trackArgs = true, attributes, setSpan } = ctx;
-  const tracer = import_api19.trace.getTracer("default");
   return function(...args2) {
+    const { name, trackArgs = true, maxArgKeys, maxArgDepth, attributes, setSpan, setArgs } = ctx;
+    const tracer = import_api19.trace.getTracer("default");
+    if (!config.isInstrumented) {
+      return fn(...args2);
+    }
+    if (ctx.beforeRun) {
+      ctx.beforeRun(...args2);
+    }
     return tracer.startActiveSpan(name || fn.name || "<anonymous>", (span) => {
       try {
         if (attributes) {
           span.setAttributes(attributes);
         }
-        if (trackArgs) {
+        if (trackArgs && !setArgs) {
           if (args2.length === 1) {
-            span.setAttribute("arg", args2[0]);
+            const flatObj = flattenObject(args2[0], "", {}, /* @__PURE__ */ new Set(), maxArgKeys, maxArgDepth);
+            flatObj && Object.entries(flatObj).forEach(([key, value]) => {
+              span.setAttribute(key, value);
+            });
           } else if (args2.length > 1) {
-            span.setAttribute("args", args2);
+            const flatObjs = flattenObject(args2, "", {}, /* @__PURE__ */ new Set(), maxArgKeys, maxArgDepth);
+            flatObjs && Object.entries(flatObjs).forEach(([key, value]) => {
+              span.setAttribute(key, value);
+            });
           }
+        }
+        if (setArgs) {
+          setArgs(span, args2);
         }
         const ret = fn(...args2);
         if (ret.then) {
           if (setSpan) {
-            return ret.then((res) => {
-              setSpan(span, ret);
-              return res;
-            });
+            setSpan(span, ret);
+            return ret;
           }
           return ret.then((res) => {
-            span.setStatus({ code: import_api19.SpanStatusCode.OK });
             return res;
           }).catch((err) => {
             span.setStatus({ code: import_api19.SpanStatusCode.ERROR, message: String(err) });
             span.recordException(err);
+            span.setAttribute("exception.message", err.message);
+            span.setAttribute("exception.stacktrace", err.stack);
             emitOtelLog({ level: "ERROR", body: err });
             throw err;
           }).finally(() => {
@@ -16851,12 +16354,13 @@ function withTracing(fn, ctx = {}) {
           setSpan(span, ret);
           return ret;
         }
-        span.setStatus({ code: import_api19.SpanStatusCode.OK });
         span.end();
         return ret;
       } catch (err) {
-        span.setStatus({ code: import_api19.SpanStatusCode.ERROR, message: String(err) });
+        span.setStatus({ code: import_api19.SpanStatusCode.ERROR, message: err.message });
         span.recordException(err);
+        span.setAttribute("exception.message", err.message);
+        err.stack && span.setAttribute("exception.stacktrace", err.stack || "");
         emitOtelLog({ level: "ERROR", body: err });
         span.end();
         throw err;
@@ -17096,29 +16600,48 @@ var iudexFastify = {
 // src/instrumentation/aws-api-gateway.ts
 var aws_api_gateway_exports = {};
 __export(aws_api_gateway_exports, {
+  createSetArgs: () => createSetArgs,
+  createSetSpan: () => createSetSpan,
   withTracing: () => withTracing2
 });
 var import_api20 = require("@opentelemetry/api");
-function withTracing2(fn, ctx) {
-  return withTracing(fn, {
-    name: ctx.name,
-    setSpan: (span, ret) => ret.then((res) => {
-      if (res.statusCode && res.statusCode >= 400) {
+function createSetSpan(ctx) {
+  return function(span, ret) {
+    return ret.then((res) => {
+      if (res.statusCode && res.statusCode >= 500) {
         span.setStatus({ code: import_api20.SpanStatusCode.ERROR, message: res.body });
-        span.setAttribute("statusCode", res.statusCode);
-        emitOtelLog({ level: "ERROR", body: `${ctx.name} ${res.body}` });
+        span.setAttribute("http.response.status_code", res.statusCode);
       } else {
-        span.setStatus({ code: import_api20.SpanStatusCode.OK });
+        res.statusCode && span.setAttribute("http.response.status_code", res.statusCode);
       }
     }).catch((err) => {
-      span.setStatus({ code: import_api20.SpanStatusCode.ERROR, message: String(err) });
-      span.setAttribute("statusCode", 500);
+      span.setStatus({ code: import_api20.SpanStatusCode.ERROR, message: err.message });
+      span.setAttribute("http.response.status_code", 500);
+      span.setAttribute("exception.message", err.message);
+      span.setAttribute("exception.stacktrace", err.stack);
       span.recordException(err);
-      emitOtelLog({ level: "ERROR", body: `${ctx.name} ${String(err)}` });
+      emitOtelLog({ level: "ERROR", body: `${ctx.name} ${err.message}` });
       throw err;
     }).finally(() => {
       span.end();
-    })
+    });
+  };
+}
+__name(createSetSpan, "createSetSpan");
+function createSetArgs(ctx) {
+  return function(span, args2) {
+    span.setAttribute("http.method", args2[0].requestContext.http.method);
+    span.setAttribute("url.full", args2[0].rawPath);
+    span.setAttribute("http.route", ctx.name);
+    ctx.trackBody && args2[0].body && span.setAttribute("http.response.body", args2[0].body);
+  };
+}
+__name(createSetArgs, "createSetArgs");
+function withTracing2(fn, ctx) {
+  return withTracing(fn, {
+    name: ctx.name,
+    setSpan: createSetSpan(ctx),
+    setArgs: createSetArgs(ctx)
   });
 }
 __name(withTracing2, "withTracing");
@@ -17129,7 +16652,24 @@ __export(aws_lambda_exports, {
   withTracing: () => withTracing3
 });
 function withTracing3(fn, ctx) {
-  return withTracing(fn, {
+  const wrapper = /* @__PURE__ */ __name((event, context, cb) => {
+    const remainingTimeMs = context.getRemainingTimeInMillis?.();
+    if (remainingTimeMs) {
+      setTimeout(() => {
+        setError(new Error(`${ctx.name} timeout`));
+      }, remainingTimeMs - (ctx.timeoutBuffer ?? 100));
+    }
+    context.callbackWaitsForEmptyEventLoop && setAttribute("aws.callbackWaitsForEmptyEventLoop", context.callbackWaitsForEmptyEventLoop);
+    context.functionName && setAttribute("aws.functionName", context.functionName);
+    context.functionVersion && setAttribute("aws.functionVersion", context.functionVersion);
+    context.invokedFunctionArn && setAttribute("aws.invokedFunctionArn", context.invokedFunctionArn);
+    context.memoryLimitInMB && setAttribute("aws.memoryLimitInMB", context.memoryLimitInMB);
+    context.awsRequestId && setAttribute("aws.awsRequestId", context.awsRequestId);
+    context.logGroupName && setAttribute("aws.logGroupName", context.logGroupName);
+    context.logStreamName && setAttribute("aws.logStreamName", context.logStreamName);
+    return fn(event, context, cb);
+  }, "wrapper");
+  return withTracing(wrapper, {
     name: ctx.name
   });
 }
@@ -17174,7 +16714,8 @@ function instrument(instrumentConfig = {}) {
     githubUrl,
     env,
     headers: configHeaders,
-    settings
+    settings,
+    redact
   } = { ...defaultInstrumentConfig(), ...instrumentConfig };
   if (!publicWriteOnlyIudexApiKey && !iudexApiKey) {
     console2.warn(
@@ -17188,9 +16729,13 @@ function instrument(instrumentConfig = {}) {
   }
   const headers = buildHeaders({ iudexApiKey, publicWriteOnlyIudexApiKey, headers: configHeaders });
   const resource = buildResource({ serviceName, instanceId, gitCommit, githubUrl, env });
+  const loggerProvider = new import_sdk_logs.LoggerProvider({ resource });
   const logExporter = new OTLPLogExporter({ url: baseUrl + "/v1/logs", headers });
   const logRecordProcessor = new import_sdk_logs.BatchLogRecordProcessor(logExporter);
-  const loggerProvider = new import_sdk_logs.LoggerProvider({ resource });
+  if (redact) {
+    const reactLogProcessor = new RedactLogProcessor(redact);
+    loggerProvider.addLogRecordProcessor(reactLogProcessor);
+  }
   loggerProvider.addLogRecordProcessor(logRecordProcessor);
   import_api_logs2.logs.setGlobalLoggerProvider(loggerProvider);
   const traceExporter = new import_exporter_trace_otlp_proto.OTLPTraceExporter({ url: baseUrl + "/v1/traces", headers });
@@ -17251,6 +16796,27 @@ function trackAttribute(key, value) {
   activeSpan?.setAttribute(key, value);
 }
 __name(trackAttribute, "trackAttribute");
+var setAttribute = trackAttribute;
+function setStatus(code) {
+  const activeSpan = import_api21.trace.getActiveSpan();
+  activeSpan?.setStatus({ code });
+}
+__name(setStatus, "setStatus");
+function setError(err) {
+  const activeSpan = import_api21.trace.getActiveSpan();
+  if (!activeSpan)
+    return;
+  activeSpan.setStatus({ code: import_api21.SpanStatusCode.ERROR, message: err.message });
+  activeSpan.setAttribute("exception.message", err.message);
+  activeSpan.setAttribute("exception.stacktrace", err.stack);
+  activeSpan.recordException(err);
+}
+__name(setError, "setError");
+function setName(name) {
+  const activeSpan = import_api21.trace.getActiveSpan();
+  activeSpan?.updateName(name);
+}
+__name(setName, "setName");
 function buildHeaders(instrumentConfig) {
   const {
     iudexApiKey,
@@ -17284,354 +16850,41 @@ function buildResource(instrumentConfig) {
   }, import_lodash4.default.isNil));
 }
 __name(buildResource, "buildResource");
-
-// src/index.ts
-var DEFAULT_BASE_URL = "https://api.iudex.ai";
-function createClient(baseUrl, apiKey) {
-  return {
-    ...createFunctionClient(baseUrl, apiKey),
-    ...createWorkflowClient(baseUrl, apiKey)
-  };
-}
-__name(createClient, "createClient");
-var Iudex = class {
+var RedactLogProcessor = class {
+  constructor(redact) {
+    this.redact = redact;
+    this.redactFn = typeof redact === "function" ? redact : (logRecord) => {
+      if (typeof logRecord.body === "string") {
+        logRecord.setBody(logRecord.body.replace(redact, "REDACTED"));
+      }
+    };
+  }
   static {
-    __name(this, "Iudex");
+    __name(this, "RedactLogProcessor");
   }
-  baseUrl;
-  apiKey;
-  maxTries;
-  client;
-  currentWorkflowId;
-  functionLinker;
-  constructor({
-    apiKey = process.env.IUDEX_API_KEY,
-    baseUrl = process.env.IUDEX_BASE_URL || DEFAULT_BASE_URL,
-    maxTries = process.env.IUDEX_MAX_TRIES ? parseInt(process.env.IUDEX_MAX_TRIES) : 60
-  } = {}) {
-    if (!apiKey) {
-      throw Error(
-        `The IUDEX_API_KEY environment variable is missing or empty. Provide IUDEX_API_KEY to the environment on load OR instantiate the Iudex client with the apiKey option. Example: \`new Iudex({ apiKey: 'My API Key' })\``
-      );
-    }
-    this.apiKey = apiKey;
-    this.baseUrl = baseUrl;
-    this.maxTries = maxTries;
-    this.client = createClient(this.baseUrl, this.apiKey);
-    this.streamCurrentTask = this.streamCurrentTask.bind(this);
+  redactFn;
+  onEmit(logRecord) {
+    this.redactFn(logRecord);
   }
-  uploadFunctions = (jsons, modules) => {
-    return this.client.putFunctionJsons(jsons, modules);
-  };
-  linkFunctions = (functionLinker) => {
-    this.functionLinker = functionLinker;
-  };
-  /**
-   * @param message message to send
-   * @returns response as a chat object
-   */
-  sendChatTurn = async (message, opts = {}) => {
-    const { onChatTurn, modules } = opts;
-    const {
-      promise: currentWorkflowId,
-      resolve: setCurrentWorkflowId,
-      reject: rejectCurrentWorkflowId
-    } = deconstructedPromise();
-    this.currentWorkflowId = currentWorkflowId;
-    const userTurn = {
-      id: "msg_ephemeral_" + (/* @__PURE__ */ new Date()).toISOString(),
-      type: "text",
-      sender: "you",
-      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-      text: message
-    };
-    onChatTurn?.(userTurn);
-    const { workflowId } = await this.client.startWorkflow(userTurn.text, modules).catch((e) => {
-      rejectCurrentWorkflowId(e);
-      throw e;
-    });
-    setCurrentWorkflowId(workflowId);
-    let nextMessage2 = await poll(
-      this.client.nextMessage,
-      [workflowId],
-      { maxTries: 60, tries: 0, waitMs: 1e3 }
-    );
-    onChatTurn?.(nextMessage2);
-    while (nextMessage2.type === "functionCall") {
-      if (!this.functionLinker) {
-        throw Error(
-          "Establish a way to call functions using `.linkFunctions` before sending a message that might require your functions to answer."
-        );
-      }
-      const fn = this.functionLinker(nextMessage2.functionName);
-      const fnReturn = await fn(nextMessage2.functionArgs);
-      const fnReturnTurn = {
-        id: "msg_ephemeral_" + (/* @__PURE__ */ new Date()).toISOString(),
-        type: "functionReturn",
-        sender: nextMessage2.functionName,
-        timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-        functionCallId: nextMessage2.functionCallId,
-        functionReturn: JSON.stringify(fnReturn)
-      };
-      onChatTurn?.(fnReturnTurn);
-      await this.client.returnFunctionCall(
-        fnReturnTurn.functionCallId,
-        fnReturnTurn.functionReturn
-      );
-      nextMessage2 = await poll(
-        this.client.nextMessage,
-        [workflowId],
-        { maxTries: 60, tries: 0, waitMs: 1e3 }
-      );
-      onChatTurn?.(nextMessage2);
-    }
-    return nextMessage2;
-  };
-  /**
-   * @param message message to send
-   * @returns response message as a string
-   */
-  sendMessage = async (message, opts = {}) => {
-    const chatTurn = await this.sendChatTurn(message, opts);
-    return chatTurn.text;
-  };
-  async *streamCurrentTask() {
-    if (!this.currentWorkflowId) {
-      throw Error("No current workflow id. Send a message first.");
-    }
-    const workflowId = await this.currentWorkflowId;
-    let rootTask = await this.client.fetchGetWorkflowById({ workflowId }).then((r) => r.workflow);
-    let processingTask = getFirstTaskByStatus(rootTask, [
-      "Pending",
-      "Planning",
-      "Executing",
-      "Sequencing"
-    ]);
-    let oldProcessingTask;
-    while (processingTask) {
-      if (oldProcessingTask?.id !== processingTask.id || oldProcessingTask?.status !== processingTask.status) {
-        yield processingTask;
-        oldProcessingTask = processingTask;
-      }
-      await setTimeoutPromise(1e3);
-      rootTask = await this.client.fetchGetWorkflowById({ workflowId }).then((r) => r.workflow);
-      const maybeErroredTask = getLastTaskByStatus(rootTask, "Errored");
-      if (maybeErroredTask) {
-        yield maybeErroredTask;
-        return;
-      }
-      processingTask = getFirstTaskByStatus(rootTask, [
-        "Pending",
-        "Planning",
-        "Executing",
-        "Sequencing"
-      ]);
-    }
-    const resolvedTask = getLastTaskByStatus(rootTask, "Resolved");
-    if (!resolvedTask) {
-      throw Error("No processing nor resolved task found.");
-    }
-    yield resolvedTask;
-    return;
+  forceFlush() {
+    return Promise.resolve();
   }
-  // ======================= OpenAI interface shim ======================
-  chatCompletionsCreate = (body) => {
-    const lastMessage = body.messages[body.messages.length - 1];
-    if (!lastMessage) {
-      throw Error(`The messages array is empty.`);
-    }
-    const penUltMessage = body.messages[body.messages.length - 2];
-    if (lastMessage?.tool_call_id && penUltMessage?.workflowId) {
-      const workflowId = penUltMessage.workflowId;
-      const callId = lastMessage.tool_call_id;
-      const functionReturn = lastMessage.content || "";
-      const functionCallRes = this.client.returnFunctionCall(callId, String(functionReturn));
-      const nextMessageRes = functionCallRes.then(() => poll(
-        this.client.nextMessage,
-        [workflowId],
-        { maxTries: 60, tries: 0, waitMs: 1e3 }
-      ));
-      return nextMessageRes.then((r) => {
-        return {
-          model: body.model,
-          ...mapIudexToOpenAi(r, workflowId)
-        };
-      });
-    }
-    if (!lastMessage.content) {
-      throw Error(`The message content is empty.`);
-    }
-    const {
-      promise: currentWorkflowId,
-      resolve: setCurrentWorkflowId,
-      reject: rejectCurrentWorkflowId
-    } = deconstructedPromise();
-    this.currentWorkflowId = currentWorkflowId;
-    const messageContent = extractMessageTextContent(lastMessage.content);
-    return this.client.startWorkflow(messageContent).then(({ workflowId }) => {
-      setCurrentWorkflowId(workflowId);
-      return poll(
-        this.client.nextMessage,
-        [workflowId],
-        { maxTries: 60, tries: 0, waitMs: 1e3 }
-      ).then((r) => {
-        return {
-          model: body.model,
-          ...mapIudexToOpenAi(r, workflowId)
-        };
-      });
-    }).catch((e) => {
-      rejectCurrentWorkflowId(e);
-      throw e;
-    });
-  };
-  chat = {
-    completions: {
-      create: this.chatCompletionsCreate
-    }
-  };
+  shutdown() {
+    return Promise.resolve();
+  }
 };
-function mapIudexToOpenAi(m, workflowId) {
-  if (m.type === "functionCall") {
-    const message = {
-      content: null,
-      role: "assistant",
-      tool_calls: [{
-        id: m.functionCallId,
-        function: { name: m.functionName, arguments: JSON.stringify(m.functionArgs) },
-        type: "function"
-      }],
-      workflowId
-    };
-    return {
-      id: m.id,
-      choices: [{
-        index: 0,
-        finish_reason: "tool_calls",
-        logprobs: null,
-        message
-      }],
-      created: new Date(m.timestamp).valueOf(),
-      object: "chat.completion"
-    };
-  }
-  if (m.type === "text") {
-    const message = {
-      content: m.text,
-      role: "assistant",
-      workflowId
-    };
-    return {
-      id: m.id,
-      choices: [{
-        index: 0,
-        finish_reason: "stop",
-        logprobs: null,
-        message
-      }],
-      created: new Date(m.timestamp).valueOf(),
-      object: "chat.completion"
-    };
-  }
-  throw Error("Unsupported message type: " + m.type);
-}
-__name(mapIudexToOpenAi, "mapIudexToOpenAi");
-function extractMessageTextContent(content) {
-  if (typeof content === "string") {
-    return content;
-  }
-  return content.map((c) => c.type === "text" ? c.text : "").join("");
-}
-__name(extractMessageTextContent, "extractMessageTextContent");
-function getLastTaskByStatus(root2, status) {
-  const arrayStatus = !Array.isArray(status) ? [status] : status;
-  const traverse = reversePreOrderTraversal(
-    (t) => t.subtasks || [],
-    (t) => arrayStatus.includes(t.status)
-  );
-  return traverse(root2);
-}
-__name(getLastTaskByStatus, "getLastTaskByStatus");
-function getFirstTaskByStatus(root2, status) {
-  const arrayStatus = !Array.isArray(status) ? [status] : status;
-  const traverse = preOrderTraversal(
-    (t) => t.subtasks || [],
-    (t) => arrayStatus.includes(t.status)
-  );
-  return traverse(root2);
-}
-__name(getFirstTaskByStatus, "getFirstTaskByStatus");
-function reversePreOrderTraversal(getChildren, predicate) {
-  return /* @__PURE__ */ __name(function traverse(node) {
-    if (predicate(node)) {
-      return node;
-    }
-    const reversedChildren = getChildren(node).reverse();
-    for (const child of reversedChildren) {
-      const maybeFound = traverse(child);
-      if (maybeFound !== void 0) {
-        return maybeFound;
-      }
-    }
-    return void 0;
-  }, "traverse");
-}
-__name(reversePreOrderTraversal, "reversePreOrderTraversal");
-function preOrderTraversal(getChildren, predicate) {
-  return /* @__PURE__ */ __name(function traverse(node) {
-    if (predicate(node)) {
-      return node;
-    }
-    const children = getChildren(node);
-    for (const child of children) {
-      const maybeFound = traverse(child);
-      if (maybeFound !== void 0) {
-        return maybeFound;
-      }
-    }
-    return void 0;
-  }, "traverse");
-}
-__name(preOrderTraversal, "preOrderTraversal");
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  DEFAULT_BASE_URL,
-  Feasibility,
-  Iudex,
-  Resolution,
-  TaskStatus,
-  TerminalTaskStatuses,
-  WorkflowStatus,
-  baseTaskSchema,
   buildHeaders,
   buildResource,
-  chatErrorSchema,
-  chatFunctionCallSchema,
-  chatFunctionReturnSchema,
-  chatImageSchema,
-  chatListSchema,
-  chatTextSchema,
-  chatTurnSchema,
   config,
   console,
   convertSeverityTextToNumber,
   convertSeverityValuesToLevel,
-  createClient,
-  createFunctionClient,
-  createWorkflowClient,
   defaultInstrumentConfig,
   emitOtelLog,
-  extractMessageTextContent,
-  feasibilityCheckSchema,
-  fetchGetWorkflowById,
-  fetchGetWorkflows,
-  fetchPostWorkflows,
+  flattenObject,
   getCallerInfo,
-  getFirstTaskByStatus,
-  getLastTaskByStatus,
-  getWorkflowByIdReqSchema,
-  getWorkflowByIdResSchema,
-  getWorkflowsResSchema,
   instrument,
   iudexAwsApiGateway,
   iudexAwsLambda,
@@ -17640,30 +16893,12 @@ __name(preOrderTraversal, "preOrderTraversal");
   iudexPino,
   iudexPinoHttp,
   iudexTrpc,
-  mapIudexToOpenAi,
   nativeConsole,
-  nextMessage,
-  postWorkflowsReqSchema,
-  postWorkflowsResSchema,
-  preOrderTraversal,
-  putFunctionJsons,
-  resolutionCheckSchema,
-  returnFunctionCall,
-  reversePreOrderTraversal,
-  startWorkflow,
-  taskErroredSchema,
-  taskExecutingSchema,
-  taskPendingSchema,
-  taskPlanningSchema,
-  taskResolvedSchema,
-  taskSchema,
-  taskSequencedSchema,
-  taskSequencingSchema,
+  setAttribute,
+  setError,
+  setName,
+  setStatus,
   trackAttribute,
   useTracing,
-  withTracing,
-  workflowInfoSchema,
-  workflowMetadataSchema,
-  workflowSchema,
-  ...require("function-json-schema")
+  withTracing
 });

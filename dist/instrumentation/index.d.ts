@@ -1,6 +1,8 @@
 /// <reference types="node" />
 /// <reference types="node" />
 import { Resource } from '@opentelemetry/resources';
+import { LogRecord } from '@opentelemetry/sdk-logs';
+import { SpanStatusCode } from '@opentelemetry/api';
 export * from './utils.js';
 export * from './trace.js';
 export * as iudexPino from './pino.js';
@@ -74,6 +76,7 @@ export type InstrumentConfig = {
         instrumentWindow: boolean;
         instrumentXhr: boolean;
     }>;
+    redact?: RegExp | string | ((logRecord: LogRecord) => void);
 };
 export declare function defaultInstrumentConfig(): {
     baseUrl: string;
@@ -90,5 +93,21 @@ export declare function instrument(instrumentConfig?: InstrumentConfig): {
     updateResource(newResource: Record<string, any>): void;
 } | undefined;
 export declare function trackAttribute(key: string, value: any): void;
+/**
+ * Adds attribute to current span
+ */
+export declare const setAttribute: typeof trackAttribute;
+/**
+ * Sets status of current span
+ */
+export declare function setStatus(code: SpanStatusCode): void;
+/**
+ * Sets error of the current span. Also sets status to error.
+ */
+export declare function setError(err: any): void;
+/**
+ * Sets status of current span
+ */
+export declare function setName(name: string): void;
 export declare function buildHeaders(instrumentConfig: Pick<InstrumentConfig, 'iudexApiKey' | 'publicWriteOnlyIudexApiKey' | 'headers'>): Record<string, string>;
 export declare function buildResource(instrumentConfig: Pick<InstrumentConfig, 'serviceName' | 'instanceId' | 'gitCommit' | 'githubUrl' | 'env'>): Resource;

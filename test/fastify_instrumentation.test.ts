@@ -4,7 +4,10 @@ import { instrument, iudexFastify } from '../src/instrumentation/index';
 instrument({
   serviceName: 'test-fastify-instrumentation',
   githubUrl: 'https://github.com/iudexai/ghost-shell',
-  baseUrl: 'https://pgrev2bga0.execute-api.us-west-2.amazonaws.com',
+  publicWriteOnlyIudexApiKey:
+    'ixk_5d1d59f0fda17554b15ed2a2e407131306ce8f5260f7ae821e9f3684423a3afa',
+  env: 'dev',
+  redact: 'outcomes',
 });
 
 import Fastify from 'fastify';
@@ -32,7 +35,8 @@ const fastify = Fastify({
 
 fastify.get('/', (request, reply) => {
   const outcomes = rollTheDice(2, 1, 6);
-  request.log.info('outcomes', outcomes);
+  request.log.info('request log outcomes', outcomes);
+  console.log('console log outcomes', outcomes);
   void reply.send(outcomes);
 });
 

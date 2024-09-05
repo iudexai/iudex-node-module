@@ -113,7 +113,6 @@ instrument({
   env: 'prod', // dev, local, etc
   publicWriteOnlyIudexApiKey: 'YOUR_PUBLIC_WRITE_ONLY_KEY', // only ever commit your WRITE ONLY key
 });
-
 // ^ run above your other imports
 ```
 You should be all set! Iudex will now record logs and trace the entire life cycle for each request.
@@ -133,7 +132,6 @@ instrument({
   env: 'prod', // dev, local, etc
   publicWriteOnlyIudexApiKey: 'YOUR_PUBLIC_WRITE_ONLY_KEY', // only ever commit your WRITE ONLY key
 });
-
 // ^ run above your other imports
 ```
 
@@ -147,7 +145,6 @@ instrument({
   env: 'prod', // dev, local, etc
   publicWriteOnlyIudexApiKey: 'YOUR_PUBLIC_WRITE_ONLY_KEY', // only ever commit your WRITE ONLY key
 });
-
 // ^ run above your other imports
 
 const fastify = Fastify({
@@ -183,7 +180,6 @@ instrument({
   env: 'prod', // dev, local, etc
   publicWriteOnlyIudexApiKey: 'YOUR_PUBLIC_WRITE_ONLY_KEY', // only ever commit your WRITE ONLY key
 });
-
 // ^ run above your other imports
 ```
 
@@ -204,13 +200,12 @@ instrument({
   env: 'prod', // dev, local, etc
   publicWriteOnlyIudexApiKey: 'YOUR_PUBLIC_WRITE_ONLY_KEY', // only ever commit your WRITE ONLY key
 });
-
 // ^ run above your other imports
 ```
 
 
 ### Pino
-It is required that you call `instrument` before instantiating the pino `logger`. Add Iudex params which will add `iudex` as an output destination for pino.
+Call `instrument` before instantiating the pino `logger`. Create your logger using `iudexPino.args` which will add IUDEX as an output destination for pino.
 ```typescript
 import { iudexPino } from 'iudex';
 import pino from 'pino';
@@ -245,7 +240,6 @@ instrument({
   env: 'prod', // dev, local, etc
   publicWriteOnlyIudexApiKey: 'YOUR_PUBLIC_WRITE_ONLY_KEY', // only ever commit your WRITE ONLY key
 });
-
 // ^ run above your other imports
 ```
 
@@ -275,7 +269,7 @@ function createLogger(level: keyof typeof console) {
 
 
 ### Tracing functions
-Its recommended that you trace functions that are not called extremely frequently and that tends to be an "entry point" for complex functionality. Examples of this are API routes, service controllers, and database clients. You can trace your function by wrapping it with `withTracing`.
+Its recommended that you trace functions that are not called extremely frequently and that tend to be entry points for complex functionality. Examples of this are API routes, service controllers, and database clients. You can trace your function by wrapping it with `withTracing`.
 
 ```typescript
 import { withTracing } from 'iudex';
