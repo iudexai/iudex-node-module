@@ -6,6 +6,7 @@ import {
 import { logs } from '@opentelemetry/api-logs';
 
 import _ from 'lodash';
+import { context, propagation } from '@opentelemetry/api';
 
 export const config = { isInstrumented: false, nativeConsole: { ...console } };
 
@@ -178,6 +179,17 @@ export function emitOtelLog({
       [SEMATTRS_CODE_LINENO]: lineNum,
       [SEMATTRS_CODE_FUNCTION]: caller,
     });
+  }
+
+  // Get the baggage from the current context
+  const baggage = propagation.getBaggage(context.active());
+
+  // Extract the session ID from the baggage
+  if (baggage) {
+    const sessionId = baggage.getEntry('session.id')?.value;
+    if (sessionId) {
+      attrs['session.id'] = sessionId;
+    }
   }
 
   // TODO: cache named logger

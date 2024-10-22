@@ -55,19 +55,25 @@ export function withTracing<T extends (...args: any) => any>(
         }
         if (trackArgs && !setArgs) {
           if (args.length === 1) {
-            const flatObj = flattenObject(args[0], '', {}, new Set(), maxArgKeys, maxArgDepth);
-            flatObj && Object.entries(flatObj).forEach(([key, value]) => {
-              span.setAttribute(key, value);
-            });
+            if (args[0] != null && typeof args[0] === 'object') {
+              const flatObj = flattenObject(args[0], '', {}, new Set(), maxArgKeys, maxArgDepth);
+              flatObj && Object.entries(flatObj).forEach(([key, value]) => {
+                span.setAttribute(key, value);
+              });
+            } else if (args[0] == null) {
+              span.setAttribute('args.0', `<${args[0]}>`);
+            } else {
+              span.setAttribute('args.0', args[0]);
+            }
           } else if (args.length > 1) {
             const flatObjs = flattenObject(args, '', {}, new Set(), maxArgKeys, maxArgDepth);
             flatObjs && Object.entries(flatObjs).forEach(([key, value]) => {
-              span.setAttribute(key, value);
+              span.setAttribute(`args.${key}`, value);
             });
           }
         }
         if (setArgs) {
-          setArgs(span, args) ;
+          setArgs(span, args);
         }
         // Run the function
         const ret = fn(...args);

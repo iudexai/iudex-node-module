@@ -1,5 +1,5 @@
 import { APIGatewayProxyEventV2, Context, APIGatewayProxyStructuredResultV2 } from 'aws-lambda';
-import { Span, SpanStatusCode } from '@opentelemetry/api';
+import { context, propagation, Span, SpanStatusCode } from '@opentelemetry/api';
 
 import { withTracing as baseWithTracing } from './trace.js';
 import { emitOtelLog } from './utils.js';
@@ -51,9 +51,25 @@ export function withTracing(
   fn: ApiGatewayProxyEventHandler,
   ctx: ApiGatewayWithTracingCtx,
 ): ApiGatewayProxyEventHandler {
-  return baseWithTracing(fn, {
-    name: ctx.name,
-    setSpan: createSetSpan(ctx),
-    setArgs: createSetArgs(ctx),
-  });
+  return (event: APIGatewayProxyEventV2, lambdaContext: Context) => {
+    // Extract the propagation context from the event headers
+    const extractedContext = propagation.extract(context.active(), event.headers);
+
+    // Get the baggage from the extracted context
+    const baggage = propagation.getBaggage(extractedContext);
+
+    // Create a new context with the extracted baggage
+    const newContext = baggage
+      ? propagation.setBaggage(extractedContext, baggage)
+      : extractedContext;
+
+    // Use the new context for the function execution
+    return context.with(newContext, () =>
+      baseWithTracing(fn, {
+        name: ctx.name,
+        setSpan: createSetSpan(ctx),
+        setArgs: createSetArgs(ctx),
+      })(event, lambdaContext),
+    );
+  };
 }

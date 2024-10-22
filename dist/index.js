@@ -34,1298 +34,18 @@ var __toESM = (mod2, isNodeMode, target) => (target = mod2 != null ? __create(__
 ));
 var __toCommonJS = (mod2) => __copyProps(__defProp({}, "__esModule", { value: true }), mod2);
 
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/suppress-tracing.js
-function isTracingSuppressed(context) {
-  return context.getValue(SUPPRESS_TRACING_KEY) === true;
-}
-var import_api, SUPPRESS_TRACING_KEY;
-var init_suppress_tracing = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/suppress-tracing.js"() {
-    "use strict";
-    import_api = require("@opentelemetry/api");
-    SUPPRESS_TRACING_KEY = (0, import_api.createContextKey)("OpenTelemetry SDK Context Key SUPPRESS_TRACING");
-    __name(isTracingSuppressed, "isTracingSuppressed");
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/baggage/constants.js
-var BAGGAGE_KEY_PAIR_SEPARATOR, BAGGAGE_PROPERTIES_SEPARATOR, BAGGAGE_ITEMS_SEPARATOR, BAGGAGE_HEADER, BAGGAGE_MAX_NAME_VALUE_PAIRS, BAGGAGE_MAX_PER_NAME_VALUE_PAIRS, BAGGAGE_MAX_TOTAL_LENGTH;
-var init_constants = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/baggage/constants.js"() {
-    "use strict";
-    BAGGAGE_KEY_PAIR_SEPARATOR = "=";
-    BAGGAGE_PROPERTIES_SEPARATOR = ";";
-    BAGGAGE_ITEMS_SEPARATOR = ",";
-    BAGGAGE_HEADER = "baggage";
-    BAGGAGE_MAX_NAME_VALUE_PAIRS = 180;
-    BAGGAGE_MAX_PER_NAME_VALUE_PAIRS = 4096;
-    BAGGAGE_MAX_TOTAL_LENGTH = 8192;
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/baggage/utils.js
-var utils_exports = {};
-__export(utils_exports, {
-  getKeyPairs: () => getKeyPairs,
-  parseKeyPairsIntoRecord: () => parseKeyPairsIntoRecord,
-  parsePairKeyValue: () => parsePairKeyValue,
-  serializeKeyPairs: () => serializeKeyPairs
-});
-function serializeKeyPairs(keyPairs) {
-  return keyPairs.reduce(function(hValue, current) {
-    var value = "" + hValue + (hValue !== "" ? BAGGAGE_ITEMS_SEPARATOR : "") + current;
-    return value.length > BAGGAGE_MAX_TOTAL_LENGTH ? hValue : value;
-  }, "");
-}
-function getKeyPairs(baggage) {
-  return baggage.getAllEntries().map(function(_a2) {
-    var _b = __read(_a2, 2), key = _b[0], value = _b[1];
-    var entry = encodeURIComponent(key) + "=" + encodeURIComponent(value.value);
-    if (value.metadata !== void 0) {
-      entry += BAGGAGE_PROPERTIES_SEPARATOR + value.metadata.toString();
-    }
-    return entry;
-  });
-}
-function parsePairKeyValue(entry) {
-  var valueProps = entry.split(BAGGAGE_PROPERTIES_SEPARATOR);
-  if (valueProps.length <= 0)
-    return;
-  var keyPairPart = valueProps.shift();
-  if (!keyPairPart)
-    return;
-  var separatorIndex = keyPairPart.indexOf(BAGGAGE_KEY_PAIR_SEPARATOR);
-  if (separatorIndex <= 0)
-    return;
-  var key = decodeURIComponent(keyPairPart.substring(0, separatorIndex).trim());
-  var value = decodeURIComponent(keyPairPart.substring(separatorIndex + 1).trim());
-  var metadata;
-  if (valueProps.length > 0) {
-    metadata = (0, import_api2.baggageEntryMetadataFromString)(valueProps.join(BAGGAGE_PROPERTIES_SEPARATOR));
-  }
-  return { key, value, metadata };
-}
-function parseKeyPairsIntoRecord(value) {
-  if (typeof value !== "string" || value.length === 0)
-    return {};
-  return value.split(BAGGAGE_ITEMS_SEPARATOR).map(function(entry) {
-    return parsePairKeyValue(entry);
-  }).filter(function(keyPair) {
-    return keyPair !== void 0 && keyPair.value.length > 0;
-  }).reduce(function(headers, keyPair) {
-    headers[keyPair.key] = keyPair.value;
-    return headers;
-  }, {});
-}
-var import_api2, __read;
-var init_utils = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/baggage/utils.js"() {
-    "use strict";
-    import_api2 = require("@opentelemetry/api");
-    init_constants();
-    __read = function(o, n) {
-      var m = typeof Symbol === "function" && o[Symbol.iterator];
-      if (!m)
-        return o;
-      var i = m.call(o), r, ar = [], e;
-      try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done)
-          ar.push(r.value);
-      } catch (error) {
-        e = { error };
-      } finally {
-        try {
-          if (r && !r.done && (m = i["return"]))
-            m.call(i);
-        } finally {
-          if (e)
-            throw e.error;
-        }
-      }
-      return ar;
-    };
-    __name(serializeKeyPairs, "serializeKeyPairs");
-    __name(getKeyPairs, "getKeyPairs");
-    __name(parsePairKeyValue, "parsePairKeyValue");
-    __name(parseKeyPairsIntoRecord, "parseKeyPairsIntoRecord");
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/baggage/propagation/W3CBaggagePropagator.js
-var import_api3, W3CBaggagePropagator;
-var init_W3CBaggagePropagator = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/baggage/propagation/W3CBaggagePropagator.js"() {
-    "use strict";
-    import_api3 = require("@opentelemetry/api");
-    init_suppress_tracing();
-    init_constants();
-    init_utils();
-    W3CBaggagePropagator = /** @class */
-    function() {
-      function W3CBaggagePropagator2() {
-      }
-      __name(W3CBaggagePropagator2, "W3CBaggagePropagator");
-      W3CBaggagePropagator2.prototype.inject = function(context, carrier, setter) {
-        var baggage = import_api3.propagation.getBaggage(context);
-        if (!baggage || isTracingSuppressed(context))
-          return;
-        var keyPairs = getKeyPairs(baggage).filter(function(pair) {
-          return pair.length <= BAGGAGE_MAX_PER_NAME_VALUE_PAIRS;
-        }).slice(0, BAGGAGE_MAX_NAME_VALUE_PAIRS);
-        var headerValue = serializeKeyPairs(keyPairs);
-        if (headerValue.length > 0) {
-          setter.set(carrier, BAGGAGE_HEADER, headerValue);
-        }
-      };
-      W3CBaggagePropagator2.prototype.extract = function(context, carrier, getter) {
-        var headerValue = getter.get(carrier, BAGGAGE_HEADER);
-        var baggageString = Array.isArray(headerValue) ? headerValue.join(BAGGAGE_ITEMS_SEPARATOR) : headerValue;
-        if (!baggageString)
-          return context;
-        var baggage = {};
-        if (baggageString.length === 0) {
-          return context;
-        }
-        var pairs = baggageString.split(BAGGAGE_ITEMS_SEPARATOR);
-        pairs.forEach(function(entry) {
-          var keyPair = parsePairKeyValue(entry);
-          if (keyPair) {
-            var baggageEntry = { value: keyPair.value };
-            if (keyPair.metadata) {
-              baggageEntry.metadata = keyPair.metadata;
-            }
-            baggage[keyPair.key] = baggageEntry;
-          }
-        });
-        if (Object.entries(baggage).length === 0) {
-          return context;
-        }
-        return import_api3.propagation.setBaggage(context, import_api3.propagation.createBaggage(baggage));
-      };
-      W3CBaggagePropagator2.prototype.fields = function() {
-        return [BAGGAGE_HEADER];
-      };
-      return W3CBaggagePropagator2;
-    }();
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/common/anchored-clock.js
-var AnchoredClock;
-var init_anchored_clock = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/common/anchored-clock.js"() {
-    "use strict";
-    AnchoredClock = /** @class */
-    function() {
-      function AnchoredClock2(systemClock, monotonicClock) {
-        this._monotonicClock = monotonicClock;
-        this._epochMillis = systemClock.now();
-        this._performanceMillis = monotonicClock.now();
-      }
-      __name(AnchoredClock2, "AnchoredClock");
-      AnchoredClock2.prototype.now = function() {
-        var delta = this._monotonicClock.now() - this._performanceMillis;
-        return this._epochMillis + delta;
-      };
-      return AnchoredClock2;
-    }();
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/common/attributes.js
-var import_api4;
-var init_attributes = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/common/attributes.js"() {
-    "use strict";
-    import_api4 = require("@opentelemetry/api");
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/common/logging-error-handler.js
-function loggingErrorHandler() {
-  return function(ex) {
-    import_api5.diag.error(stringifyException(ex));
-  };
-}
-function stringifyException(ex) {
-  if (typeof ex === "string") {
-    return ex;
-  } else {
-    return JSON.stringify(flattenException(ex));
-  }
-}
-function flattenException(ex) {
-  var result = {};
-  var current = ex;
-  while (current !== null) {
-    Object.getOwnPropertyNames(current).forEach(function(propertyName) {
-      if (result[propertyName])
-        return;
-      var value = current[propertyName];
-      if (value) {
-        result[propertyName] = String(value);
-      }
-    });
-    current = Object.getPrototypeOf(current);
-  }
-  return result;
-}
-var import_api5;
-var init_logging_error_handler = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/common/logging-error-handler.js"() {
-    "use strict";
-    import_api5 = require("@opentelemetry/api");
-    __name(loggingErrorHandler, "loggingErrorHandler");
-    __name(stringifyException, "stringifyException");
-    __name(flattenException, "flattenException");
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/common/global-error-handler.js
-function globalErrorHandler(ex) {
-  try {
-    delegateHandler(ex);
-  } catch (_a2) {
-  }
-}
-var delegateHandler;
-var init_global_error_handler = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/common/global-error-handler.js"() {
-    "use strict";
-    init_logging_error_handler();
-    delegateHandler = loggingErrorHandler();
-    __name(globalErrorHandler, "globalErrorHandler");
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/utils/sampling.js
-var TracesSamplerValues;
-var init_sampling = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/utils/sampling.js"() {
-    "use strict";
-    (function(TracesSamplerValues2) {
-      TracesSamplerValues2["AlwaysOff"] = "always_off";
-      TracesSamplerValues2["AlwaysOn"] = "always_on";
-      TracesSamplerValues2["ParentBasedAlwaysOff"] = "parentbased_always_off";
-      TracesSamplerValues2["ParentBasedAlwaysOn"] = "parentbased_always_on";
-      TracesSamplerValues2["ParentBasedTraceIdRatio"] = "parentbased_traceidratio";
-      TracesSamplerValues2["TraceIdRatio"] = "traceidratio";
-    })(TracesSamplerValues || (TracesSamplerValues = {}));
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/utils/environment.js
-function isEnvVarABoolean(key) {
-  return ENVIRONMENT_BOOLEAN_KEYS.indexOf(key) > -1;
-}
-function isEnvVarANumber(key) {
-  return ENVIRONMENT_NUMBERS_KEYS.indexOf(key) > -1;
-}
-function isEnvVarAList(key) {
-  return ENVIRONMENT_LISTS_KEYS.indexOf(key) > -1;
-}
-function parseBoolean(key, environment, values) {
-  if (typeof values[key] === "undefined") {
-    return;
-  }
-  var value = String(values[key]);
-  environment[key] = value.toLowerCase() === "true";
-}
-function parseNumber(name, environment, values, min, max) {
-  if (min === void 0) {
-    min = -Infinity;
-  }
-  if (max === void 0) {
-    max = Infinity;
-  }
-  if (typeof values[name] !== "undefined") {
-    var value = Number(values[name]);
-    if (!isNaN(value)) {
-      if (value < min) {
-        environment[name] = min;
-      } else if (value > max) {
-        environment[name] = max;
-      } else {
-        environment[name] = value;
-      }
-    }
-  }
-}
-function parseStringList(name, output, input, separator) {
-  if (separator === void 0) {
-    separator = DEFAULT_LIST_SEPARATOR;
-  }
-  var givenValue = input[name];
-  if (typeof givenValue === "string") {
-    output[name] = givenValue.split(separator).map(function(v) {
-      return v.trim();
-    });
-  }
-}
-function setLogLevelFromEnv(key, environment, values) {
-  var value = values[key];
-  if (typeof value === "string") {
-    var theLevel = logLevelMap[value.toUpperCase()];
-    if (theLevel != null) {
-      environment[key] = theLevel;
-    }
-  }
-}
-function parseEnvironment(values) {
-  var environment = {};
-  for (var env in DEFAULT_ENVIRONMENT) {
-    var key = env;
-    switch (key) {
-      case "OTEL_LOG_LEVEL":
-        setLogLevelFromEnv(key, environment, values);
-        break;
-      default:
-        if (isEnvVarABoolean(key)) {
-          parseBoolean(key, environment, values);
-        } else if (isEnvVarANumber(key)) {
-          parseNumber(key, environment, values);
-        } else if (isEnvVarAList(key)) {
-          parseStringList(key, environment, values);
-        } else {
-          var value = values[key];
-          if (typeof value !== "undefined" && value !== null) {
-            environment[key] = String(value);
-          }
-        }
-    }
-  }
-  return environment;
-}
-var import_api6, DEFAULT_LIST_SEPARATOR, ENVIRONMENT_BOOLEAN_KEYS, ENVIRONMENT_NUMBERS_KEYS, ENVIRONMENT_LISTS_KEYS, DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT, DEFAULT_ATTRIBUTE_COUNT_LIMIT, DEFAULT_SPAN_ATTRIBUTE_PER_EVENT_COUNT_LIMIT, DEFAULT_SPAN_ATTRIBUTE_PER_LINK_COUNT_LIMIT, DEFAULT_ENVIRONMENT, logLevelMap;
-var init_environment = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/utils/environment.js"() {
-    "use strict";
-    import_api6 = require("@opentelemetry/api");
-    init_sampling();
-    DEFAULT_LIST_SEPARATOR = ",";
-    ENVIRONMENT_BOOLEAN_KEYS = ["OTEL_SDK_DISABLED"];
-    __name(isEnvVarABoolean, "isEnvVarABoolean");
-    ENVIRONMENT_NUMBERS_KEYS = [
-      "OTEL_BSP_EXPORT_TIMEOUT",
-      "OTEL_BSP_MAX_EXPORT_BATCH_SIZE",
-      "OTEL_BSP_MAX_QUEUE_SIZE",
-      "OTEL_BSP_SCHEDULE_DELAY",
-      "OTEL_BLRP_EXPORT_TIMEOUT",
-      "OTEL_BLRP_MAX_EXPORT_BATCH_SIZE",
-      "OTEL_BLRP_MAX_QUEUE_SIZE",
-      "OTEL_BLRP_SCHEDULE_DELAY",
-      "OTEL_ATTRIBUTE_VALUE_LENGTH_LIMIT",
-      "OTEL_ATTRIBUTE_COUNT_LIMIT",
-      "OTEL_SPAN_ATTRIBUTE_VALUE_LENGTH_LIMIT",
-      "OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT",
-      "OTEL_LOGRECORD_ATTRIBUTE_VALUE_LENGTH_LIMIT",
-      "OTEL_LOGRECORD_ATTRIBUTE_COUNT_LIMIT",
-      "OTEL_SPAN_EVENT_COUNT_LIMIT",
-      "OTEL_SPAN_LINK_COUNT_LIMIT",
-      "OTEL_SPAN_ATTRIBUTE_PER_EVENT_COUNT_LIMIT",
-      "OTEL_SPAN_ATTRIBUTE_PER_LINK_COUNT_LIMIT",
-      "OTEL_EXPORTER_OTLP_TIMEOUT",
-      "OTEL_EXPORTER_OTLP_TRACES_TIMEOUT",
-      "OTEL_EXPORTER_OTLP_METRICS_TIMEOUT",
-      "OTEL_EXPORTER_OTLP_LOGS_TIMEOUT",
-      "OTEL_EXPORTER_JAEGER_AGENT_PORT"
-    ];
-    __name(isEnvVarANumber, "isEnvVarANumber");
-    ENVIRONMENT_LISTS_KEYS = [
-      "OTEL_NO_PATCH_MODULES",
-      "OTEL_PROPAGATORS"
-    ];
-    __name(isEnvVarAList, "isEnvVarAList");
-    DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT = Infinity;
-    DEFAULT_ATTRIBUTE_COUNT_LIMIT = 128;
-    DEFAULT_SPAN_ATTRIBUTE_PER_EVENT_COUNT_LIMIT = 128;
-    DEFAULT_SPAN_ATTRIBUTE_PER_LINK_COUNT_LIMIT = 128;
-    DEFAULT_ENVIRONMENT = {
-      OTEL_SDK_DISABLED: false,
-      CONTAINER_NAME: "",
-      ECS_CONTAINER_METADATA_URI_V4: "",
-      ECS_CONTAINER_METADATA_URI: "",
-      HOSTNAME: "",
-      KUBERNETES_SERVICE_HOST: "",
-      NAMESPACE: "",
-      OTEL_BSP_EXPORT_TIMEOUT: 3e4,
-      OTEL_BSP_MAX_EXPORT_BATCH_SIZE: 512,
-      OTEL_BSP_MAX_QUEUE_SIZE: 2048,
-      OTEL_BSP_SCHEDULE_DELAY: 5e3,
-      OTEL_BLRP_EXPORT_TIMEOUT: 3e4,
-      OTEL_BLRP_MAX_EXPORT_BATCH_SIZE: 512,
-      OTEL_BLRP_MAX_QUEUE_SIZE: 2048,
-      OTEL_BLRP_SCHEDULE_DELAY: 5e3,
-      OTEL_EXPORTER_JAEGER_AGENT_HOST: "",
-      OTEL_EXPORTER_JAEGER_AGENT_PORT: 6832,
-      OTEL_EXPORTER_JAEGER_ENDPOINT: "",
-      OTEL_EXPORTER_JAEGER_PASSWORD: "",
-      OTEL_EXPORTER_JAEGER_USER: "",
-      OTEL_EXPORTER_OTLP_ENDPOINT: "",
-      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: "",
-      OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: "",
-      OTEL_EXPORTER_OTLP_LOGS_ENDPOINT: "",
-      OTEL_EXPORTER_OTLP_HEADERS: "",
-      OTEL_EXPORTER_OTLP_TRACES_HEADERS: "",
-      OTEL_EXPORTER_OTLP_METRICS_HEADERS: "",
-      OTEL_EXPORTER_OTLP_LOGS_HEADERS: "",
-      OTEL_EXPORTER_OTLP_TIMEOUT: 1e4,
-      OTEL_EXPORTER_OTLP_TRACES_TIMEOUT: 1e4,
-      OTEL_EXPORTER_OTLP_METRICS_TIMEOUT: 1e4,
-      OTEL_EXPORTER_OTLP_LOGS_TIMEOUT: 1e4,
-      OTEL_EXPORTER_ZIPKIN_ENDPOINT: "http://localhost:9411/api/v2/spans",
-      OTEL_LOG_LEVEL: import_api6.DiagLogLevel.INFO,
-      OTEL_NO_PATCH_MODULES: [],
-      OTEL_PROPAGATORS: ["tracecontext", "baggage"],
-      OTEL_RESOURCE_ATTRIBUTES: "",
-      OTEL_SERVICE_NAME: "",
-      OTEL_ATTRIBUTE_VALUE_LENGTH_LIMIT: DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT,
-      OTEL_ATTRIBUTE_COUNT_LIMIT: DEFAULT_ATTRIBUTE_COUNT_LIMIT,
-      OTEL_SPAN_ATTRIBUTE_VALUE_LENGTH_LIMIT: DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT,
-      OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT: DEFAULT_ATTRIBUTE_COUNT_LIMIT,
-      OTEL_LOGRECORD_ATTRIBUTE_VALUE_LENGTH_LIMIT: DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT,
-      OTEL_LOGRECORD_ATTRIBUTE_COUNT_LIMIT: DEFAULT_ATTRIBUTE_COUNT_LIMIT,
-      OTEL_SPAN_EVENT_COUNT_LIMIT: 128,
-      OTEL_SPAN_LINK_COUNT_LIMIT: 128,
-      OTEL_SPAN_ATTRIBUTE_PER_EVENT_COUNT_LIMIT: DEFAULT_SPAN_ATTRIBUTE_PER_EVENT_COUNT_LIMIT,
-      OTEL_SPAN_ATTRIBUTE_PER_LINK_COUNT_LIMIT: DEFAULT_SPAN_ATTRIBUTE_PER_LINK_COUNT_LIMIT,
-      OTEL_TRACES_EXPORTER: "",
-      OTEL_TRACES_SAMPLER: TracesSamplerValues.ParentBasedAlwaysOn,
-      OTEL_TRACES_SAMPLER_ARG: "",
-      OTEL_LOGS_EXPORTER: "",
-      OTEL_EXPORTER_OTLP_INSECURE: "",
-      OTEL_EXPORTER_OTLP_TRACES_INSECURE: "",
-      OTEL_EXPORTER_OTLP_METRICS_INSECURE: "",
-      OTEL_EXPORTER_OTLP_LOGS_INSECURE: "",
-      OTEL_EXPORTER_OTLP_CERTIFICATE: "",
-      OTEL_EXPORTER_OTLP_TRACES_CERTIFICATE: "",
-      OTEL_EXPORTER_OTLP_METRICS_CERTIFICATE: "",
-      OTEL_EXPORTER_OTLP_LOGS_CERTIFICATE: "",
-      OTEL_EXPORTER_OTLP_COMPRESSION: "",
-      OTEL_EXPORTER_OTLP_TRACES_COMPRESSION: "",
-      OTEL_EXPORTER_OTLP_METRICS_COMPRESSION: "",
-      OTEL_EXPORTER_OTLP_LOGS_COMPRESSION: "",
-      OTEL_EXPORTER_OTLP_CLIENT_KEY: "",
-      OTEL_EXPORTER_OTLP_TRACES_CLIENT_KEY: "",
-      OTEL_EXPORTER_OTLP_METRICS_CLIENT_KEY: "",
-      OTEL_EXPORTER_OTLP_LOGS_CLIENT_KEY: "",
-      OTEL_EXPORTER_OTLP_CLIENT_CERTIFICATE: "",
-      OTEL_EXPORTER_OTLP_TRACES_CLIENT_CERTIFICATE: "",
-      OTEL_EXPORTER_OTLP_METRICS_CLIENT_CERTIFICATE: "",
-      OTEL_EXPORTER_OTLP_LOGS_CLIENT_CERTIFICATE: "",
-      OTEL_EXPORTER_OTLP_PROTOCOL: "http/protobuf",
-      OTEL_EXPORTER_OTLP_TRACES_PROTOCOL: "http/protobuf",
-      OTEL_EXPORTER_OTLP_METRICS_PROTOCOL: "http/protobuf",
-      OTEL_EXPORTER_OTLP_LOGS_PROTOCOL: "http/protobuf",
-      OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: "cumulative"
-    };
-    __name(parseBoolean, "parseBoolean");
-    __name(parseNumber, "parseNumber");
-    __name(parseStringList, "parseStringList");
-    logLevelMap = {
-      ALL: import_api6.DiagLogLevel.ALL,
-      VERBOSE: import_api6.DiagLogLevel.VERBOSE,
-      DEBUG: import_api6.DiagLogLevel.DEBUG,
-      INFO: import_api6.DiagLogLevel.INFO,
-      WARN: import_api6.DiagLogLevel.WARN,
-      ERROR: import_api6.DiagLogLevel.ERROR,
-      NONE: import_api6.DiagLogLevel.NONE
-    };
-    __name(setLogLevelFromEnv, "setLogLevelFromEnv");
-    __name(parseEnvironment, "parseEnvironment");
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/platform/node/environment.js
-function getEnv() {
-  var processEnv = parseEnvironment(process.env);
-  return Object.assign({}, DEFAULT_ENVIRONMENT, processEnv);
-}
-var init_environment2 = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/platform/node/environment.js"() {
-    "use strict";
-    init_environment();
-    __name(getEnv, "getEnv");
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/platform/node/globalThis.js
-var _globalThis;
-var init_globalThis = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/platform/node/globalThis.js"() {
-    "use strict";
-    _globalThis = typeof globalThis === "object" ? globalThis : global;
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/common/hex-to-binary.js
-function intValue(charCode) {
-  if (charCode >= 48 && charCode <= 57) {
-    return charCode - 48;
-  }
-  if (charCode >= 97 && charCode <= 102) {
-    return charCode - 87;
-  }
-  return charCode - 55;
-}
-function hexToBinary(hexStr) {
-  var buf = new Uint8Array(hexStr.length / 2);
-  var offset = 0;
-  for (var i = 0; i < hexStr.length; i += 2) {
-    var hi = intValue(hexStr.charCodeAt(i));
-    var lo = intValue(hexStr.charCodeAt(i + 1));
-    buf[offset++] = hi << 4 | lo;
-  }
-  return buf;
-}
-var init_hex_to_binary = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/common/hex-to-binary.js"() {
-    "use strict";
-    __name(intValue, "intValue");
-    __name(hexToBinary, "hexToBinary");
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/platform/node/hex-to-base64.js
-var init_hex_to_base64 = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/platform/node/hex-to-base64.js"() {
-    "use strict";
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/platform/node/RandomIdGenerator.js
-var TRACE_ID_BYTES, SHARED_BUFFER;
-var init_RandomIdGenerator = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/platform/node/RandomIdGenerator.js"() {
-    "use strict";
-    TRACE_ID_BYTES = 16;
-    SHARED_BUFFER = Buffer.allocUnsafe(TRACE_ID_BYTES);
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/platform/node/performance.js
-var init_performance = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/platform/node/performance.js"() {
-    "use strict";
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/version.js
-var VERSION;
-var init_version = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/version.js"() {
-    "use strict";
-    VERSION = "1.24.1";
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/platform/node/sdk-info.js
-var import_semantic_conventions, _a, SDK_INFO;
-var init_sdk_info = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/platform/node/sdk-info.js"() {
-    "use strict";
-    init_version();
-    import_semantic_conventions = require("@opentelemetry/semantic-conventions");
-    SDK_INFO = (_a = {}, _a[import_semantic_conventions.SemanticResourceAttributes.TELEMETRY_SDK_NAME] = "opentelemetry", _a[import_semantic_conventions.SemanticResourceAttributes.PROCESS_RUNTIME_NAME] = "node", _a[import_semantic_conventions.SemanticResourceAttributes.TELEMETRY_SDK_LANGUAGE] = import_semantic_conventions.TelemetrySdkLanguageValues.NODEJS, _a[import_semantic_conventions.SemanticResourceAttributes.TELEMETRY_SDK_VERSION] = VERSION, _a);
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/platform/node/timer-util.js
-var init_timer_util = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/platform/node/timer-util.js"() {
-    "use strict";
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/platform/node/index.js
-var init_node = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/platform/node/index.js"() {
-    "use strict";
-    init_environment2();
-    init_globalThis();
-    init_hex_to_base64();
-    init_RandomIdGenerator();
-    init_performance();
-    init_sdk_info();
-    init_timer_util();
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/platform/index.js
-var init_platform = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/platform/index.js"() {
-    "use strict";
-    init_node();
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/common/time.js
-function hrTimeToNanoseconds(time) {
-  return time[0] * SECOND_TO_NANOSECONDS + time[1];
-}
-var NANOSECOND_DIGITS, NANOSECOND_DIGITS_IN_MILLIS, MILLISECONDS_TO_NANOSECONDS, SECOND_TO_NANOSECONDS;
-var init_time = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/common/time.js"() {
-    "use strict";
-    NANOSECOND_DIGITS = 9;
-    NANOSECOND_DIGITS_IN_MILLIS = 6;
-    MILLISECONDS_TO_NANOSECONDS = Math.pow(10, NANOSECOND_DIGITS_IN_MILLIS);
-    SECOND_TO_NANOSECONDS = Math.pow(10, NANOSECOND_DIGITS);
-    __name(hrTimeToNanoseconds, "hrTimeToNanoseconds");
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/common/types.js
-var init_types = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/common/types.js"() {
-    "use strict";
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/ExportResult.js
-var ExportResultCode;
-var init_ExportResult = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/ExportResult.js"() {
-    "use strict";
-    (function(ExportResultCode2) {
-      ExportResultCode2[ExportResultCode2["SUCCESS"] = 0] = "SUCCESS";
-      ExportResultCode2[ExportResultCode2["FAILED"] = 1] = "FAILED";
-    })(ExportResultCode || (ExportResultCode = {}));
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/propagation/composite.js
-var import_api7, __values, CompositePropagator;
-var init_composite = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/propagation/composite.js"() {
-    "use strict";
-    import_api7 = require("@opentelemetry/api");
-    __values = function(o) {
-      var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-      if (m)
-        return m.call(o);
-      if (o && typeof o.length === "number")
-        return {
-          next: function() {
-            if (o && i >= o.length)
-              o = void 0;
-            return { value: o && o[i++], done: !o };
-          }
-        };
-      throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
-    };
-    CompositePropagator = /** @class */
-    function() {
-      function CompositePropagator2(config5) {
-        if (config5 === void 0) {
-          config5 = {};
-        }
-        var _a2;
-        this._propagators = (_a2 = config5.propagators) !== null && _a2 !== void 0 ? _a2 : [];
-        this._fields = Array.from(new Set(this._propagators.map(function(p) {
-          return typeof p.fields === "function" ? p.fields() : [];
-        }).reduce(function(x, y) {
-          return x.concat(y);
-        }, [])));
-      }
-      __name(CompositePropagator2, "CompositePropagator");
-      CompositePropagator2.prototype.inject = function(context, carrier, setter) {
-        var e_1, _a2;
-        try {
-          for (var _b = __values(this._propagators), _c = _b.next(); !_c.done; _c = _b.next()) {
-            var propagator = _c.value;
-            try {
-              propagator.inject(context, carrier, setter);
-            } catch (err) {
-              import_api7.diag.warn("Failed to inject with " + propagator.constructor.name + ". Err: " + err.message);
-            }
-          }
-        } catch (e_1_1) {
-          e_1 = { error: e_1_1 };
-        } finally {
-          try {
-            if (_c && !_c.done && (_a2 = _b.return))
-              _a2.call(_b);
-          } finally {
-            if (e_1)
-              throw e_1.error;
-          }
-        }
-      };
-      CompositePropagator2.prototype.extract = function(context, carrier, getter) {
-        return this._propagators.reduce(function(ctx, propagator) {
-          try {
-            return propagator.extract(ctx, carrier, getter);
-          } catch (err) {
-            import_api7.diag.warn("Failed to inject with " + propagator.constructor.name + ". Err: " + err.message);
-          }
-          return ctx;
-        }, context);
-      };
-      CompositePropagator2.prototype.fields = function() {
-        return this._fields.slice();
-      };
-      return CompositePropagator2;
-    }();
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/internal/validators.js
-function validateKey(key) {
-  return VALID_KEY_REGEX.test(key);
-}
-function validateValue(value) {
-  return VALID_VALUE_BASE_REGEX.test(value) && !INVALID_VALUE_COMMA_EQUAL_REGEX.test(value);
-}
-var VALID_KEY_CHAR_RANGE, VALID_KEY, VALID_VENDOR_KEY, VALID_KEY_REGEX, VALID_VALUE_BASE_REGEX, INVALID_VALUE_COMMA_EQUAL_REGEX;
-var init_validators = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/internal/validators.js"() {
-    "use strict";
-    VALID_KEY_CHAR_RANGE = "[_0-9a-z-*/]";
-    VALID_KEY = "[a-z]" + VALID_KEY_CHAR_RANGE + "{0,255}";
-    VALID_VENDOR_KEY = "[a-z0-9]" + VALID_KEY_CHAR_RANGE + "{0,240}@[a-z]" + VALID_KEY_CHAR_RANGE + "{0,13}";
-    VALID_KEY_REGEX = new RegExp("^(?:" + VALID_KEY + "|" + VALID_VENDOR_KEY + ")$");
-    VALID_VALUE_BASE_REGEX = /^[ -~]{0,255}[!-~]$/;
-    INVALID_VALUE_COMMA_EQUAL_REGEX = /,|=/;
-    __name(validateKey, "validateKey");
-    __name(validateValue, "validateValue");
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/TraceState.js
-var MAX_TRACE_STATE_ITEMS, MAX_TRACE_STATE_LEN, LIST_MEMBERS_SEPARATOR, LIST_MEMBER_KEY_VALUE_SPLITTER, TraceState;
-var init_TraceState = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/TraceState.js"() {
-    "use strict";
-    init_validators();
-    MAX_TRACE_STATE_ITEMS = 32;
-    MAX_TRACE_STATE_LEN = 512;
-    LIST_MEMBERS_SEPARATOR = ",";
-    LIST_MEMBER_KEY_VALUE_SPLITTER = "=";
-    TraceState = /** @class */
-    function() {
-      function TraceState2(rawTraceState) {
-        this._internalState = /* @__PURE__ */ new Map();
-        if (rawTraceState)
-          this._parse(rawTraceState);
-      }
-      __name(TraceState2, "TraceState");
-      TraceState2.prototype.set = function(key, value) {
-        var traceState = this._clone();
-        if (traceState._internalState.has(key)) {
-          traceState._internalState.delete(key);
-        }
-        traceState._internalState.set(key, value);
-        return traceState;
-      };
-      TraceState2.prototype.unset = function(key) {
-        var traceState = this._clone();
-        traceState._internalState.delete(key);
-        return traceState;
-      };
-      TraceState2.prototype.get = function(key) {
-        return this._internalState.get(key);
-      };
-      TraceState2.prototype.serialize = function() {
-        var _this = this;
-        return this._keys().reduce(function(agg, key) {
-          agg.push(key + LIST_MEMBER_KEY_VALUE_SPLITTER + _this.get(key));
-          return agg;
-        }, []).join(LIST_MEMBERS_SEPARATOR);
-      };
-      TraceState2.prototype._parse = function(rawTraceState) {
-        if (rawTraceState.length > MAX_TRACE_STATE_LEN)
-          return;
-        this._internalState = rawTraceState.split(LIST_MEMBERS_SEPARATOR).reverse().reduce(function(agg, part) {
-          var listMember = part.trim();
-          var i = listMember.indexOf(LIST_MEMBER_KEY_VALUE_SPLITTER);
-          if (i !== -1) {
-            var key = listMember.slice(0, i);
-            var value = listMember.slice(i + 1, part.length);
-            if (validateKey(key) && validateValue(value)) {
-              agg.set(key, value);
-            } else {
-            }
-          }
-          return agg;
-        }, /* @__PURE__ */ new Map());
-        if (this._internalState.size > MAX_TRACE_STATE_ITEMS) {
-          this._internalState = new Map(Array.from(this._internalState.entries()).reverse().slice(0, MAX_TRACE_STATE_ITEMS));
-        }
-      };
-      TraceState2.prototype._keys = function() {
-        return Array.from(this._internalState.keys()).reverse();
-      };
-      TraceState2.prototype._clone = function() {
-        var traceState = new TraceState2();
-        traceState._internalState = new Map(this._internalState);
-        return traceState;
-      };
-      return TraceState2;
-    }();
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/W3CTraceContextPropagator.js
-function parseTraceParent(traceParent) {
-  var match = TRACE_PARENT_REGEX.exec(traceParent);
-  if (!match)
-    return null;
-  if (match[1] === "00" && match[5])
-    return null;
-  return {
-    traceId: match[2],
-    spanId: match[3],
-    traceFlags: parseInt(match[4], 16)
-  };
-}
-var import_api8, TRACE_PARENT_HEADER, TRACE_STATE_HEADER, VERSION2, VERSION_PART, TRACE_ID_PART, PARENT_ID_PART, FLAGS_PART, TRACE_PARENT_REGEX, W3CTraceContextPropagator;
-var init_W3CTraceContextPropagator = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/W3CTraceContextPropagator.js"() {
-    "use strict";
-    import_api8 = require("@opentelemetry/api");
-    init_suppress_tracing();
-    init_TraceState();
-    TRACE_PARENT_HEADER = "traceparent";
-    TRACE_STATE_HEADER = "tracestate";
-    VERSION2 = "00";
-    VERSION_PART = "(?!ff)[\\da-f]{2}";
-    TRACE_ID_PART = "(?![0]{32})[\\da-f]{32}";
-    PARENT_ID_PART = "(?![0]{16})[\\da-f]{16}";
-    FLAGS_PART = "[\\da-f]{2}";
-    TRACE_PARENT_REGEX = new RegExp("^\\s?(" + VERSION_PART + ")-(" + TRACE_ID_PART + ")-(" + PARENT_ID_PART + ")-(" + FLAGS_PART + ")(-.*)?\\s?$");
-    __name(parseTraceParent, "parseTraceParent");
-    W3CTraceContextPropagator = /** @class */
-    function() {
-      function W3CTraceContextPropagator2() {
-      }
-      __name(W3CTraceContextPropagator2, "W3CTraceContextPropagator");
-      W3CTraceContextPropagator2.prototype.inject = function(context, carrier, setter) {
-        var spanContext = import_api8.trace.getSpanContext(context);
-        if (!spanContext || isTracingSuppressed(context) || !(0, import_api8.isSpanContextValid)(spanContext))
-          return;
-        var traceParent = VERSION2 + "-" + spanContext.traceId + "-" + spanContext.spanId + "-0" + Number(spanContext.traceFlags || import_api8.TraceFlags.NONE).toString(16);
-        setter.set(carrier, TRACE_PARENT_HEADER, traceParent);
-        if (spanContext.traceState) {
-          setter.set(carrier, TRACE_STATE_HEADER, spanContext.traceState.serialize());
-        }
-      };
-      W3CTraceContextPropagator2.prototype.extract = function(context, carrier, getter) {
-        var traceParentHeader = getter.get(carrier, TRACE_PARENT_HEADER);
-        if (!traceParentHeader)
-          return context;
-        var traceParent = Array.isArray(traceParentHeader) ? traceParentHeader[0] : traceParentHeader;
-        if (typeof traceParent !== "string")
-          return context;
-        var spanContext = parseTraceParent(traceParent);
-        if (!spanContext)
-          return context;
-        spanContext.isRemote = true;
-        var traceStateHeader = getter.get(carrier, TRACE_STATE_HEADER);
-        if (traceStateHeader) {
-          var state = Array.isArray(traceStateHeader) ? traceStateHeader.join(",") : traceStateHeader;
-          spanContext.traceState = new TraceState(typeof state === "string" ? state : void 0);
-        }
-        return import_api8.trace.setSpanContext(context, spanContext);
-      };
-      W3CTraceContextPropagator2.prototype.fields = function() {
-        return [TRACE_PARENT_HEADER, TRACE_STATE_HEADER];
-      };
-      return W3CTraceContextPropagator2;
-    }();
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/IdGenerator.js
-var init_IdGenerator = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/IdGenerator.js"() {
-    "use strict";
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/rpc-metadata.js
-var import_api9, RPC_METADATA_KEY, RPCType;
-var init_rpc_metadata = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/rpc-metadata.js"() {
-    "use strict";
-    import_api9 = require("@opentelemetry/api");
-    RPC_METADATA_KEY = (0, import_api9.createContextKey)("OpenTelemetry SDK Context Key RPC_METADATA");
-    (function(RPCType2) {
-      RPCType2["HTTP"] = "http";
-    })(RPCType || (RPCType = {}));
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/sampler/AlwaysOffSampler.js
-var import_api10, AlwaysOffSampler;
-var init_AlwaysOffSampler = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/sampler/AlwaysOffSampler.js"() {
-    "use strict";
-    import_api10 = require("@opentelemetry/api");
-    AlwaysOffSampler = /** @class */
-    function() {
-      function AlwaysOffSampler2() {
-      }
-      __name(AlwaysOffSampler2, "AlwaysOffSampler");
-      AlwaysOffSampler2.prototype.shouldSample = function() {
-        return {
-          decision: import_api10.SamplingDecision.NOT_RECORD
-        };
-      };
-      AlwaysOffSampler2.prototype.toString = function() {
-        return "AlwaysOffSampler";
-      };
-      return AlwaysOffSampler2;
-    }();
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/sampler/AlwaysOnSampler.js
-var import_api11, AlwaysOnSampler;
-var init_AlwaysOnSampler = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/sampler/AlwaysOnSampler.js"() {
-    "use strict";
-    import_api11 = require("@opentelemetry/api");
-    AlwaysOnSampler = /** @class */
-    function() {
-      function AlwaysOnSampler2() {
-      }
-      __name(AlwaysOnSampler2, "AlwaysOnSampler");
-      AlwaysOnSampler2.prototype.shouldSample = function() {
-        return {
-          decision: import_api11.SamplingDecision.RECORD_AND_SAMPLED
-        };
-      };
-      AlwaysOnSampler2.prototype.toString = function() {
-        return "AlwaysOnSampler";
-      };
-      return AlwaysOnSampler2;
-    }();
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/sampler/ParentBasedSampler.js
-var import_api12, ParentBasedSampler;
-var init_ParentBasedSampler = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/sampler/ParentBasedSampler.js"() {
-    "use strict";
-    import_api12 = require("@opentelemetry/api");
-    init_global_error_handler();
-    init_AlwaysOffSampler();
-    init_AlwaysOnSampler();
-    ParentBasedSampler = /** @class */
-    function() {
-      function ParentBasedSampler2(config5) {
-        var _a2, _b, _c, _d;
-        this._root = config5.root;
-        if (!this._root) {
-          globalErrorHandler(new Error("ParentBasedSampler must have a root sampler configured"));
-          this._root = new AlwaysOnSampler();
-        }
-        this._remoteParentSampled = (_a2 = config5.remoteParentSampled) !== null && _a2 !== void 0 ? _a2 : new AlwaysOnSampler();
-        this._remoteParentNotSampled = (_b = config5.remoteParentNotSampled) !== null && _b !== void 0 ? _b : new AlwaysOffSampler();
-        this._localParentSampled = (_c = config5.localParentSampled) !== null && _c !== void 0 ? _c : new AlwaysOnSampler();
-        this._localParentNotSampled = (_d = config5.localParentNotSampled) !== null && _d !== void 0 ? _d : new AlwaysOffSampler();
-      }
-      __name(ParentBasedSampler2, "ParentBasedSampler");
-      ParentBasedSampler2.prototype.shouldSample = function(context, traceId, spanName, spanKind, attributes, links) {
-        var parentContext = import_api12.trace.getSpanContext(context);
-        if (!parentContext || !(0, import_api12.isSpanContextValid)(parentContext)) {
-          return this._root.shouldSample(context, traceId, spanName, spanKind, attributes, links);
-        }
-        if (parentContext.isRemote) {
-          if (parentContext.traceFlags & import_api12.TraceFlags.SAMPLED) {
-            return this._remoteParentSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
-          }
-          return this._remoteParentNotSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
-        }
-        if (parentContext.traceFlags & import_api12.TraceFlags.SAMPLED) {
-          return this._localParentSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
-        }
-        return this._localParentNotSampled.shouldSample(context, traceId, spanName, spanKind, attributes, links);
-      };
-      ParentBasedSampler2.prototype.toString = function() {
-        return "ParentBased{root=" + this._root.toString() + ", remoteParentSampled=" + this._remoteParentSampled.toString() + ", remoteParentNotSampled=" + this._remoteParentNotSampled.toString() + ", localParentSampled=" + this._localParentSampled.toString() + ", localParentNotSampled=" + this._localParentNotSampled.toString() + "}";
-      };
-      return ParentBasedSampler2;
-    }();
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/sampler/TraceIdRatioBasedSampler.js
-var import_api13, TraceIdRatioBasedSampler;
-var init_TraceIdRatioBasedSampler = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/trace/sampler/TraceIdRatioBasedSampler.js"() {
-    "use strict";
-    import_api13 = require("@opentelemetry/api");
-    TraceIdRatioBasedSampler = /** @class */
-    function() {
-      function TraceIdRatioBasedSampler2(_ratio) {
-        if (_ratio === void 0) {
-          _ratio = 0;
-        }
-        this._ratio = _ratio;
-        this._ratio = this._normalize(_ratio);
-        this._upperBound = Math.floor(this._ratio * 4294967295);
-      }
-      __name(TraceIdRatioBasedSampler2, "TraceIdRatioBasedSampler");
-      TraceIdRatioBasedSampler2.prototype.shouldSample = function(context, traceId) {
-        return {
-          decision: (0, import_api13.isValidTraceId)(traceId) && this._accumulate(traceId) < this._upperBound ? import_api13.SamplingDecision.RECORD_AND_SAMPLED : import_api13.SamplingDecision.NOT_RECORD
-        };
-      };
-      TraceIdRatioBasedSampler2.prototype.toString = function() {
-        return "TraceIdRatioBased{" + this._ratio + "}";
-      };
-      TraceIdRatioBasedSampler2.prototype._normalize = function(ratio) {
-        if (typeof ratio !== "number" || isNaN(ratio))
-          return 0;
-        return ratio >= 1 ? 1 : ratio <= 0 ? 0 : ratio;
-      };
-      TraceIdRatioBasedSampler2.prototype._accumulate = function(traceId) {
-        var accumulation = 0;
-        for (var i = 0; i < traceId.length / 8; i++) {
-          var pos = i * 8;
-          var part = parseInt(traceId.slice(pos, pos + 8), 16);
-          accumulation = (accumulation ^ part) >>> 0;
-        }
-        return accumulation;
-      };
-      return TraceIdRatioBasedSampler2;
-    }();
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/utils/merge.js
-var init_merge = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/utils/merge.js"() {
-    "use strict";
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/utils/timeout.js
-var __extends, TimeoutError;
-var init_timeout = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/utils/timeout.js"() {
-    "use strict";
-    __extends = /* @__PURE__ */ function() {
-      var extendStatics = /* @__PURE__ */ __name(function(d, b) {
-        extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(d2, b2) {
-          d2.__proto__ = b2;
-        } || function(d2, b2) {
-          for (var p in b2)
-            if (Object.prototype.hasOwnProperty.call(b2, p))
-              d2[p] = b2[p];
-        };
-        return extendStatics(d, b);
-      }, "extendStatics");
-      return function(d, b) {
-        if (typeof b !== "function" && b !== null)
-          throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() {
-          this.constructor = d;
-        }
-        __name(__, "__");
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-      };
-    }();
-    TimeoutError = /** @class */
-    function(_super) {
-      __extends(TimeoutError2, _super);
-      function TimeoutError2(message) {
-        var _this = _super.call(this, message) || this;
-        Object.setPrototypeOf(_this, TimeoutError2.prototype);
-        return _this;
-      }
-      __name(TimeoutError2, "TimeoutError");
-      return TimeoutError2;
-    }(Error);
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/utils/url.js
-var init_url = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/utils/url.js"() {
-    "use strict";
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/utils/wrap.js
-var init_wrap = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/utils/wrap.js"() {
-    "use strict";
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/utils/promise.js
-var Deferred;
-var init_promise = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/utils/promise.js"() {
-    "use strict";
-    Deferred = /** @class */
-    function() {
-      function Deferred2() {
-        var _this = this;
-        this._promise = new Promise(function(resolve, reject) {
-          _this._resolve = resolve;
-          _this._reject = reject;
-        });
-      }
-      __name(Deferred2, "Deferred");
-      Object.defineProperty(Deferred2.prototype, "promise", {
-        get: function() {
-          return this._promise;
-        },
-        enumerable: false,
-        configurable: true
-      });
-      Deferred2.prototype.resolve = function(val) {
-        this._resolve(val);
-      };
-      Deferred2.prototype.reject = function(err) {
-        this._reject(err);
-      };
-      return Deferred2;
-    }();
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/utils/callback.js
-var __read2, __spreadArray, BindOnceFuture;
-var init_callback = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/utils/callback.js"() {
-    "use strict";
-    init_promise();
-    __read2 = function(o, n) {
-      var m = typeof Symbol === "function" && o[Symbol.iterator];
-      if (!m)
-        return o;
-      var i = m.call(o), r, ar = [], e;
-      try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done)
-          ar.push(r.value);
-      } catch (error) {
-        e = { error };
-      } finally {
-        try {
-          if (r && !r.done && (m = i["return"]))
-            m.call(i);
-        } finally {
-          if (e)
-            throw e.error;
-        }
-      }
-      return ar;
-    };
-    __spreadArray = function(to, from, pack) {
-      if (pack || arguments.length === 2)
-        for (var i = 0, l = from.length, ar; i < l; i++) {
-          if (ar || !(i in from)) {
-            if (!ar)
-              ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-          }
-        }
-      return to.concat(ar || Array.prototype.slice.call(from));
-    };
-    BindOnceFuture = /** @class */
-    function() {
-      function BindOnceFuture2(_callback, _that) {
-        this._callback = _callback;
-        this._that = _that;
-        this._isCalled = false;
-        this._deferred = new Deferred();
-      }
-      __name(BindOnceFuture2, "BindOnceFuture");
-      Object.defineProperty(BindOnceFuture2.prototype, "isCalled", {
-        get: function() {
-          return this._isCalled;
-        },
-        enumerable: false,
-        configurable: true
-      });
-      Object.defineProperty(BindOnceFuture2.prototype, "promise", {
-        get: function() {
-          return this._deferred.promise;
-        },
-        enumerable: false,
-        configurable: true
-      });
-      BindOnceFuture2.prototype.call = function() {
-        var _a2;
-        var _this = this;
-        var args2 = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-          args2[_i] = arguments[_i];
-        }
-        if (!this._isCalled) {
-          this._isCalled = true;
-          try {
-            Promise.resolve((_a2 = this._callback).call.apply(_a2, __spreadArray([this._that], __read2(args2), false))).then(function(val) {
-              return _this._deferred.resolve(val);
-            }, function(err) {
-              return _this._deferred.reject(err);
-            });
-          } catch (err) {
-            this._deferred.reject(err);
-          }
-        }
-        return this._deferred.promise;
-      };
-      return BindOnceFuture2;
-    }();
-  }
-});
-
-// ../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/index.js
-var init_esm = __esm({
-  "../../node_modules/.pnpm/@opentelemetry+core@1.24.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/core/build/esm/index.js"() {
-    "use strict";
-    init_W3CBaggagePropagator();
-    init_anchored_clock();
-    init_attributes();
-    init_global_error_handler();
-    init_logging_error_handler();
-    init_time();
-    init_types();
-    init_hex_to_binary();
-    init_ExportResult();
-    init_utils();
-    init_platform();
-    init_composite();
-    init_W3CTraceContextPropagator();
-    init_IdGenerator();
-    init_rpc_metadata();
-    init_AlwaysOffSampler();
-    init_AlwaysOnSampler();
-    init_ParentBasedSampler();
-    init_TraceIdRatioBasedSampler();
-    init_suppress_tracing();
-    init_TraceState();
-    init_environment();
-    init_merge();
-    init_sampling();
-    init_timeout();
-    init_url();
-    init_wrap();
-    init_callback();
-    init_version();
-  }
-});
-
 // ../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/util.js
 function parseHeaders(partialHeaders) {
   if (partialHeaders === void 0) {
     partialHeaders = {};
   }
   var headers = {};
-  Object.entries(partialHeaders).forEach(function(_a2) {
-    var _b = __read3(_a2, 2), key = _b[0], value = _b[1];
+  Object.entries(partialHeaders).forEach(function(_a) {
+    var _b = __read(_a, 2), key = _b[0], value = _b[1];
     if (typeof value !== "undefined") {
       headers[key] = String(value);
     } else {
-      import_api14.diag.warn('Header "' + key + '" has invalid value (' + value + ") and will be ignored");
+      import_api.diag.warn('Header "' + key + '" has invalid value (' + value + ") and will be ignored");
     }
   });
   return headers;
@@ -1343,8 +63,8 @@ function appendRootPathToUrlIfNeeded(url2) {
       parsedUrl.pathname = parsedUrl.pathname + "/";
     }
     return parsedUrl.toString();
-  } catch (_a2) {
-    import_api14.diag.warn("Could not parse export URL: '" + url2 + "'");
+  } catch (_a) {
+    import_api.diag.warn("Could not parse export URL: '" + url2 + "'");
     return url2;
   }
 }
@@ -1359,8 +79,8 @@ function configureExporterTimeout(timeoutMillis) {
   }
 }
 function getExporterTimeoutFromEnv() {
-  var _a2;
-  var definedTimeout = Number((_a2 = getEnv().OTEL_EXPORTER_OTLP_TRACES_TIMEOUT) !== null && _a2 !== void 0 ? _a2 : getEnv().OTEL_EXPORTER_OTLP_TIMEOUT);
+  var _a;
+  var definedTimeout = Number((_a = (0, import_core.getEnv)().OTEL_EXPORTER_OTLP_TRACES_TIMEOUT) !== null && _a !== void 0 ? _a : (0, import_core.getEnv)().OTEL_EXPORTER_OTLP_TIMEOUT);
   if (definedTimeout <= 0) {
     return invalidTimeout(definedTimeout, DEFAULT_TRACE_TIMEOUT);
   } else {
@@ -1368,7 +88,7 @@ function getExporterTimeoutFromEnv() {
   }
 }
 function invalidTimeout(timeout, defaultTimeout) {
-  import_api14.diag.warn("Timeout must be greater than 0", timeout);
+  import_api.diag.warn("Timeout must be greater than 0", timeout);
   return defaultTimeout;
 }
 function isExportRetryable(statusCode) {
@@ -1389,29 +109,25 @@ function parseRetryAfterToMills(retryAfter) {
   }
   return 0;
 }
-var import_api14, __read3, DEFAULT_TRACE_TIMEOUT, DEFAULT_EXPORT_MAX_ATTEMPTS, DEFAULT_EXPORT_INITIAL_BACKOFF, DEFAULT_EXPORT_MAX_BACKOFF, DEFAULT_EXPORT_BACKOFF_MULTIPLIER;
+var import_api, import_core, __read, DEFAULT_TRACE_TIMEOUT, DEFAULT_EXPORT_MAX_ATTEMPTS, DEFAULT_EXPORT_INITIAL_BACKOFF, DEFAULT_EXPORT_MAX_BACKOFF, DEFAULT_EXPORT_BACKOFF_MULTIPLIER;
 var init_util = __esm({
   "../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/util.js"() {
     "use strict";
-    import_api14 = require("@opentelemetry/api");
-    init_esm();
-    __read3 = function(o, n) {
+    import_api = require("@opentelemetry/api");
+    import_core = require("@opentelemetry/core");
+    __read = function(o, n) {
       var m = typeof Symbol === "function" && o[Symbol.iterator];
-      if (!m)
-        return o;
+      if (!m) return o;
       var i = m.call(o), r, ar = [], e;
       try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done)
-          ar.push(r.value);
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
       } catch (error) {
         e = { error };
       } finally {
         try {
-          if (r && !r.done && (m = i["return"]))
-            m.call(i);
+          if (r && !r.done && (m = i["return"])) m.call(i);
         } finally {
-          if (e)
-            throw e.error;
+          if (e) throw e.error;
         }
       }
       return ar;
@@ -1433,12 +149,12 @@ var init_util = __esm({
 });
 
 // ../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/OTLPExporterBase.js
-var import_api15, OTLPExporterBase;
+var import_api2, import_core2, OTLPExporterBase;
 var init_OTLPExporterBase = __esm({
   "../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/OTLPExporterBase.js"() {
     "use strict";
-    import_api15 = require("@opentelemetry/api");
-    init_esm();
+    import_api2 = require("@opentelemetry/api");
+    import_core2 = require("@opentelemetry/core");
     init_util();
     OTLPExporterBase = /** @class */
     function() {
@@ -1452,7 +168,7 @@ var init_OTLPExporterBase = __esm({
           this.hostname = config5.hostname;
         }
         this.shutdown = this.shutdown.bind(this);
-        this._shutdownOnce = new BindOnceFuture(this._shutdown, this);
+        this._shutdownOnce = new import_core2.BindOnceFuture(this._shutdown, this);
         this._concurrencyLimit = typeof config5.concurrencyLimit === "number" ? config5.concurrencyLimit : 30;
         this.timeoutMillis = configureExporterTimeout(config5.timeoutMillis);
         this.onInit(config5);
@@ -1461,29 +177,29 @@ var init_OTLPExporterBase = __esm({
       OTLPExporterBase2.prototype.export = function(items, resultCallback) {
         if (this._shutdownOnce.isCalled) {
           resultCallback({
-            code: ExportResultCode.FAILED,
+            code: import_core2.ExportResultCode.FAILED,
             error: new Error("Exporter has been shutdown")
           });
           return;
         }
         if (this._sendingPromises.length >= this._concurrencyLimit) {
           resultCallback({
-            code: ExportResultCode.FAILED,
+            code: import_core2.ExportResultCode.FAILED,
             error: new Error("Concurrent export limit reached")
           });
           return;
         }
         this._export(items).then(function() {
-          resultCallback({ code: ExportResultCode.SUCCESS });
+          resultCallback({ code: import_core2.ExportResultCode.SUCCESS });
         }).catch(function(error) {
-          resultCallback({ code: ExportResultCode.FAILED, error });
+          resultCallback({ code: import_core2.ExportResultCode.FAILED, error });
         });
       };
       OTLPExporterBase2.prototype._export = function(items) {
         var _this = this;
         return new Promise(function(resolve, reject) {
           try {
-            import_api15.diag.debug("items to be sent", items);
+            import_api2.diag.debug("items to be sent", items);
             _this.send(items, resolve, reject);
           } catch (e) {
             reject(e);
@@ -1498,7 +214,7 @@ var init_OTLPExporterBase = __esm({
         });
       };
       OTLPExporterBase2.prototype._shutdown = function() {
-        import_api15.diag.debug("shutdown started");
+        import_api2.diag.debug("shutdown started");
         this.onShutdown();
         return this.forceFlush();
       };
@@ -1509,7 +225,7 @@ var init_OTLPExporterBase = __esm({
 
 // ../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/platform/node/types.js
 var CompressionAlgorithm;
-var init_types2 = __esm({
+var init_types = __esm({
   "../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/platform/node/types.js"() {
     "use strict";
     (function(CompressionAlgorithm2) {
@@ -1520,18 +236,16 @@ var init_types2 = __esm({
 });
 
 // ../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/types.js
-var __extends2, OTLPExporterError;
-var init_types3 = __esm({
+var __extends, OTLPExporterError;
+var init_types2 = __esm({
   "../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/types.js"() {
     "use strict";
-    __extends2 = /* @__PURE__ */ function() {
+    __extends = /* @__PURE__ */ function() {
       var extendStatics = /* @__PURE__ */ __name(function(d, b) {
         extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(d2, b2) {
           d2.__proto__ = b2;
         } || function(d2, b2) {
-          for (var p in b2)
-            if (Object.prototype.hasOwnProperty.call(b2, p))
-              d2[p] = b2[p];
+          for (var p in b2) if (Object.prototype.hasOwnProperty.call(b2, p)) d2[p] = b2[p];
         };
         return extendStatics(d, b);
       }, "extendStatics");
@@ -1548,7 +262,7 @@ var init_types3 = __esm({
     }();
     OTLPExporterError = /** @class */
     function(_super) {
-      __extends2(OTLPExporterError2, _super);
+      __extends(OTLPExporterError2, _super);
       function OTLPExporterError2(message, code, data) {
         var _this = _super.call(this, message) || this;
         _this.name = "OTLPExporterError";
@@ -1610,7 +324,7 @@ function sendWithHttp(collector, data, contentType, onSuccess, onError) {
       res.on("end", function() {
         if (reqIsDestroyed === false) {
           if (res.statusCode && res.statusCode < 299) {
-            import_api16.diag.debug("statusCode: " + res.statusCode, responseData);
+            import_api3.diag.debug("statusCode: " + res.statusCode, responseData);
             onSuccess();
             clearTimeout(exporterTimer);
             clearTimeout(retryTimer);
@@ -1674,7 +388,7 @@ function readableFromBuffer(buff) {
 }
 function createHttpAgent(config5) {
   if (config5.httpAgentOptions && config5.keepAlive === false) {
-    import_api16.diag.warn("httpAgentOptions is used only when keepAlive is true");
+    import_api3.diag.warn("httpAgentOptions is used only when keepAlive is true");
     return void 0;
   }
   if (config5.keepAlive === false || !config5.url)
@@ -1684,7 +398,7 @@ function createHttpAgent(config5) {
     var Agent3 = parsedUrl.protocol === "http:" ? http.Agent : https.Agent;
     return new Agent3(__assign({ keepAlive: true }, config5.httpAgentOptions));
   } catch (err) {
-    import_api16.diag.error("collector exporter failed to create http agent. err: " + err.message);
+    import_api3.diag.error("collector exporter failed to create http agent. err: " + err.message);
     return void 0;
   }
 }
@@ -1692,11 +406,11 @@ function configureCompression(compression) {
   if (compression) {
     return compression;
   } else {
-    var definedCompression = getEnv().OTEL_EXPORTER_OTLP_TRACES_COMPRESSION || getEnv().OTEL_EXPORTER_OTLP_COMPRESSION;
+    var definedCompression = (0, import_core3.getEnv)().OTEL_EXPORTER_OTLP_TRACES_COMPRESSION || (0, import_core3.getEnv)().OTEL_EXPORTER_OTLP_COMPRESSION;
     return definedCompression === CompressionAlgorithm.GZIP ? CompressionAlgorithm.GZIP : CompressionAlgorithm.NONE;
   }
 }
-var url, http, https, zlib, import_stream, import_api16, __assign;
+var url, http, https, zlib, import_stream, import_api3, import_core3, __assign;
 var init_util2 = __esm({
   "../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/platform/node/util.js"() {
     "use strict";
@@ -1705,18 +419,17 @@ var init_util2 = __esm({
     https = __toESM(require("https"));
     zlib = __toESM(require("zlib"));
     import_stream = require("stream");
-    import_api16 = require("@opentelemetry/api");
+    import_api3 = require("@opentelemetry/api");
+    init_types();
+    import_core3 = require("@opentelemetry/core");
     init_types2();
-    init_esm();
-    init_types3();
     init_util();
     __assign = function() {
       __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
           s = arguments[i];
-          for (var p in s)
-            if (Object.prototype.hasOwnProperty.call(s, p))
-              t[p] = s[p];
+          for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
         }
         return t;
       };
@@ -1730,23 +443,21 @@ var init_util2 = __esm({
 });
 
 // ../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/platform/node/OTLPExporterNodeBase.js
-var import_api17, __extends3, OTLPExporterNodeBase;
+var import_api4, import_core4, __extends2, OTLPExporterNodeBase;
 var init_OTLPExporterNodeBase = __esm({
   "../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/platform/node/OTLPExporterNodeBase.js"() {
     "use strict";
     init_OTLPExporterBase();
     init_util();
     init_util2();
-    import_api17 = require("@opentelemetry/api");
-    init_esm();
-    __extends3 = /* @__PURE__ */ function() {
+    import_api4 = require("@opentelemetry/api");
+    import_core4 = require("@opentelemetry/core");
+    __extends2 = /* @__PURE__ */ function() {
       var extendStatics = /* @__PURE__ */ __name(function(d, b) {
         extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(d2, b2) {
           d2.__proto__ = b2;
         } || function(d2, b2) {
-          for (var p in b2)
-            if (Object.prototype.hasOwnProperty.call(b2, p))
-              d2[p] = b2[p];
+          for (var p in b2) if (Object.prototype.hasOwnProperty.call(b2, p)) d2[p] = b2[p];
         };
         return extendStatics(d, b);
       }, "extendStatics");
@@ -1763,7 +474,7 @@ var init_OTLPExporterNodeBase = __esm({
     }();
     OTLPExporterNodeBase = /** @class */
     function(_super) {
-      __extends3(OTLPExporterNodeBase2, _super);
+      __extends2(OTLPExporterNodeBase2, _super);
       function OTLPExporterNodeBase2(config5) {
         if (config5 === void 0) {
           config5 = {};
@@ -1771,9 +482,9 @@ var init_OTLPExporterNodeBase = __esm({
         var _this = _super.call(this, config5) || this;
         _this.DEFAULT_HEADERS = {};
         if (config5.metadata) {
-          import_api17.diag.warn("Metadata cannot be set when using http");
+          import_api4.diag.warn("Metadata cannot be set when using http");
         }
-        _this.headers = Object.assign(_this.DEFAULT_HEADERS, parseHeaders(config5.headers), utils_exports.parseKeyPairsIntoRecord(getEnv().OTEL_EXPORTER_OTLP_HEADERS));
+        _this.headers = Object.assign(_this.DEFAULT_HEADERS, parseHeaders(config5.headers), import_core4.baggageUtils.parseKeyPairsIntoRecord((0, import_core4.getEnv)().OTEL_EXPORTER_OTLP_HEADERS));
         _this.agent = createHttpAgent(config5);
         _this.compression = configureCompression(config5.compression);
         return _this;
@@ -1784,7 +495,7 @@ var init_OTLPExporterNodeBase = __esm({
       OTLPExporterNodeBase2.prototype.send = function(objects, onSuccess, onError) {
         var _this = this;
         if (this._shutdownOnce.isCalled) {
-          import_api17.diag.debug("Shutdown already started. Cannot send objects");
+          import_api4.diag.debug("Shutdown already started. Cannot send objects");
           return;
         }
         var serviceRequest = this.convert(objects);
@@ -1806,7 +517,7 @@ var init_OTLPExporterNodeBase = __esm({
 });
 
 // ../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/platform/node/index.js
-var init_node2 = __esm({
+var init_node = __esm({
   "../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/platform/node/index.js"() {
     "use strict";
     init_OTLPExporterNodeBase();
@@ -1815,19 +526,19 @@ var init_node2 = __esm({
 });
 
 // ../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/platform/index.js
-var init_platform2 = __esm({
+var init_platform = __esm({
   "../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/platform/index.js"() {
     "use strict";
-    init_node2();
+    init_node();
   }
 });
 
 // ../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/index.js
-var init_esm2 = __esm({
+var init_esm = __esm({
   "../../node_modules/.pnpm/@opentelemetry+otlp-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-exporter-base/build/esm/index.js"() {
     "use strict";
-    init_platform2();
-    init_types3();
+    init_platform();
+    init_types2();
     init_util();
   }
 });
@@ -2022,187 +733,183 @@ var require_float = __commonJS({
     "use strict";
     module2.exports = factory(factory);
     function factory(exports3) {
-      if (typeof Float32Array !== "undefined")
-        (function() {
-          var f32 = new Float32Array([-0]), f8b = new Uint8Array(f32.buffer), le = f8b[3] === 128;
-          function writeFloat_f32_cpy(val, buf, pos) {
-            f32[0] = val;
-            buf[pos] = f8b[0];
-            buf[pos + 1] = f8b[1];
-            buf[pos + 2] = f8b[2];
-            buf[pos + 3] = f8b[3];
+      if (typeof Float32Array !== "undefined") (function() {
+        var f32 = new Float32Array([-0]), f8b = new Uint8Array(f32.buffer), le = f8b[3] === 128;
+        function writeFloat_f32_cpy(val, buf, pos) {
+          f32[0] = val;
+          buf[pos] = f8b[0];
+          buf[pos + 1] = f8b[1];
+          buf[pos + 2] = f8b[2];
+          buf[pos + 3] = f8b[3];
+        }
+        __name(writeFloat_f32_cpy, "writeFloat_f32_cpy");
+        function writeFloat_f32_rev(val, buf, pos) {
+          f32[0] = val;
+          buf[pos] = f8b[3];
+          buf[pos + 1] = f8b[2];
+          buf[pos + 2] = f8b[1];
+          buf[pos + 3] = f8b[0];
+        }
+        __name(writeFloat_f32_rev, "writeFloat_f32_rev");
+        exports3.writeFloatLE = le ? writeFloat_f32_cpy : writeFloat_f32_rev;
+        exports3.writeFloatBE = le ? writeFloat_f32_rev : writeFloat_f32_cpy;
+        function readFloat_f32_cpy(buf, pos) {
+          f8b[0] = buf[pos];
+          f8b[1] = buf[pos + 1];
+          f8b[2] = buf[pos + 2];
+          f8b[3] = buf[pos + 3];
+          return f32[0];
+        }
+        __name(readFloat_f32_cpy, "readFloat_f32_cpy");
+        function readFloat_f32_rev(buf, pos) {
+          f8b[3] = buf[pos];
+          f8b[2] = buf[pos + 1];
+          f8b[1] = buf[pos + 2];
+          f8b[0] = buf[pos + 3];
+          return f32[0];
+        }
+        __name(readFloat_f32_rev, "readFloat_f32_rev");
+        exports3.readFloatLE = le ? readFloat_f32_cpy : readFloat_f32_rev;
+        exports3.readFloatBE = le ? readFloat_f32_rev : readFloat_f32_cpy;
+      })();
+      else (function() {
+        function writeFloat_ieee754(writeUint, val, buf, pos) {
+          var sign = val < 0 ? 1 : 0;
+          if (sign)
+            val = -val;
+          if (val === 0)
+            writeUint(1 / val > 0 ? (
+              /* positive */
+              0
+            ) : (
+              /* negative 0 */
+              2147483648
+            ), buf, pos);
+          else if (isNaN(val))
+            writeUint(2143289344, buf, pos);
+          else if (val > 34028234663852886e22)
+            writeUint((sign << 31 | 2139095040) >>> 0, buf, pos);
+          else if (val < 11754943508222875e-54)
+            writeUint((sign << 31 | Math.round(val / 1401298464324817e-60)) >>> 0, buf, pos);
+          else {
+            var exponent = Math.floor(Math.log(val) / Math.LN2), mantissa = Math.round(val * Math.pow(2, -exponent) * 8388608) & 8388607;
+            writeUint((sign << 31 | exponent + 127 << 23 | mantissa) >>> 0, buf, pos);
           }
-          __name(writeFloat_f32_cpy, "writeFloat_f32_cpy");
-          function writeFloat_f32_rev(val, buf, pos) {
-            f32[0] = val;
-            buf[pos] = f8b[3];
-            buf[pos + 1] = f8b[2];
-            buf[pos + 2] = f8b[1];
-            buf[pos + 3] = f8b[0];
-          }
-          __name(writeFloat_f32_rev, "writeFloat_f32_rev");
-          exports3.writeFloatLE = le ? writeFloat_f32_cpy : writeFloat_f32_rev;
-          exports3.writeFloatBE = le ? writeFloat_f32_rev : writeFloat_f32_cpy;
-          function readFloat_f32_cpy(buf, pos) {
-            f8b[0] = buf[pos];
-            f8b[1] = buf[pos + 1];
-            f8b[2] = buf[pos + 2];
-            f8b[3] = buf[pos + 3];
-            return f32[0];
-          }
-          __name(readFloat_f32_cpy, "readFloat_f32_cpy");
-          function readFloat_f32_rev(buf, pos) {
-            f8b[3] = buf[pos];
-            f8b[2] = buf[pos + 1];
-            f8b[1] = buf[pos + 2];
-            f8b[0] = buf[pos + 3];
-            return f32[0];
-          }
-          __name(readFloat_f32_rev, "readFloat_f32_rev");
-          exports3.readFloatLE = le ? readFloat_f32_cpy : readFloat_f32_rev;
-          exports3.readFloatBE = le ? readFloat_f32_rev : readFloat_f32_cpy;
-        })();
-      else
-        (function() {
-          function writeFloat_ieee754(writeUint, val, buf, pos) {
-            var sign = val < 0 ? 1 : 0;
-            if (sign)
-              val = -val;
-            if (val === 0)
-              writeUint(1 / val > 0 ? (
-                /* positive */
-                0
-              ) : (
-                /* negative 0 */
-                2147483648
-              ), buf, pos);
-            else if (isNaN(val))
-              writeUint(2143289344, buf, pos);
-            else if (val > 34028234663852886e22)
-              writeUint((sign << 31 | 2139095040) >>> 0, buf, pos);
-            else if (val < 11754943508222875e-54)
-              writeUint((sign << 31 | Math.round(val / 1401298464324817e-60)) >>> 0, buf, pos);
-            else {
-              var exponent = Math.floor(Math.log(val) / Math.LN2), mantissa = Math.round(val * Math.pow(2, -exponent) * 8388608) & 8388607;
-              writeUint((sign << 31 | exponent + 127 << 23 | mantissa) >>> 0, buf, pos);
-            }
-          }
-          __name(writeFloat_ieee754, "writeFloat_ieee754");
-          exports3.writeFloatLE = writeFloat_ieee754.bind(null, writeUintLE);
-          exports3.writeFloatBE = writeFloat_ieee754.bind(null, writeUintBE);
-          function readFloat_ieee754(readUint, buf, pos) {
-            var uint = readUint(buf, pos), sign = (uint >> 31) * 2 + 1, exponent = uint >>> 23 & 255, mantissa = uint & 8388607;
-            return exponent === 255 ? mantissa ? NaN : sign * Infinity : exponent === 0 ? sign * 1401298464324817e-60 * mantissa : sign * Math.pow(2, exponent - 150) * (mantissa + 8388608);
-          }
-          __name(readFloat_ieee754, "readFloat_ieee754");
-          exports3.readFloatLE = readFloat_ieee754.bind(null, readUintLE);
-          exports3.readFloatBE = readFloat_ieee754.bind(null, readUintBE);
-        })();
-      if (typeof Float64Array !== "undefined")
-        (function() {
-          var f64 = new Float64Array([-0]), f8b = new Uint8Array(f64.buffer), le = f8b[7] === 128;
-          function writeDouble_f64_cpy(val, buf, pos) {
-            f64[0] = val;
-            buf[pos] = f8b[0];
-            buf[pos + 1] = f8b[1];
-            buf[pos + 2] = f8b[2];
-            buf[pos + 3] = f8b[3];
-            buf[pos + 4] = f8b[4];
-            buf[pos + 5] = f8b[5];
-            buf[pos + 6] = f8b[6];
-            buf[pos + 7] = f8b[7];
-          }
-          __name(writeDouble_f64_cpy, "writeDouble_f64_cpy");
-          function writeDouble_f64_rev(val, buf, pos) {
-            f64[0] = val;
-            buf[pos] = f8b[7];
-            buf[pos + 1] = f8b[6];
-            buf[pos + 2] = f8b[5];
-            buf[pos + 3] = f8b[4];
-            buf[pos + 4] = f8b[3];
-            buf[pos + 5] = f8b[2];
-            buf[pos + 6] = f8b[1];
-            buf[pos + 7] = f8b[0];
-          }
-          __name(writeDouble_f64_rev, "writeDouble_f64_rev");
-          exports3.writeDoubleLE = le ? writeDouble_f64_cpy : writeDouble_f64_rev;
-          exports3.writeDoubleBE = le ? writeDouble_f64_rev : writeDouble_f64_cpy;
-          function readDouble_f64_cpy(buf, pos) {
-            f8b[0] = buf[pos];
-            f8b[1] = buf[pos + 1];
-            f8b[2] = buf[pos + 2];
-            f8b[3] = buf[pos + 3];
-            f8b[4] = buf[pos + 4];
-            f8b[5] = buf[pos + 5];
-            f8b[6] = buf[pos + 6];
-            f8b[7] = buf[pos + 7];
-            return f64[0];
-          }
-          __name(readDouble_f64_cpy, "readDouble_f64_cpy");
-          function readDouble_f64_rev(buf, pos) {
-            f8b[7] = buf[pos];
-            f8b[6] = buf[pos + 1];
-            f8b[5] = buf[pos + 2];
-            f8b[4] = buf[pos + 3];
-            f8b[3] = buf[pos + 4];
-            f8b[2] = buf[pos + 5];
-            f8b[1] = buf[pos + 6];
-            f8b[0] = buf[pos + 7];
-            return f64[0];
-          }
-          __name(readDouble_f64_rev, "readDouble_f64_rev");
-          exports3.readDoubleLE = le ? readDouble_f64_cpy : readDouble_f64_rev;
-          exports3.readDoubleBE = le ? readDouble_f64_rev : readDouble_f64_cpy;
-        })();
-      else
-        (function() {
-          function writeDouble_ieee754(writeUint, off0, off1, val, buf, pos) {
-            var sign = val < 0 ? 1 : 0;
-            if (sign)
-              val = -val;
-            if (val === 0) {
-              writeUint(0, buf, pos + off0);
-              writeUint(1 / val > 0 ? (
-                /* positive */
-                0
-              ) : (
-                /* negative 0 */
-                2147483648
-              ), buf, pos + off1);
-            } else if (isNaN(val)) {
-              writeUint(0, buf, pos + off0);
-              writeUint(2146959360, buf, pos + off1);
-            } else if (val > 17976931348623157e292) {
-              writeUint(0, buf, pos + off0);
-              writeUint((sign << 31 | 2146435072) >>> 0, buf, pos + off1);
+        }
+        __name(writeFloat_ieee754, "writeFloat_ieee754");
+        exports3.writeFloatLE = writeFloat_ieee754.bind(null, writeUintLE);
+        exports3.writeFloatBE = writeFloat_ieee754.bind(null, writeUintBE);
+        function readFloat_ieee754(readUint, buf, pos) {
+          var uint = readUint(buf, pos), sign = (uint >> 31) * 2 + 1, exponent = uint >>> 23 & 255, mantissa = uint & 8388607;
+          return exponent === 255 ? mantissa ? NaN : sign * Infinity : exponent === 0 ? sign * 1401298464324817e-60 * mantissa : sign * Math.pow(2, exponent - 150) * (mantissa + 8388608);
+        }
+        __name(readFloat_ieee754, "readFloat_ieee754");
+        exports3.readFloatLE = readFloat_ieee754.bind(null, readUintLE);
+        exports3.readFloatBE = readFloat_ieee754.bind(null, readUintBE);
+      })();
+      if (typeof Float64Array !== "undefined") (function() {
+        var f64 = new Float64Array([-0]), f8b = new Uint8Array(f64.buffer), le = f8b[7] === 128;
+        function writeDouble_f64_cpy(val, buf, pos) {
+          f64[0] = val;
+          buf[pos] = f8b[0];
+          buf[pos + 1] = f8b[1];
+          buf[pos + 2] = f8b[2];
+          buf[pos + 3] = f8b[3];
+          buf[pos + 4] = f8b[4];
+          buf[pos + 5] = f8b[5];
+          buf[pos + 6] = f8b[6];
+          buf[pos + 7] = f8b[7];
+        }
+        __name(writeDouble_f64_cpy, "writeDouble_f64_cpy");
+        function writeDouble_f64_rev(val, buf, pos) {
+          f64[0] = val;
+          buf[pos] = f8b[7];
+          buf[pos + 1] = f8b[6];
+          buf[pos + 2] = f8b[5];
+          buf[pos + 3] = f8b[4];
+          buf[pos + 4] = f8b[3];
+          buf[pos + 5] = f8b[2];
+          buf[pos + 6] = f8b[1];
+          buf[pos + 7] = f8b[0];
+        }
+        __name(writeDouble_f64_rev, "writeDouble_f64_rev");
+        exports3.writeDoubleLE = le ? writeDouble_f64_cpy : writeDouble_f64_rev;
+        exports3.writeDoubleBE = le ? writeDouble_f64_rev : writeDouble_f64_cpy;
+        function readDouble_f64_cpy(buf, pos) {
+          f8b[0] = buf[pos];
+          f8b[1] = buf[pos + 1];
+          f8b[2] = buf[pos + 2];
+          f8b[3] = buf[pos + 3];
+          f8b[4] = buf[pos + 4];
+          f8b[5] = buf[pos + 5];
+          f8b[6] = buf[pos + 6];
+          f8b[7] = buf[pos + 7];
+          return f64[0];
+        }
+        __name(readDouble_f64_cpy, "readDouble_f64_cpy");
+        function readDouble_f64_rev(buf, pos) {
+          f8b[7] = buf[pos];
+          f8b[6] = buf[pos + 1];
+          f8b[5] = buf[pos + 2];
+          f8b[4] = buf[pos + 3];
+          f8b[3] = buf[pos + 4];
+          f8b[2] = buf[pos + 5];
+          f8b[1] = buf[pos + 6];
+          f8b[0] = buf[pos + 7];
+          return f64[0];
+        }
+        __name(readDouble_f64_rev, "readDouble_f64_rev");
+        exports3.readDoubleLE = le ? readDouble_f64_cpy : readDouble_f64_rev;
+        exports3.readDoubleBE = le ? readDouble_f64_rev : readDouble_f64_cpy;
+      })();
+      else (function() {
+        function writeDouble_ieee754(writeUint, off0, off1, val, buf, pos) {
+          var sign = val < 0 ? 1 : 0;
+          if (sign)
+            val = -val;
+          if (val === 0) {
+            writeUint(0, buf, pos + off0);
+            writeUint(1 / val > 0 ? (
+              /* positive */
+              0
+            ) : (
+              /* negative 0 */
+              2147483648
+            ), buf, pos + off1);
+          } else if (isNaN(val)) {
+            writeUint(0, buf, pos + off0);
+            writeUint(2146959360, buf, pos + off1);
+          } else if (val > 17976931348623157e292) {
+            writeUint(0, buf, pos + off0);
+            writeUint((sign << 31 | 2146435072) >>> 0, buf, pos + off1);
+          } else {
+            var mantissa;
+            if (val < 22250738585072014e-324) {
+              mantissa = val / 5e-324;
+              writeUint(mantissa >>> 0, buf, pos + off0);
+              writeUint((sign << 31 | mantissa / 4294967296) >>> 0, buf, pos + off1);
             } else {
-              var mantissa;
-              if (val < 22250738585072014e-324) {
-                mantissa = val / 5e-324;
-                writeUint(mantissa >>> 0, buf, pos + off0);
-                writeUint((sign << 31 | mantissa / 4294967296) >>> 0, buf, pos + off1);
-              } else {
-                var exponent = Math.floor(Math.log(val) / Math.LN2);
-                if (exponent === 1024)
-                  exponent = 1023;
-                mantissa = val * Math.pow(2, -exponent);
-                writeUint(mantissa * 4503599627370496 >>> 0, buf, pos + off0);
-                writeUint((sign << 31 | exponent + 1023 << 20 | mantissa * 1048576 & 1048575) >>> 0, buf, pos + off1);
-              }
+              var exponent = Math.floor(Math.log(val) / Math.LN2);
+              if (exponent === 1024)
+                exponent = 1023;
+              mantissa = val * Math.pow(2, -exponent);
+              writeUint(mantissa * 4503599627370496 >>> 0, buf, pos + off0);
+              writeUint((sign << 31 | exponent + 1023 << 20 | mantissa * 1048576 & 1048575) >>> 0, buf, pos + off1);
             }
           }
-          __name(writeDouble_ieee754, "writeDouble_ieee754");
-          exports3.writeDoubleLE = writeDouble_ieee754.bind(null, writeUintLE, 0, 4);
-          exports3.writeDoubleBE = writeDouble_ieee754.bind(null, writeUintBE, 4, 0);
-          function readDouble_ieee754(readUint, off0, off1, buf, pos) {
-            var lo = readUint(buf, pos + off0), hi = readUint(buf, pos + off1);
-            var sign = (hi >> 31) * 2 + 1, exponent = hi >>> 20 & 2047, mantissa = 4294967296 * (hi & 1048575) + lo;
-            return exponent === 2047 ? mantissa ? NaN : sign * Infinity : exponent === 0 ? sign * 5e-324 * mantissa : sign * Math.pow(2, exponent - 1075) * (mantissa + 4503599627370496);
-          }
-          __name(readDouble_ieee754, "readDouble_ieee754");
-          exports3.readDoubleLE = readDouble_ieee754.bind(null, readUintLE, 0, 4);
-          exports3.readDoubleBE = readDouble_ieee754.bind(null, readUintBE, 4, 0);
-        })();
+        }
+        __name(writeDouble_ieee754, "writeDouble_ieee754");
+        exports3.writeDoubleLE = writeDouble_ieee754.bind(null, writeUintLE, 0, 4);
+        exports3.writeDoubleBE = writeDouble_ieee754.bind(null, writeUintBE, 4, 0);
+        function readDouble_ieee754(readUint, off0, off1, buf, pos) {
+          var lo = readUint(buf, pos + off0), hi = readUint(buf, pos + off1);
+          var sign = (hi >> 31) * 2 + 1, exponent = hi >>> 20 & 2047, mantissa = 4294967296 * (hi & 1048575) + lo;
+          return exponent === 2047 ? mantissa ? NaN : sign * Infinity : exponent === 0 ? sign * 5e-324 * mantissa : sign * Math.pow(2, exponent - 1075) * (mantissa + 4503599627370496);
+        }
+        __name(readDouble_ieee754, "readDouble_ieee754");
+        exports3.readDoubleLE = readDouble_ieee754.bind(null, readUintLE, 0, 4);
+        exports3.readDoubleBE = readDouble_ieee754.bind(null, readUintBE, 4, 0);
+      })();
       return exports3;
     }
     __name(factory, "factory");
@@ -2549,9 +1256,9 @@ var require_minimal = __commonJS({
       function CustomError(message, properties) {
         if (!(this instanceof CustomError))
           return new CustomError(message, properties);
-        Object.defineProperty(this, "message", { get: function() {
+        Object.defineProperty(this, "message", { get: /* @__PURE__ */ __name(function() {
           return message;
-        } });
+        }, "get") });
         if (Error.captureStackTrace)
           Error.captureStackTrace(this, CustomError);
         else
@@ -2853,9 +1560,8 @@ var require_writer_buffer = __commonJS({
       }, "writeBytesBuffer_set") : /* @__PURE__ */ __name(function writeBytesBuffer_copy(val, buf, pos) {
         if (val.copy)
           val.copy(buf, pos, 0, val.length);
-        else
-          for (var i = 0; i < val.length; )
-            buf[pos++] = val[i++];
+        else for (var i = 0; i < val.length; )
+          buf[pos++] = val[i++];
       }, "writeBytesBuffer_copy");
     };
     BufferWriter.prototype.bytes = /* @__PURE__ */ __name(function write_bytes_buffer(value) {
@@ -2929,20 +1635,15 @@ var require_reader = __commonJS({
       var value = 4294967295;
       return /* @__PURE__ */ __name(function read_uint32() {
         value = (this.buf[this.pos] & 127) >>> 0;
-        if (this.buf[this.pos++] < 128)
-          return value;
+        if (this.buf[this.pos++] < 128) return value;
         value = (value | (this.buf[this.pos] & 127) << 7) >>> 0;
-        if (this.buf[this.pos++] < 128)
-          return value;
+        if (this.buf[this.pos++] < 128) return value;
         value = (value | (this.buf[this.pos] & 127) << 14) >>> 0;
-        if (this.buf[this.pos++] < 128)
-          return value;
+        if (this.buf[this.pos++] < 128) return value;
         value = (value | (this.buf[this.pos] & 127) << 21) >>> 0;
-        if (this.buf[this.pos++] < 128)
-          return value;
+        if (this.buf[this.pos++] < 128) return value;
         value = (value | (this.buf[this.pos] & 15) << 28) >>> 0;
-        if (this.buf[this.pos++] < 128)
-          return value;
+        if (this.buf[this.pos++] < 128) return value;
         if ((this.pos += 5) > this.len) {
           this.pos = this.len;
           throw indexOutOfRange(this, 10);
@@ -3086,6 +1787,7 @@ var require_reader = __commonJS({
         case 5:
           this.skip(4);
           break;
+        /* istanbul ignore next */
         default:
           throw Error("invalid wire type " + wireType + " at offset " + this.pos);
       }
@@ -4183,8 +2885,8 @@ var require_root = __commonJS({
           return resource;
         }();
         proto.trace = function() {
-          var trace5 = {};
-          trace5.v1 = function() {
+          var trace3 = {};
+          trace3.v1 = function() {
             var v1 = {};
             v1.TracesData = function() {
               function TracesData(properties) {
@@ -5648,13 +4350,13 @@ var require_root = __commonJS({
             }();
             return v1;
           }();
-          return trace5;
+          return trace3;
         }();
         proto.collector = function() {
           var collector = {};
           collector.trace = function() {
-            var trace5 = {};
-            trace5.v1 = function() {
+            var trace3 = {};
+            trace3.v1 = function() {
               var v1 = {};
               v1.TraceService = function() {
                 function TraceService(rpcImpl, requestDelimited, responseDelimited) {
@@ -5992,7 +4694,7 @@ var require_root = __commonJS({
               }();
               return v1;
             }();
-            return trace5;
+            return trace3;
           }();
           collector.metrics = function() {
             var metrics = {};
@@ -11014,7 +9716,7 @@ var require_root = __commonJS({
 
 // ../../node_modules/.pnpm/@opentelemetry+otlp-proto-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-proto-exporter-base/build/esm/platform/types.js
 var ServiceClientType;
-var init_types4 = __esm({
+var init_types3 = __esm({
   "../../node_modules/.pnpm/@opentelemetry+otlp-proto-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-proto-exporter-base/build/esm/platform/types.js"() {
     "use strict";
     (function(ServiceClientType2) {
@@ -11040,7 +9742,7 @@ var init_util3 = __esm({
   "../../node_modules/.pnpm/@opentelemetry+otlp-proto-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-proto-exporter-base/build/esm/platform/util.js"() {
     "use strict";
     root = __toESM(require_root());
-    init_types4();
+    init_types3();
     __name(getExportRequestProto, "getExportRequestProto");
   }
 });
@@ -11066,7 +9768,7 @@ function send(collector, objects, compression, onSuccess, onError) {
 var init_util4 = __esm({
   "../../node_modules/.pnpm/@opentelemetry+otlp-proto-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-proto-exporter-base/build/esm/platform/node/util.js"() {
     "use strict";
-    init_esm2();
+    init_esm();
     init_util3();
     __name(send, "send");
   }
@@ -11080,8 +9782,7 @@ var require_err_helpers = __commonJS({
       return err && typeof err.message === "string";
     }, "isErrorLike");
     var getErrorCause = /* @__PURE__ */ __name((err) => {
-      if (!err)
-        return;
+      if (!err) return;
       const cause = err.cause;
       if (typeof cause === "function") {
         const causeResult = err.cause();
@@ -11091,8 +9792,7 @@ var require_err_helpers = __commonJS({
       }
     }, "getErrorCause");
     var _stackWithCauses = /* @__PURE__ */ __name((err, seen) => {
-      if (!isErrorLike(err))
-        return "";
+      if (!isErrorLike(err)) return "";
       const stack = err.stack || "";
       if (seen.has(err)) {
         return stack + "\ncauses have become circular...";
@@ -11107,8 +9807,7 @@ var require_err_helpers = __commonJS({
     }, "_stackWithCauses");
     var stackWithCauses = /* @__PURE__ */ __name((err) => _stackWithCauses(err, /* @__PURE__ */ new Set()), "stackWithCauses");
     var _messageWithCauses = /* @__PURE__ */ __name((err, seen, skip) => {
-      if (!isErrorLike(err))
-        return "";
+      if (!isErrorLike(err)) return "";
       const message = skip ? "" : err.message || "";
       if (seen.has(err)) {
         return message + ": ...";
@@ -11161,12 +9860,12 @@ var require_err_proto = __commonJS({
       },
       raw: {
         enumerable: false,
-        get: function() {
+        get: /* @__PURE__ */ __name(function() {
           return this[rawSymbol];
-        },
-        set: function(val) {
+        }, "get"),
+        set: /* @__PURE__ */ __name(function(val) {
           this[rawSymbol] = val;
-        }
+        }, "set")
       }
     });
     Object.defineProperty(pinoErrProto, rawSymbol, {
@@ -11320,12 +10019,12 @@ var require_req = __commonJS({
       },
       raw: {
         enumerable: false,
-        get: function() {
+        get: /* @__PURE__ */ __name(function() {
           return this[rawSymbol];
-        },
-        set: function(val) {
+        }, "get"),
+        set: /* @__PURE__ */ __name(function(val) {
           this[rawSymbol] = val;
-        }
+        }, "set")
       }
     });
     Object.defineProperty(pinoReqProto, rawSymbol, {
@@ -11387,12 +10086,12 @@ var require_res = __commonJS({
       },
       raw: {
         enumerable: false,
-        get: function() {
+        get: /* @__PURE__ */ __name(function() {
           return this[rawSymbol];
-        },
-        set: function(val) {
+        }, "get"),
+        set: /* @__PURE__ */ __name(function(val) {
           this[rawSymbol] = val;
-        }
+        }, "set")
       }
     });
     Object.defineProperty(pinoResProto, rawSymbol, {
@@ -11432,22 +10131,19 @@ var require_pino_std_serializers = __commonJS({
       req: reqSerializers.reqSerializer,
       res: resSerializers.resSerializer,
       wrapErrorSerializer: /* @__PURE__ */ __name(function wrapErrorSerializer(customSerializer) {
-        if (customSerializer === errSerializer)
-          return customSerializer;
+        if (customSerializer === errSerializer) return customSerializer;
         return /* @__PURE__ */ __name(function wrapErrSerializer(err) {
           return customSerializer(errSerializer(err));
         }, "wrapErrSerializer");
       }, "wrapErrorSerializer"),
       wrapRequestSerializer: /* @__PURE__ */ __name(function wrapRequestSerializer(customSerializer) {
-        if (customSerializer === reqSerializers.reqSerializer)
-          return customSerializer;
+        if (customSerializer === reqSerializers.reqSerializer) return customSerializer;
         return /* @__PURE__ */ __name(function wrappedReqSerializer(req) {
           return customSerializer(reqSerializers.reqSerializer(req));
         }, "wrappedReqSerializer");
       }, "wrapRequestSerializer"),
       wrapResponseSerializer: /* @__PURE__ */ __name(function wrapResponseSerializer(customSerializer) {
-        if (customSerializer === resSerializers.resSerializer)
-          return customSerializer;
+        if (customSerializer === resSerializers.resSerializer) return customSerializer;
         return /* @__PURE__ */ __name(function wrappedResSerializer(res) {
           return customSerializer(resSerializers.resSerializer(res));
         }, "wrappedResSerializer");
@@ -11456,9 +10152,9 @@ var require_pino_std_serializers = __commonJS({
   }
 });
 
-// node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/caller.js
+// node_modules/.pnpm/pino@9.5.0/node_modules/pino/lib/caller.js
 var require_caller = __commonJS({
-  "node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/caller.js"(exports2, module2) {
+  "node_modules/.pnpm/pino@9.5.0/node_modules/pino/lib/caller.js"(exports2, module2) {
     "use strict";
     function noOpPrepareStackTrace(_5, stack) {
       return stack;
@@ -11501,13 +10197,10 @@ var require_validator = __commonJS({
             throw Error(ERR_PATHS_MUST_BE_STRINGS());
           }
           try {
-            if (/〇/.test(s))
-              throw Error();
+            if (/〇/.test(s)) throw Error();
             const expr = (s[0] === "[" ? "" : ".") + s.replace(/^\*/, "\u3007").replace(/\.\*/g, ".\u3007").replace(/\[\*\]/g, "[\u3007]");
-            if (/\n|\r|;/.test(expr))
-              throw Error();
-            if (/\/\*/.test(expr))
-              throw Error();
+            if (/\n|\r|;/.test(expr)) throw Error();
+            if (/\/\*/.test(expr)) throw Error();
             Function(`
             'use strict'
             const o = new Proxy({}, { get: () => o, set: () => { throw Error() } });
@@ -11545,10 +10238,8 @@ var require_parse = __commonJS({
         var path = strPath.match(rx).map((p) => p.replace(/'|"|`/g, ""));
         const leadingBracket = strPath[0] === "[";
         path = path.map((p) => {
-          if (p[0] === "[")
-            return p.substr(1, p.length - 2);
-          else
-            return p;
+          if (p[0] === "[") return p.substr(1, p.length - 2);
+          else return p;
         });
         const star = path.indexOf("*");
         if (star > -1) {
@@ -11622,14 +10313,11 @@ var require_redactor = __commonJS({
         while ((match = rx.exec(path)) !== null) {
           const [, ix] = match;
           const { index, input } = match;
-          if (index > skip)
-            hops.push(input.substring(0, index - (ix ? 0 : 1)));
+          if (index > skip) hops.push(input.substring(0, index - (ix ? 0 : 1)));
         }
         var existence = hops.map((p) => `o${delim}${p}`).join(" && ");
-        if (existence.length === 0)
-          existence += `o${delim}${path} != null`;
-        else
-          existence += ` && o${delim}${path} != null`;
+        if (existence.length === 0) existence += `o${delim}${path} != null`;
+        else existence += ` && o${delim}${path} != null`;
         const circularDetection = `
       switch (true) {
         ${hops.reverse().map((p) => `
@@ -11696,8 +10384,7 @@ var require_modifiers = __commonJS({
       nestedRestore
     };
     function groupRestore({ keys, values, target }) {
-      if (target == null || typeof target === "string")
-        return;
+      if (target == null || typeof target === "string") return;
       const length = keys.length;
       for (var i = 0; i < length; i++) {
         const k = keys[i];
@@ -11707,8 +10394,7 @@ var require_modifiers = __commonJS({
     __name(groupRestore, "groupRestore");
     function groupRedact(o, path, censor, isCensorFct, censorFctTakesPath) {
       const target = get(o, path);
-      if (target == null || typeof target === "string")
-        return { keys: null, values: null, target, flat: true };
+      if (target == null || typeof target === "string") return { keys: null, values: null, target, flat: true };
       const keys = Object.keys(target);
       const keysLength = keys.length;
       const pathLength = path.length;
@@ -11742,8 +10428,7 @@ var require_modifiers = __commonJS({
     __name(nestedRestore, "nestedRestore");
     function nestedRedact(store, o, path, ns, censor, isCensorFct, censorFctTakesPath) {
       const target = get(o, path);
-      if (target == null)
-        return;
+      if (target == null) return;
       const keys = Object.keys(target);
       const keysLength = keys.length;
       for (var i = 0; i < keysLength; i++) {
@@ -11774,8 +10459,7 @@ var require_modifiers = __commonJS({
       var depth = 0;
       var redactPathCurrent = tree();
       ov = n = o[k];
-      if (typeof n !== "object")
-        return;
+      if (typeof n !== "object") return;
       while (n != null && ++i < afterPathLen) {
         depth += 1;
         k = afterPath[i];
@@ -11841,8 +10525,7 @@ var require_modifiers = __commonJS({
           }
           n = n[k];
         }
-        if (typeof n !== "object")
-          break;
+        if (typeof n !== "object") break;
         if (ov === oov || typeof ov === "undefined") {
         }
       }
@@ -12003,10 +10686,8 @@ var require_state = __commonJS({
         wcLen
       } = o;
       const builder = [{ secret, censor, compileRestore }];
-      if (serialize !== false)
-        builder.push({ serialize });
-      if (wcLen > 0)
-        builder.push({ groupRedact, nestedRedact, wildcards, wcLen });
+      if (serialize !== false) builder.push({ serialize });
+      if (wcLen > 0) builder.push({ groupRedact, nestedRedact, wildcards, wcLen });
       return Object.assign(...builder);
     }
     __name(state, "state");
@@ -12041,8 +10722,7 @@ var require_fast_redact = __commonJS({
       const censor = remove === true ? void 0 : "censor" in opts ? opts.censor : DEFAULT_CENSOR;
       const isCensorFct = typeof censor === "function";
       const censorFctTakesPath = isCensorFct && censor.length > 1;
-      if (paths.length === 0)
-        return serialize || noop;
+      if (paths.length === 0) return serialize || noop;
       validate({ paths, serialize, censor });
       const { wildcards, wcLen, secret } = parse({ paths, censor });
       const compileRestore = restorer();
@@ -12062,9 +10742,9 @@ var require_fast_redact = __commonJS({
   }
 });
 
-// node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/symbols.js
+// node_modules/.pnpm/pino@9.5.0/node_modules/pino/lib/symbols.js
 var require_symbols = __commonJS({
-  "node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/symbols.js"(exports2, module2) {
+  "node_modules/.pnpm/pino@9.5.0/node_modules/pino/lib/symbols.js"(exports2, module2) {
     "use strict";
     var setLevelSym = Symbol("pino.setLevel");
     var getLevelSym = Symbol("pino.getLevel");
@@ -12133,16 +10813,16 @@ var require_symbols = __commonJS({
   }
 });
 
-// node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/redaction.js
+// node_modules/.pnpm/pino@9.5.0/node_modules/pino/lib/redaction.js
 var require_redaction = __commonJS({
-  "node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/redaction.js"(exports2, module2) {
+  "node_modules/.pnpm/pino@9.5.0/node_modules/pino/lib/redaction.js"(exports2, module2) {
     "use strict";
     var fastRedact = require_fast_redact();
     var { redactFmtSym, wildcardFirstSym } = require_symbols();
     var { rx, validator } = fastRedact;
     var validate = validator({
-      ERR_PATHS_MUST_BE_STRINGS: () => "pino \u2013 redacted paths must be strings",
-      ERR_INVALID_PATH: (s) => `pino \u2013 redact paths array contains an invalid path (${s})`
+      ERR_PATHS_MUST_BE_STRINGS: /* @__PURE__ */ __name(() => "pino \u2013 redacted paths must be strings", "ERR_PATHS_MUST_BE_STRINGS"),
+      ERR_INVALID_PATH: /* @__PURE__ */ __name((s) => `pino \u2013 redact paths array contains an invalid path (${s})`, "ERR_INVALID_PATH")
     });
     var CENSOR = "[Redacted]";
     var strict = false;
@@ -12213,8 +10893,7 @@ var require_redaction = __commonJS({
       if (Array.isArray(paths) === false) {
         throw Error("pino \u2013 redact must contain an array of strings");
       }
-      if (remove === true)
-        censor = void 0;
+      if (remove === true) censor = void 0;
       validate({ paths, censor });
       return { paths, censor };
     }
@@ -12223,9 +10902,9 @@ var require_redaction = __commonJS({
   }
 });
 
-// node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/time.js
+// node_modules/.pnpm/pino@9.5.0/node_modules/pino/lib/time.js
 var require_time = __commonJS({
-  "node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/time.js"(exports2, module2) {
+  "node_modules/.pnpm/pino@9.5.0/node_modules/pino/lib/time.js"(exports2, module2) {
     "use strict";
     var nullTime = /* @__PURE__ */ __name(() => "", "nullTime");
     var epochTime = /* @__PURE__ */ __name(() => `,"time":${Date.now()}`, "epochTime");
@@ -12253,8 +10932,7 @@ var require_quick_format_unescaped = __commonJS({
       var offset = 1;
       if (typeof f === "object" && f !== null) {
         var len = args2.length + offset;
-        if (len === 1)
-          return f;
+        if (len === 1) return f;
         var objects = new Array(len);
         objects[0] = ss(f);
         for (var index = 1; index < len; index++) {
@@ -12266,8 +10944,7 @@ var require_quick_format_unescaped = __commonJS({
         return f;
       }
       var argLen = args2.length;
-      if (argLen === 0)
-        return f;
+      if (argLen === 0) return f;
       var str = "";
       var a = 1 - offset;
       var lastPos = -1;
@@ -12277,11 +10954,11 @@ var require_quick_format_unescaped = __commonJS({
           lastPos = lastPos > -1 ? lastPos : 0;
           switch (f.charCodeAt(i + 1)) {
             case 100:
+            // 'd'
             case 102:
               if (a >= argLen)
                 break;
-              if (args2[a] == null)
-                break;
+              if (args2[a] == null) break;
               if (lastPos < i)
                 str += f.slice(lastPos, i);
               str += Number(args2[a]);
@@ -12291,8 +10968,7 @@ var require_quick_format_unescaped = __commonJS({
             case 105:
               if (a >= argLen)
                 break;
-              if (args2[a] == null)
-                break;
+              if (args2[a] == null) break;
               if (lastPos < i)
                 str += f.slice(lastPos, i);
               str += Math.floor(Number(args2[a]));
@@ -12300,12 +10976,13 @@ var require_quick_format_unescaped = __commonJS({
               i++;
               break;
             case 79:
+            // 'O'
             case 111:
+            // 'o'
             case 106:
               if (a >= argLen)
                 break;
-              if (args2[a] === void 0)
-                break;
+              if (args2[a] === void 0) break;
               if (lastPos < i)
                 str += f.slice(lastPos, i);
               var type = typeof args2[a];
@@ -12395,20 +11072,23 @@ var require_atomic_sleep = __commonJS({
   }
 });
 
-// node_modules/.pnpm/sonic-boom@4.0.1/node_modules/sonic-boom/index.js
+// node_modules/.pnpm/sonic-boom@4.2.0/node_modules/sonic-boom/index.js
 var require_sonic_boom = __commonJS({
-  "node_modules/.pnpm/sonic-boom@4.0.1/node_modules/sonic-boom/index.js"(exports2, module2) {
+  "node_modules/.pnpm/sonic-boom@4.2.0/node_modules/sonic-boom/index.js"(exports2, module2) {
     "use strict";
     var fs = require("fs");
     var EventEmitter = require("events");
     var inherits = require("util").inherits;
     var path = require("path");
     var sleep = require_atomic_sleep();
+    var assert = require("assert");
     var BUSY_WRITE_TIMEOUT = 100;
     var kEmptyBuffer = Buffer.allocUnsafe(0);
     var MAX_WRITE = 16 * 1024;
     var kContentModeBuffer = "buffer";
     var kContentModeUtf8 = "utf8";
+    var [major, minor] = (process.versions.node || "0.0").split(".").map(Number);
+    var kCopyBuffer = major >= 22 && minor >= 7;
     function openFile(file, sonic) {
       sonic._opening = true;
       sonic._writing = true;
@@ -12454,8 +11134,7 @@ var require_sonic_boom = __commonJS({
       const mode = sonic.mode;
       if (sonic.sync) {
         try {
-          if (sonic.mkdir)
-            fs.mkdirSync(path.dirname(file), { recursive: true });
+          if (sonic.mkdir) fs.mkdirSync(path.dirname(file), { recursive: true });
           const fd = fs.openSync(file, flags, mode);
           fileOpened(null, fd);
         } catch (err) {
@@ -12464,8 +11143,7 @@ var require_sonic_boom = __commonJS({
         }
       } else if (sonic.mkdir) {
         fs.mkdir(path.dirname(file), { recursive: true }, (err) => {
-          if (err)
-            return fileOpened(err);
+          if (err) return fileOpened(err);
           fs.open(file, flags, mode, fileOpened);
         });
       } else {
@@ -12477,7 +11155,7 @@ var require_sonic_boom = __commonJS({
       if (!(this instanceof SonicBoom)) {
         return new SonicBoom(opts);
       }
-      let { fd, dest, minLength, maxLength, maxWrite, sync, append = true, mkdir, retryEAGAIN, fsync, contentMode, mode } = opts || {};
+      let { fd, dest, minLength, maxLength, maxWrite, periodicFlush, sync, append = true, mkdir, retryEAGAIN, fsync, contentMode, mode } = opts || {};
       fd = fd || dest;
       this._len = 0;
       this.fd = -1;
@@ -12494,6 +11172,8 @@ var require_sonic_boom = __commonJS({
       this.minLength = minLength || 0;
       this.maxLength = maxLength || 0;
       this.maxWrite = maxWrite || MAX_WRITE;
+      this._periodicFlush = periodicFlush || 0;
+      this._periodicFlushTimer = void 0;
       this.sync = sync || false;
       this.writable = true;
       this._fsync = fsync || false;
@@ -12607,6 +11287,10 @@ var require_sonic_boom = __commonJS({
           this._asyncDrainScheduled = false;
         }
       });
+      if (this._periodicFlush !== 0) {
+        this._periodicFlushTimer = setInterval(() => this.flush(null), this._periodicFlush);
+        this._periodicFlushTimer.unref();
+      }
     }
     __name(SonicBoom, "SonicBoom");
     function releaseWritingBuf(writingBuf, len, n) {
@@ -12620,8 +11304,7 @@ var require_sonic_boom = __commonJS({
     __name(releaseWritingBuf, "releaseWritingBuf");
     function emitDrain(sonic) {
       const hasListeners = sonic.listenerCount("drain") > 0;
-      if (!hasListeners)
-        return;
+      if (!hasListeners) return;
       sonic._asyncDrainScheduled = false;
       sonic.emit("drain");
     }
@@ -12688,10 +11371,14 @@ var require_sonic_boom = __commonJS({
       this._flushPending = true;
       const onDrain = /* @__PURE__ */ __name(() => {
         if (!this._fsync) {
-          fs.fsync(this.fd, (err) => {
-            this._flushPending = false;
+          try {
+            fs.fsync(this.fd, (err) => {
+              this._flushPending = false;
+              cb(err);
+            });
+          } catch (err) {
             cb(err);
-          });
+          }
         } else {
           this._flushPending = false;
           cb();
@@ -12928,6 +11615,9 @@ var require_sonic_boom = __commonJS({
           release(err);
         }
       } else {
+        if (kCopyBuffer) {
+          this._writingBuf = Buffer.from(this._writingBuf);
+        }
         fs.write(this.fd, this._writingBuf, release);
       }
     }
@@ -12937,10 +11627,17 @@ var require_sonic_boom = __commonJS({
         sonic.once("ready", actualClose.bind(null, sonic));
         return;
       }
+      if (sonic._periodicFlushTimer !== void 0) {
+        clearInterval(sonic._periodicFlushTimer);
+      }
       sonic.destroyed = true;
       sonic._bufs = [];
       sonic._lens = [];
-      fs.fsync(sonic.fd, closeWrapped);
+      assert(typeof sonic.fd === "number", `sonic.fd must be a number, got ${typeof sonic.fd}`);
+      try {
+        fs.fsync(sonic.fd, closeWrapped);
+      } catch {
+      }
       function closeWrapped() {
         if (sonic.fd !== 1 && sonic.fd !== 2) {
           fs.close(sonic.fd, done);
@@ -13073,12 +11770,12 @@ var require_on_exit_leak_free = __commonJS({
   }
 });
 
-// node_modules/.pnpm/thread-stream@3.0.0/node_modules/thread-stream/package.json
+// node_modules/.pnpm/thread-stream@3.1.0/node_modules/thread-stream/package.json
 var require_package = __commonJS({
-  "node_modules/.pnpm/thread-stream@3.0.0/node_modules/thread-stream/package.json"(exports2, module2) {
+  "node_modules/.pnpm/thread-stream@3.1.0/node_modules/thread-stream/package.json"(exports2, module2) {
     module2.exports = {
       name: "thread-stream",
-      version: "3.0.0",
+      version: "3.1.0",
       description: "A streaming way to send data to a Node.js Worker Thread",
       main: "index.js",
       types: "index.d.ts",
@@ -13093,7 +11790,7 @@ var require_package = __commonJS({
         fastbench: "^1.0.1",
         husky: "^9.0.6",
         "pino-elasticsearch": "^8.0.0",
-        "sonic-boom": "^3.0.0",
+        "sonic-boom": "^4.0.1",
         standard: "^17.0.0",
         tap: "^16.2.0",
         "ts-node": "^10.8.0",
@@ -13101,7 +11798,8 @@ var require_package = __commonJS({
         "why-is-node-running": "^2.2.2"
       },
       scripts: {
-        test: 'standard && npm run transpile && tap "test/**/*.test.*js" && tap --ts test/*.test.*ts',
+        build: "tsc --noEmit",
+        test: 'standard && npm run build && npm run transpile && tap "test/**/*.test.*js" && tap --ts test/*.test.*ts',
         "test:ci": "standard && npm run transpile && npm run test:ci:js && npm run test:ci:ts",
         "test:ci:js": 'tap --no-check-coverage --timeout=120 --coverage-report=lcovonly "test/**/*.test.*js"',
         "test:ci:ts": 'tap --ts --no-check-coverage --coverage-report=lcovonly "test/**/*.test.*ts"',
@@ -13111,7 +11809,8 @@ var require_package = __commonJS({
       },
       standard: {
         ignore: [
-          "test/ts/**/*"
+          "test/ts/**/*",
+          "test/syntax-error.mjs"
         ]
       },
       repository: {
@@ -13134,9 +11833,9 @@ var require_package = __commonJS({
   }
 });
 
-// node_modules/.pnpm/thread-stream@3.0.0/node_modules/thread-stream/lib/wait.js
+// node_modules/.pnpm/thread-stream@3.1.0/node_modules/thread-stream/lib/wait.js
 var require_wait = __commonJS({
-  "node_modules/.pnpm/thread-stream@3.0.0/node_modules/thread-stream/lib/wait.js"(exports2, module2) {
+  "node_modules/.pnpm/thread-stream@3.1.0/node_modules/thread-stream/lib/wait.js"(exports2, module2) {
     "use strict";
     var MAX_TIMEOUT = 1e3;
     function wait(state, index, expected, timeout, done) {
@@ -13157,10 +11856,8 @@ var require_wait = __commonJS({
             if (current === prior) {
               check(backoff >= MAX_TIMEOUT ? MAX_TIMEOUT : backoff * 2);
             } else {
-              if (current === expected)
-                done(null, "ok");
-              else
-                done(null, "not-equal");
+              if (current === expected) done(null, "ok");
+              else done(null, "not-equal");
             }
           }, backoff);
         }
@@ -13196,9 +11893,9 @@ var require_wait = __commonJS({
   }
 });
 
-// node_modules/.pnpm/thread-stream@3.0.0/node_modules/thread-stream/lib/indexes.js
+// node_modules/.pnpm/thread-stream@3.1.0/node_modules/thread-stream/lib/indexes.js
 var require_indexes = __commonJS({
-  "node_modules/.pnpm/thread-stream@3.0.0/node_modules/thread-stream/lib/indexes.js"(exports2, module2) {
+  "node_modules/.pnpm/thread-stream@3.1.0/node_modules/thread-stream/lib/indexes.js"(exports2, module2) {
     "use strict";
     var WRITE_INDEX = 4;
     var READ_INDEX = 8;
@@ -13209,9 +11906,9 @@ var require_indexes = __commonJS({
   }
 });
 
-// node_modules/.pnpm/thread-stream@3.0.0/node_modules/thread-stream/index.js
+// node_modules/.pnpm/thread-stream@3.1.0/node_modules/thread-stream/index.js
 var require_thread_stream = __commonJS({
-  "node_modules/.pnpm/thread-stream@3.0.0/node_modules/thread-stream/index.js"(exports2, module2) {
+  "node_modules/.pnpm/thread-stream@3.1.0/node_modules/thread-stream/index.js"(exports2, module2) {
     "use strict";
     var { version } = require_package();
     var { EventEmitter } = require("events");
@@ -13652,9 +12349,9 @@ var require_thread_stream = __commonJS({
   }
 });
 
-// node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/transport.js
+// node_modules/.pnpm/pino@9.5.0/node_modules/pino/lib/transport.js
 var require_transport = __commonJS({
-  "node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/transport.js"(exports2, module2) {
+  "node_modules/.pnpm/pino@9.5.0/node_modules/pino/lib/transport.js"(exports2, module2) {
     "use strict";
     var { createRequire } = require("module");
     var getCallers = require_caller();
@@ -13670,11 +12367,12 @@ var require_transport = __commonJS({
       });
     }
     __name(setupOnExit, "setupOnExit");
-    function buildStream(filename, workerData, workerOpts) {
+    function buildStream(filename, workerData, workerOpts, sync) {
       const stream2 = new ThreadStream({
         filename,
         workerData,
-        workerOpts
+        workerOpts,
+        sync
       });
       stream2.on("ready", onReady);
       stream2.on("close", function() {
@@ -13715,7 +12413,10 @@ var require_transport = __commonJS({
     }
     __name(flush, "flush");
     function transport(fullOptions) {
-      const { pipeline, targets, levels, dedupe, options: options3 = {}, worker = {}, caller = getCallers() } = fullOptions;
+      const { pipeline, targets, levels, dedupe, worker = {}, caller = getCallers(), sync = false } = fullOptions;
+      const options3 = {
+        ...fullOptions.options
+      };
       const callers = typeof caller === "string" ? [caller] : caller;
       const bundlerOverrides = "__bundlerPathsOverrides" in globalThis ? globalThis.__bundlerPathsOverrides : {};
       let target = fullOptions.target;
@@ -13756,7 +12457,7 @@ var require_transport = __commonJS({
         options3.dedupe = dedupe;
       }
       options3.pinoWillSendConfig = true;
-      return buildStream(fixTarget(target), options3, worker);
+      return buildStream(fixTarget(target), options3, worker, sync);
       function fixTarget(origin) {
         origin = bundlerOverrides[origin] || origin;
         if (isAbsolute(origin) || origin.indexOf("file://") === 0) {
@@ -13768,8 +12469,8 @@ var require_transport = __commonJS({
         let fixTarget2;
         for (const filePath of callers) {
           try {
-            const context = filePath === "node:repl" ? process.cwd() + sep : filePath;
-            fixTarget2 = createRequire(context).resolve(origin);
+            const context3 = filePath === "node:repl" ? process.cwd() + sep : filePath;
+            fixTarget2 = createRequire(context3).resolve(origin);
             break;
           } catch (err) {
             continue;
@@ -13787,9 +12488,9 @@ var require_transport = __commonJS({
   }
 });
 
-// node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/tools.js
+// node_modules/.pnpm/pino@9.5.0/node_modules/pino/lib/tools.js
 var require_tools = __commonJS({
-  "node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/tools.js"(exports2, module2) {
+  "node_modules/.pnpm/pino@9.5.0/node_modules/pino/lib/tools.js"(exports2, module2) {
     "use strict";
     var format = require_quick_format_unescaped();
     var { mapHttpRequest, mapHttpResponse } = require_pino_std_serializers();
@@ -13819,8 +12520,7 @@ var require_tools = __commonJS({
     }
     __name(noop, "noop");
     function genLog(level, hook) {
-      if (!hook)
-        return LOG;
+      if (!hook) return LOG;
       return /* @__PURE__ */ __name(function hookWrappedLog(...args2) {
         hook.call(this, args2, LOG, level);
       }, "hookWrappedLog");
@@ -13916,9 +12616,9 @@ var require_tools = __commonJS({
               if (Number.isFinite(value) === false) {
                 value = null;
               }
+            // this case explicitly falls through to the next one
             case "boolean":
-              if (stringifier)
-                value = stringifier(value);
+              if (stringifier) value = stringifier(value);
               break;
             case "string":
               value = (stringifier || asString)(value);
@@ -13926,8 +12626,7 @@ var require_tools = __commonJS({
             default:
               value = (stringifier || stringify2)(value, stringifySafe);
           }
-          if (value === void 0)
-            continue;
+          if (value === void 0) continue;
           const strKey = asString(key);
           propStr += "," + strKey + ":" + value;
         }
@@ -13943,9 +12642,9 @@ var require_tools = __commonJS({
             if (Number.isFinite(value) === false) {
               value = null;
             }
+          // this case explicitly falls through to the next one
           case "boolean":
-            if (stringifier)
-              value = stringifier(value);
+            if (stringifier) value = stringifier(value);
             msgStr = ',"' + messageKey + '":' + value;
             break;
           case "string":
@@ -13980,8 +12679,7 @@ var require_tools = __commonJS({
         if (valid === true) {
           value = serializers[key] ? serializers[key](value) : value;
           value = (stringifiers[key] || wildcardStringifier || stringify2)(value, stringifySafe);
-          if (value === void 0)
-            continue;
+          if (value === void 0) continue;
           data += ',"' + key + '":' + value;
         }
       }
@@ -14064,10 +12762,8 @@ var require_tools = __commonJS({
           throw new Error("prettyPrint option is no longer supported, see the pino-pretty package (https://github.com/pinojs/pino-pretty)");
         }
         const { enabled, onChild } = opts;
-        if (enabled === false)
-          opts.level = "silent";
-        if (!onChild)
-          opts.onChild = noop;
+        if (enabled === false) opts.level = "silent";
+        if (!onChild) opts.onChild = noop;
         if (!stream2) {
           if (!hasBeenTampered(process.stdout)) {
             stream2 = buildSafeSonicBoom({ fd: process.stdout.fd || 1 });
@@ -14125,9 +12821,9 @@ var require_tools = __commonJS({
   }
 });
 
-// node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/constants.js
+// node_modules/.pnpm/pino@9.5.0/node_modules/pino/lib/constants.js
 var require_constants = __commonJS({
-  "node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/constants.js"(exports2, module2) {
+  "node_modules/.pnpm/pino@9.5.0/node_modules/pino/lib/constants.js"(exports2, module2) {
     "use strict";
     var DEFAULT_LEVELS = {
       trace: 10,
@@ -14148,9 +12844,9 @@ var require_constants = __commonJS({
   }
 });
 
-// node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/levels.js
+// node_modules/.pnpm/pino@9.5.0/node_modules/pino/lib/levels.js
 var require_levels = __commonJS({
-  "node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/levels.js"(exports2, module2) {
+  "node_modules/.pnpm/pino@9.5.0/node_modules/pino/lib/levels.js"(exports2, module2) {
     "use strict";
     var {
       lsCacheSym,
@@ -14164,7 +12860,7 @@ var require_levels = __commonJS({
     var { noop, genLog } = require_tools();
     var { DEFAULT_LEVELS, SORTING_ORDER } = require_constants();
     var levelMethods = {
-      fatal: (hook) => {
+      fatal: /* @__PURE__ */ __name((hook) => {
         const logFatal = genLog(DEFAULT_LEVELS.fatal, hook);
         return function(...args2) {
           const stream2 = this[streamSym];
@@ -14176,12 +12872,12 @@ var require_levels = __commonJS({
             }
           }
         };
-      },
-      error: (hook) => genLog(DEFAULT_LEVELS.error, hook),
-      warn: (hook) => genLog(DEFAULT_LEVELS.warn, hook),
-      info: (hook) => genLog(DEFAULT_LEVELS.info, hook),
-      debug: (hook) => genLog(DEFAULT_LEVELS.debug, hook),
-      trace: (hook) => genLog(DEFAULT_LEVELS.trace, hook)
+      }, "fatal"),
+      error: /* @__PURE__ */ __name((hook) => genLog(DEFAULT_LEVELS.error, hook), "error"),
+      warn: /* @__PURE__ */ __name((hook) => genLog(DEFAULT_LEVELS.warn, hook), "warn"),
+      info: /* @__PURE__ */ __name((hook) => genLog(DEFAULT_LEVELS.info, hook), "info"),
+      debug: /* @__PURE__ */ __name((hook) => genLog(DEFAULT_LEVELS.debug, hook), "debug"),
+      trace: /* @__PURE__ */ __name((hook) => genLog(DEFAULT_LEVELS.trace, hook), "trace")
     };
     var nums = Object.keys(DEFAULT_LEVELS).reduce((o, k) => {
       o[DEFAULT_LEVELS[k]] = k;
@@ -14223,12 +12919,10 @@ var require_levels = __commonJS({
     function setLevel(level) {
       const { labels, values } = this.levels;
       if (typeof level === "number") {
-        if (labels[level] === void 0)
-          throw Error("unknown level value" + level);
+        if (labels[level] === void 0) throw Error("unknown level value" + level);
         level = labels[level];
       }
-      if (values[level] === void 0)
-        throw Error("unknown level " + level);
+      if (values[level] === void 0) throw Error("unknown level " + level);
       const preLevelVal = this[levelValSym];
       const levelVal = this[levelValSym] = values[level];
       const useOnlyCustomLevelsVal = this[useOnlyCustomLevelsSym];
@@ -14354,17 +13048,17 @@ var require_levels = __commonJS({
   }
 });
 
-// node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/meta.js
+// node_modules/.pnpm/pino@9.5.0/node_modules/pino/lib/meta.js
 var require_meta = __commonJS({
-  "node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/meta.js"(exports2, module2) {
+  "node_modules/.pnpm/pino@9.5.0/node_modules/pino/lib/meta.js"(exports2, module2) {
     "use strict";
-    module2.exports = { version: "9.1.0" };
+    module2.exports = { version: "9.5.0" };
   }
 });
 
-// node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/proto.js
+// node_modules/.pnpm/pino@9.5.0/node_modules/pino/lib/proto.js
 var require_proto = __commonJS({
-  "node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/proto.js"(exports2, module2) {
+  "node_modules/.pnpm/pino@9.5.0/node_modules/pino/lib/proto.js"(exports2, module2) {
     "use strict";
     var { EventEmitter } = require("events");
     var {
@@ -14474,8 +13168,7 @@ var require_proto = __commonJS({
           const bks = bindingsSymbols[bi];
           instance[serializersSym][bks] = options3.serializers[bks];
         }
-      } else
-        instance[serializersSym] = serializers;
+      } else instance[serializersSym] = serializers;
       if (options3.hasOwnProperty("formatters")) {
         const { level, bindings: chindings, log } = options3.formatters;
         instance[formattersSym] = buildFormatters(
@@ -14577,16 +13270,15 @@ var require_proto = __commonJS({
       const stream2 = this[streamSym];
       if (typeof stream2.flush === "function") {
         stream2.flush(cb || noop);
-      } else if (cb)
-        cb();
+      } else if (cb) cb();
     }
     __name(flush, "flush");
   }
 });
 
-// node_modules/.pnpm/safe-stable-stringify@2.4.3/node_modules/safe-stable-stringify/index.js
+// node_modules/.pnpm/safe-stable-stringify@2.5.0/node_modules/safe-stable-stringify/index.js
 var require_safe_stable_stringify = __commonJS({
-  "node_modules/.pnpm/safe-stable-stringify@2.4.3/node_modules/safe-stable-stringify/index.js"(exports2, module2) {
+  "node_modules/.pnpm/safe-stable-stringify@2.5.0/node_modules/safe-stable-stringify/index.js"(exports2, module2) {
     "use strict";
     var { hasOwnProperty } = Object.prototype;
     var stringify = configure();
@@ -14596,7 +13288,7 @@ var require_safe_stable_stringify = __commonJS({
     exports2.stringify = stringify;
     exports2.configure = configure;
     module2.exports = stringify;
-    var strEscapeSequencesRegExp = /[\u0000-\u001f\u0022\u005c\ud800-\udfff]|[\ud800-\udbff](?![\udc00-\udfff])|(?:[^\ud800-\udbff]|^)[\udc00-\udfff]/;
+    var strEscapeSequencesRegExp = /[\u0000-\u001f\u0022\u005c\ud800-\udfff]/;
     function strEscape(str) {
       if (str.length < 5e3 && !strEscapeSequencesRegExp.test(str)) {
         return `"${str}"`;
@@ -14604,9 +13296,9 @@ var require_safe_stable_stringify = __commonJS({
       return JSON.stringify(str);
     }
     __name(strEscape, "strEscape");
-    function insertSort(array) {
-      if (array.length > 200) {
-        return array.sort();
+    function sort(array, comparator) {
+      if (array.length > 200 || comparator) {
+        return array.sort(comparator);
       }
       for (let i = 1; i < array.length; i++) {
         const currentValue = array[i];
@@ -14619,7 +13311,7 @@ var require_safe_stable_stringify = __commonJS({
       }
       return array;
     }
-    __name(insertSort, "insertSort");
+    __name(sort, "sort");
     var typedArrayPrototypeGetSymbolToStringTag = Object.getOwnPropertyDescriptor(
       Object.getPrototypeOf(
         Object.getPrototypeOf(
@@ -14665,6 +13357,17 @@ var require_safe_stable_stringify = __commonJS({
       return '"[Circular]"';
     }
     __name(getCircularValueOption, "getCircularValueOption");
+    function getDeterministicOption(options3) {
+      let value;
+      if (hasOwnProperty.call(options3, "deterministic")) {
+        value = options3.deterministic;
+        if (typeof value !== "boolean" && typeof value !== "function") {
+          throw new TypeError('The "deterministic" argument must be of type boolean or comparator function');
+        }
+      }
+      return value === void 0 ? true : value;
+    }
+    __name(getDeterministicOption, "getDeterministicOption");
     function getBooleanOption(options3, key) {
       let value;
       if (hasOwnProperty.call(options3, key)) {
@@ -14719,8 +13422,7 @@ var require_safe_stable_stringify = __commonJS({
         if (value) {
           return (value2) => {
             let message = `Object can not safely be stringified. Received type ${typeof value2}`;
-            if (typeof value2 !== "function")
-              message += ` (${value2.toString()})`;
+            if (typeof value2 !== "function") message += ` (${value2.toString()})`;
             throw new Error(message);
           };
         }
@@ -14740,7 +13442,8 @@ var require_safe_stable_stringify = __commonJS({
       }
       const circularValue = getCircularValueOption(options3);
       const bigint = getBooleanOption(options3, "bigint");
-      const deterministic = getBooleanOption(options3, "deterministic");
+      const deterministic = getDeterministicOption(options3);
+      const comparator = typeof deterministic === "function" ? deterministic : void 0;
       const maximumDepth = getPositiveIntegerOption(options3, "maximumDepth");
       const maximumBreadth = getPositiveIntegerOption(options3, "maximumBreadth");
       function stringifyFnReplacer(key, parent, stack, replacer, spacer, indentation) {
@@ -14815,7 +13518,7 @@ ${indentation}`;
             }
             const maximumPropertiesToStringify = Math.min(keyLength, maximumBreadth);
             if (deterministic && !isTypedArrayWithEntries(value)) {
-              keys = insertSort(keys);
+              keys = sort(keys, comparator);
             }
             stack.push(value);
             for (let i = 0; i < maximumPropertiesToStringify; i++) {
@@ -14849,6 +13552,7 @@ ${originalIndentation}`;
             if (bigint) {
               return String(value);
             }
+          // fallthrough
           default:
             return fail ? fail(value) : void 0;
         }
@@ -14940,6 +13644,7 @@ ${originalIndentation}`;
             if (bigint) {
               return String(value);
             }
+          // fallthrough
           default:
             return fail ? fail(value) : void 0;
         }
@@ -15018,7 +13723,7 @@ ${indentation}`;
               separator = join;
             }
             if (deterministic) {
-              keys = insertSort(keys);
+              keys = sort(keys, comparator);
             }
             stack.push(value);
             for (let i = 0; i < maximumPropertiesToStringify; i++) {
@@ -15052,6 +13757,7 @@ ${originalIndentation}`;
             if (bigint) {
               return String(value);
             }
+          // fallthrough
           default:
             return fail ? fail(value) : void 0;
         }
@@ -15078,7 +13784,8 @@ ${originalIndentation}`;
               return circularValue;
             }
             let res = "";
-            if (Array.isArray(value)) {
+            const hasLength = value.length !== void 0;
+            if (hasLength && Array.isArray(value)) {
               if (value.length === 0) {
                 return "[]";
               }
@@ -15112,14 +13819,14 @@ ${originalIndentation}`;
             }
             let separator = "";
             let maximumPropertiesToStringify = Math.min(keyLength, maximumBreadth);
-            if (isTypedArrayWithEntries(value)) {
+            if (hasLength && isTypedArrayWithEntries(value)) {
               res += stringifyTypedArray(value, ",", maximumBreadth);
               keys = keys.slice(value.length);
               maximumPropertiesToStringify -= value.length;
               separator = ",";
             }
             if (deterministic) {
-              keys = insertSort(keys);
+              keys = sort(keys, comparator);
             }
             stack.push(value);
             for (let i = 0; i < maximumPropertiesToStringify; i++) {
@@ -15147,6 +13854,7 @@ ${originalIndentation}`;
             if (bigint) {
               return String(value);
             }
+          // fallthrough
           default:
             return fail ? fail(value) : void 0;
         }
@@ -15181,9 +13889,9 @@ ${originalIndentation}`;
   }
 });
 
-// node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/multistream.js
+// node_modules/.pnpm/pino@9.5.0/node_modules/pino/lib/multistream.js
 var require_multistream = __commonJS({
-  "node_modules/.pnpm/pino@9.1.0/node_modules/pino/lib/multistream.js"(exports2, module2) {
+  "node_modules/.pnpm/pino@9.5.0/node_modules/pino/lib/multistream.js"(exports2, module2) {
     "use strict";
     var metadata = Symbol.for("pino.metadata");
     var { DEFAULT_LEVELS } = require_constants();
@@ -15348,9 +14056,9 @@ var require_multistream = __commonJS({
   }
 });
 
-// node_modules/.pnpm/pino@9.1.0/node_modules/pino/pino.js
+// node_modules/.pnpm/pino@9.5.0/node_modules/pino/pino.js
 var require_pino = __commonJS({
-  "node_modules/.pnpm/pino@9.1.0/node_modules/pino/pino.js"(exports2, module2) {
+  "node_modules/.pnpm/pino@9.5.0/node_modules/pino/pino.js"(exports2, module2) {
     "use strict";
     var os = require("os");
     var stdSerializers = require_pino_std_serializers();
@@ -15437,6 +14145,7 @@ var require_pino = __commonJS({
     function pino2(...args2) {
       const instance = {};
       const { opts, stream: stream2 } = normalize(instance, caller(), ...args2);
+      if (opts.level && typeof opts.level === "string" && DEFAULT_LEVELS[opts.level.toLowerCase()] !== void 0) opts.level = opts.level.toLowerCase();
       const {
         redact,
         crlf,
@@ -15493,12 +14202,9 @@ var require_pino = __commonJS({
       }
       const time2 = timestamp instanceof Function ? timestamp : timestamp ? epochTime : nullTime;
       const timeSliceIndex = time2().indexOf(":") + 1;
-      if (useOnlyCustomLevels && !customLevels)
-        throw Error("customLevels is required if useOnlyCustomLevels is set true");
-      if (mixin3 && typeof mixin3 !== "function")
-        throw Error(`Unknown mixin type "${typeof mixin3}" - expected "function"`);
-      if (msgPrefix && typeof msgPrefix !== "string")
-        throw Error(`Unknown msgPrefix type "${typeof msgPrefix}" - expected "string"`);
+      if (useOnlyCustomLevels && !customLevels) throw Error("customLevels is required if useOnlyCustomLevels is set true");
+      if (mixin3 && typeof mixin3 !== "function") throw Error(`Unknown mixin type "${typeof mixin3}" - expected "function"`);
+      if (msgPrefix && typeof msgPrefix !== "string") throw Error(`Unknown msgPrefix type "${typeof msgPrefix}" - expected "string"`);
       assertDefaultLevelFound(level, customLevels, useOnlyCustomLevels);
       const levels = mappings(customLevels, useOnlyCustomLevels);
       if (typeof stream2.emit === "function") {
@@ -15597,25 +14303,25 @@ var import_auto_instrumentations_node = require("@opentelemetry/auto-instrumenta
 var import_sdk_node = require("@opentelemetry/sdk-node");
 var import_sdk_trace_node = require("@opentelemetry/sdk-trace-node");
 var import_resources = require("@opentelemetry/resources");
-var import_semantic_conventions5 = require("@opentelemetry/semantic-conventions");
+var import_core7 = require("@opentelemetry/core");
+var import_semantic_conventions4 = require("@opentelemetry/semantic-conventions");
 var import_api_logs2 = require("@opentelemetry/api-logs");
 var import_sdk_logs = require("@opentelemetry/sdk-logs");
+var import_baggage_span_processor = require("@opentelemetry/baggage-span-processor");
 
 // ../../node_modules/.pnpm/@opentelemetry+exporter-logs-otlp-proto@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/exporter-logs-otlp-proto/build/esm/platform/node/OTLPLogExporter.js
+var import_core6 = require("@opentelemetry/core");
 init_esm();
-init_esm2();
 
 // ../../node_modules/.pnpm/@opentelemetry+otlp-proto-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-proto-exporter-base/build/esm/platform/node/OTLPProtoExporterNodeBase.js
-var import_api18 = require("@opentelemetry/api");
-init_esm2();
-var __extends4 = /* @__PURE__ */ function() {
+var import_api5 = require("@opentelemetry/api");
+init_esm();
+var __extends3 = /* @__PURE__ */ function() {
   var extendStatics = /* @__PURE__ */ __name(function(d, b) {
     extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(d2, b2) {
       d2.__proto__ = b2;
     } || function(d2, b2) {
-      for (var p in b2)
-        if (Object.prototype.hasOwnProperty.call(b2, p))
-          d2[p] = b2[p];
+      for (var p in b2) if (Object.prototype.hasOwnProperty.call(b2, p)) d2[p] = b2[p];
     };
     return extendStatics(d, b);
   }, "extendStatics");
@@ -15633,7 +14339,7 @@ var __extends4 = /* @__PURE__ */ function() {
 var OTLPProtoExporterNodeBase = (
   /** @class */
   function(_super) {
-    __extends4(OTLPProtoExporterNodeBase2, _super);
+    __extends3(OTLPProtoExporterNodeBase2, _super);
     function OTLPProtoExporterNodeBase2(config5) {
       if (config5 === void 0) {
         config5 = {};
@@ -15656,7 +14362,7 @@ var OTLPProtoExporterNodeBase = (
     OTLPProtoExporterNodeBase2.prototype.send = function(objects, onSuccess, onError) {
       var _this = this;
       if (this._shutdownOnce.isCalled) {
-        import_api18.diag.debug("Shutdown already started. Cannot send objects");
+        import_api5.diag.debug("Shutdown already started. Cannot send objects");
         return;
       }
       if (!this._send) {
@@ -15674,10 +14380,10 @@ var OTLPProtoExporterNodeBase = (
 );
 
 // ../../node_modules/.pnpm/@opentelemetry+otlp-proto-exporter-base@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-proto-exporter-base/build/esm/platform/index.js
-init_types4();
+init_types3();
 
 // ../../node_modules/.pnpm/@opentelemetry+otlp-transformer@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-transformer/build/esm/common/index.js
-init_esm();
+var import_core5 = require("@opentelemetry/core");
 function hrTimeToNanos(hrTime) {
   var NANOSECONDS = BigInt(1e9);
   return BigInt(hrTime[0]) * NANOSECONDS + BigInt(hrTime[1]);
@@ -15699,7 +14405,7 @@ function encodeAsString(hrTime) {
   return nanos.toString();
 }
 __name(encodeAsString, "encodeAsString");
-var encodeTimestamp = typeof BigInt !== "undefined" ? encodeAsString : hrTimeToNanoseconds;
+var encodeTimestamp = typeof BigInt !== "undefined" ? encodeAsString : import_core5.hrTimeToNanoseconds;
 function identity(value) {
   return value;
 }
@@ -15707,47 +14413,43 @@ __name(identity, "identity");
 function optionalHexToBinary(str) {
   if (str === void 0)
     return void 0;
-  return hexToBinary(str);
+  return (0, import_core5.hexToBinary)(str);
 }
 __name(optionalHexToBinary, "optionalHexToBinary");
 var DEFAULT_ENCODER = {
   encodeHrTime: encodeAsLongBits,
-  encodeSpanContext: hexToBinary,
+  encodeSpanContext: import_core5.hexToBinary,
   encodeOptionalSpanContext: optionalHexToBinary
 };
 function getOtlpEncoder(options3) {
-  var _a2, _b;
+  var _a, _b;
   if (options3 === void 0) {
     return DEFAULT_ENCODER;
   }
-  var useLongBits = (_a2 = options3.useLongBits) !== null && _a2 !== void 0 ? _a2 : true;
+  var useLongBits = (_a = options3.useLongBits) !== null && _a !== void 0 ? _a : true;
   var useHex = (_b = options3.useHex) !== null && _b !== void 0 ? _b : false;
   return {
     encodeHrTime: useLongBits ? encodeAsLongBits : encodeTimestamp,
-    encodeSpanContext: useHex ? identity : hexToBinary,
+    encodeSpanContext: useHex ? identity : import_core5.hexToBinary,
     encodeOptionalSpanContext: useHex ? identity : optionalHexToBinary
   };
 }
 __name(getOtlpEncoder, "getOtlpEncoder");
 
 // ../../node_modules/.pnpm/@opentelemetry+otlp-transformer@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-transformer/build/esm/common/internal.js
-var __read4 = function(o, n) {
+var __read2 = function(o, n) {
   var m = typeof Symbol === "function" && o[Symbol.iterator];
-  if (!m)
-    return o;
+  if (!m) return o;
   var i = m.call(o), r, ar = [], e;
   try {
-    while ((n === void 0 || n-- > 0) && !(r = i.next()).done)
-      ar.push(r.value);
+    while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
   } catch (error) {
     e = { error };
   } finally {
     try {
-      if (r && !r.done && (m = i["return"]))
-        m.call(i);
+      if (r && !r.done && (m = i["return"])) m.call(i);
     } finally {
-      if (e)
-        throw e.error;
+      if (e) throw e.error;
     }
   }
   return ar;
@@ -15790,8 +14492,8 @@ function toAnyValue(value) {
   if (t === "object" && value != null)
     return {
       kvlistValue: {
-        values: Object.entries(value).map(function(_a2) {
-          var _b = __read4(_a2, 2), k = _b[0], v = _b[1];
+        values: Object.entries(value).map(function(_a) {
+          var _b = __read2(_a, 2), k = _b[0], v = _b[1];
           return toKeyValue(k, v);
         })
       }
@@ -15810,37 +14512,30 @@ function createResource(resource) {
 __name(createResource, "createResource");
 
 // ../../node_modules/.pnpm/@opentelemetry+otlp-transformer@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/otlp-transformer/build/esm/logs/index.js
-var __values2 = function(o) {
+var __values = function(o) {
   var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-  if (m)
-    return m.call(o);
-  if (o && typeof o.length === "number")
-    return {
-      next: function() {
-        if (o && i >= o.length)
-          o = void 0;
-        return { value: o && o[i++], done: !o };
-      }
-    };
+  if (m) return m.call(o);
+  if (o && typeof o.length === "number") return {
+    next: /* @__PURE__ */ __name(function() {
+      if (o && i >= o.length) o = void 0;
+      return { value: o && o[i++], done: !o };
+    }, "next")
+  };
   throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
-var __read5 = function(o, n) {
+var __read3 = function(o, n) {
   var m = typeof Symbol === "function" && o[Symbol.iterator];
-  if (!m)
-    return o;
+  if (!m) return o;
   var i = m.call(o), r, ar = [], e;
   try {
-    while ((n === void 0 || n-- > 0) && !(r = i.next()).done)
-      ar.push(r.value);
+    while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
   } catch (error) {
     e = { error };
   } finally {
     try {
-      if (r && !r.done && (m = i["return"]))
-        m.call(i);
+      if (r && !r.done && (m = i["return"])) m.call(i);
     } finally {
-      if (e)
-        throw e.error;
+      if (e) throw e.error;
     }
   }
   return ar;
@@ -15853,10 +14548,10 @@ function createExportLogsServiceRequest(logRecords, options3) {
 }
 __name(createExportLogsServiceRequest, "createExportLogsServiceRequest");
 function createResourceMap(logRecords) {
-  var e_1, _a2;
+  var e_1, _a;
   var resourceMap = /* @__PURE__ */ new Map();
   try {
-    for (var logRecords_1 = __values2(logRecords), logRecords_1_1 = logRecords_1.next(); !logRecords_1_1.done; logRecords_1_1 = logRecords_1.next()) {
+    for (var logRecords_1 = __values(logRecords), logRecords_1_1 = logRecords_1.next(); !logRecords_1_1.done; logRecords_1_1 = logRecords_1.next()) {
       var record = logRecords_1_1.value;
       var resource = record.resource, _b = record.instrumentationScope, name_1 = _b.name, _c = _b.version, version = _c === void 0 ? "" : _c, _d = _b.schemaUrl, schemaUrl = _d === void 0 ? "" : _d;
       var ismMap = resourceMap.get(resource);
@@ -15876,11 +14571,9 @@ function createResourceMap(logRecords) {
     e_1 = { error: e_1_1 };
   } finally {
     try {
-      if (logRecords_1_1 && !logRecords_1_1.done && (_a2 = logRecords_1.return))
-        _a2.call(logRecords_1);
+      if (logRecords_1_1 && !logRecords_1_1.done && (_a = logRecords_1.return)) _a.call(logRecords_1);
     } finally {
-      if (e_1)
-        throw e_1.error;
+      if (e_1) throw e_1.error;
     }
   }
   return resourceMap;
@@ -15888,12 +14581,12 @@ function createResourceMap(logRecords) {
 __name(createResourceMap, "createResourceMap");
 function logRecordsToResourceLogs(logRecords, encoder) {
   var resourceMap = createResourceMap(logRecords);
-  return Array.from(resourceMap, function(_a2) {
-    var _b = __read5(_a2, 2), resource = _b[0], ismMap = _b[1];
+  return Array.from(resourceMap, function(_a) {
+    var _b = __read3(_a, 2), resource = _b[0], ismMap = _b[1];
     return {
       resource: createResource(resource),
-      scopeLogs: Array.from(ismMap, function(_a3) {
-        var _b2 = __read5(_a3, 2), scopeLogs = _b2[1];
+      scopeLogs: Array.from(ismMap, function(_a2) {
+        var _b2 = __read3(_a2, 2), scopeLogs = _b2[1];
         return {
           scope: createInstrumentationScope(scopeLogs[0].instrumentationScope),
           logRecords: scopeLogs.map(function(log) {
@@ -15908,7 +14601,7 @@ function logRecordsToResourceLogs(logRecords, encoder) {
 }
 __name(logRecordsToResourceLogs, "logRecordsToResourceLogs");
 function toLogRecord(log, encoder) {
-  var _a2, _b, _c;
+  var _a, _b, _c;
   return {
     timeUnixNano: encoder.encodeHrTime(log.hrTime),
     observedTimeUnixNano: encoder.encodeHrTime(log.hrTimeObserved),
@@ -15917,7 +14610,7 @@ function toLogRecord(log, encoder) {
     body: toAnyValue(log.body),
     attributes: toLogAttributes(log.attributes),
     droppedAttributesCount: log.droppedAttributesCount,
-    flags: (_a2 = log.spanContext) === null || _a2 === void 0 ? void 0 : _a2.traceFlags,
+    flags: (_a = log.spanContext) === null || _a === void 0 ? void 0 : _a.traceFlags,
     traceId: encoder.encodeOptionalSpanContext((_b = log.spanContext) === null || _b === void 0 ? void 0 : _b.traceId),
     spanId: encoder.encodeOptionalSpanContext((_c = log.spanContext) === null || _c === void 0 ? void 0 : _c.spanId)
   };
@@ -15935,17 +14628,15 @@ function toLogAttributes(attributes) {
 __name(toLogAttributes, "toLogAttributes");
 
 // ../../node_modules/.pnpm/@opentelemetry+exporter-logs-otlp-proto@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/exporter-logs-otlp-proto/build/esm/version.js
-var VERSION3 = "0.51.1";
+var VERSION = "0.51.1";
 
 // ../../node_modules/.pnpm/@opentelemetry+exporter-logs-otlp-proto@0.51.1_@opentelemetry+api@1.8.0/node_modules/@opentelemetry/exporter-logs-otlp-proto/build/esm/platform/node/OTLPLogExporter.js
-var __extends5 = /* @__PURE__ */ function() {
+var __extends4 = /* @__PURE__ */ function() {
   var extendStatics = /* @__PURE__ */ __name(function(d, b) {
     extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(d2, b2) {
       d2.__proto__ = b2;
     } || function(d2, b2) {
-      for (var p in b2)
-        if (Object.prototype.hasOwnProperty.call(b2, p))
-          d2[p] = b2[p];
+      for (var p in b2) if (Object.prototype.hasOwnProperty.call(b2, p)) d2[p] = b2[p];
     };
     return extendStatics(d, b);
   }, "extendStatics");
@@ -15964,29 +14655,28 @@ var __assign2 = function() {
   __assign2 = Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
       s = arguments[i];
-      for (var p in s)
-        if (Object.prototype.hasOwnProperty.call(s, p))
-          t[p] = s[p];
+      for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+        t[p] = s[p];
     }
     return t;
   };
   return __assign2.apply(this, arguments);
 };
 var USER_AGENT = {
-  "User-Agent": "OTel-OTLP-Exporter-JavaScript/" + VERSION3
+  "User-Agent": "OTel-OTLP-Exporter-JavaScript/" + VERSION
 };
 var DEFAULT_COLLECTOR_RESOURCE_PATH = "v1/logs";
 var DEFAULT_COLLECTOR_URL = "http://localhost:4318/" + DEFAULT_COLLECTOR_RESOURCE_PATH;
 var OTLPLogExporter = (
   /** @class */
   function(_super) {
-    __extends5(OTLPLogExporter2, _super);
+    __extends4(OTLPLogExporter2, _super);
     function OTLPLogExporter2(config5) {
       if (config5 === void 0) {
         config5 = {};
       }
       var _this = _super.call(this, config5) || this;
-      _this.headers = __assign2(__assign2(__assign2(__assign2({}, _this.headers), USER_AGENT), utils_exports.parseKeyPairsIntoRecord(getEnv().OTEL_EXPORTER_OTLP_LOGS_HEADERS)), parseHeaders(config5 === null || config5 === void 0 ? void 0 : config5.headers));
+      _this.headers = __assign2(__assign2(__assign2(__assign2({}, _this.headers), USER_AGENT), import_core6.baggageUtils.parseKeyPairsIntoRecord((0, import_core6.getEnv)().OTEL_EXPORTER_OTLP_LOGS_HEADERS)), parseHeaders(config5 === null || config5 === void 0 ? void 0 : config5.headers));
       return _this;
     }
     __name(OTLPLogExporter2, "OTLPLogExporter");
@@ -15994,7 +14684,7 @@ var OTLPLogExporter = (
       return createExportLogsServiceRequest(logs3);
     };
     OTLPLogExporter2.prototype.getDefaultUrl = function(config5) {
-      return typeof config5.url === "string" ? config5.url : getEnv().OTEL_EXPORTER_OTLP_LOGS_ENDPOINT.length > 0 ? appendRootPathToUrlIfNeeded(getEnv().OTEL_EXPORTER_OTLP_LOGS_ENDPOINT) : getEnv().OTEL_EXPORTER_OTLP_ENDPOINT.length > 0 ? appendResourcePathToUrl(getEnv().OTEL_EXPORTER_OTLP_ENDPOINT, DEFAULT_COLLECTOR_RESOURCE_PATH) : DEFAULT_COLLECTOR_URL;
+      return typeof config5.url === "string" ? config5.url : (0, import_core6.getEnv)().OTEL_EXPORTER_OTLP_LOGS_ENDPOINT.length > 0 ? appendRootPathToUrlIfNeeded((0, import_core6.getEnv)().OTEL_EXPORTER_OTLP_LOGS_ENDPOINT) : (0, import_core6.getEnv)().OTEL_EXPORTER_OTLP_ENDPOINT.length > 0 ? appendResourcePathToUrl((0, import_core6.getEnv)().OTEL_EXPORTER_OTLP_ENDPOINT, DEFAULT_COLLECTOR_RESOURCE_PATH) : DEFAULT_COLLECTOR_URL;
     };
     OTLPLogExporter2.prototype.getServiceClientType = function() {
       return ServiceClientType.LOGS;
@@ -16008,9 +14698,10 @@ var import_exporter_trace_otlp_proto = require("@opentelemetry/exporter-trace-ot
 var import_lodash4 = __toESM(require("lodash"));
 
 // src/instrumentation/utils.ts
-var import_semantic_conventions2 = require("@opentelemetry/semantic-conventions");
+var import_semantic_conventions = require("@opentelemetry/semantic-conventions");
 var import_api_logs = require("@opentelemetry/api-logs");
 var import_lodash = __toESM(require("lodash"));
+var import_api6 = require("@opentelemetry/api");
 var config = { isInstrumented: false, nativeConsole: { ...console } };
 var nativeConsole = config.nativeConsole;
 function convertSeverityTextToNumber(severityText) {
@@ -16056,8 +14747,7 @@ function convertSeverityValuesToLevel(severityNumber, severityText) {
 __name(convertSeverityValuesToLevel, "convertSeverityValuesToLevel");
 function getCallerInfo(frameDepth) {
   const stack = new Error().stack;
-  if (!stack)
-    return {};
+  if (!stack) return {};
   const stackLines = stack.split("\n");
   const callerStackLine = stackLines[frameDepth + 1];
   const callerAndPathRegex = /at (?<caller>.+?) \((?<filePath>[^:()]+(?::[^:()]+)*):(?<lineNum>\d+):\d+\)/;
@@ -16076,8 +14766,7 @@ function getCallerInfo(frameDepth) {
 }
 __name(getCallerInfo, "getCallerInfo");
 function flattenObject(obj, parentKey = "", result = {}, seen = /* @__PURE__ */ new Set(), maxObjectKeys = 30, maxDepth = 4) {
-  if (!obj)
-    return;
+  if (!obj) return;
   if (maxDepth < 0) {
     result[parentKey] = "<max depth exceeded>";
     return;
@@ -16112,16 +14801,22 @@ function emitOtelLog({
   attributes,
   stackDepth
 }) {
-  if (!config.isInstrumented)
-    return;
+  if (!config.isInstrumented) return;
   const attrs = { ...attributes };
   if (stackDepth != null) {
     const { filePath, lineNum, caller } = getCallerInfo(stackDepth + 1);
     Object.assign(attrs, {
-      [import_semantic_conventions2.SEMATTRS_CODE_FILEPATH]: filePath,
-      [import_semantic_conventions2.SEMATTRS_CODE_LINENO]: lineNum,
-      [import_semantic_conventions2.SEMATTRS_CODE_FUNCTION]: caller
+      [import_semantic_conventions.SEMATTRS_CODE_FILEPATH]: filePath,
+      [import_semantic_conventions.SEMATTRS_CODE_LINENO]: lineNum,
+      [import_semantic_conventions.SEMATTRS_CODE_FUNCTION]: caller
     });
+  }
+  const baggage = import_api6.propagation.getBaggage(import_api6.context.active());
+  if (baggage) {
+    const sessionId = baggage.getEntry("session.id")?.value;
+    if (sessionId) {
+      attrs["session.id"] = sessionId;
+    }
   }
   const otelLogger = import_api_logs.logs.getLogger("default");
   otelLogger.emit({
@@ -16134,7 +14829,7 @@ function emitOtelLog({
 __name(emitOtelLog, "emitOtelLog");
 
 // src/instrumentation/index.ts
-var import_api21 = require("@opentelemetry/api");
+var import_api9 = require("@opentelemetry/api");
 
 // src/instrumentation/console.ts
 var console_exports = {};
@@ -16222,8 +14917,7 @@ var hasProtoTrim = typeof String.prototype.trim === "function";
 // src/instrumentation/console.ts
 var import_util8 = __toESM(require("util"));
 function instrumentConsole() {
-  if (console._instrumented)
-    return;
+  if (console._instrumented) return;
   const { log, error, warn, info, debug, timeLog, timeEnd } = console;
   [
     { name: "log", logger: log, level: "INFO" },
@@ -16239,10 +14933,8 @@ function instrumentConsole() {
       const contentWoCtx = content.filter((c) => !isObject(c) || !("ctx" in c || "authCtx" in c));
       const contentCtx = mergeAll_default(
         content.filter((c) => isObject(c) && ("ctx" in c || "authCtx" in c)).map((c) => {
-          if (c.ctx)
-            return c.ctx;
-          if (c.authCtx)
-            return c.authCtx;
+          if (c.ctx) return c.ctx;
+          if (c.authCtx) return c.authCtx;
           return {};
         })
       );
@@ -16299,11 +14991,11 @@ __name(traceloopInstrumentations, "traceloopInstrumentations");
 var import_instrumentation2 = require("@opentelemetry/instrumentation");
 
 // src/instrumentation/trace.ts
-var import_api19 = require("@opentelemetry/api");
+var import_api7 = require("@opentelemetry/api");
 function withTracing(fn, ctx = {}) {
   return function(...args2) {
     const { name, trackArgs = true, maxArgKeys, maxArgDepth, attributes, setSpan, setArgs } = ctx;
-    const tracer = import_api19.trace.getTracer("default");
+    const tracer = import_api7.trace.getTracer("default");
     if (!config.isInstrumented) {
       return fn(...args2);
     }
@@ -16317,14 +15009,20 @@ function withTracing(fn, ctx = {}) {
         }
         if (trackArgs && !setArgs) {
           if (args2.length === 1) {
-            const flatObj = flattenObject(args2[0], "", {}, /* @__PURE__ */ new Set(), maxArgKeys, maxArgDepth);
-            flatObj && Object.entries(flatObj).forEach(([key, value]) => {
-              span.setAttribute(key, value);
-            });
+            if (args2[0] != null && typeof args2[0] === "object") {
+              const flatObj = flattenObject(args2[0], "", {}, /* @__PURE__ */ new Set(), maxArgKeys, maxArgDepth);
+              flatObj && Object.entries(flatObj).forEach(([key, value]) => {
+                span.setAttribute(key, value);
+              });
+            } else if (args2[0] == null) {
+              span.setAttribute("args.0", `<${args2[0]}>`);
+            } else {
+              span.setAttribute("args.0", args2[0]);
+            }
           } else if (args2.length > 1) {
             const flatObjs = flattenObject(args2, "", {}, /* @__PURE__ */ new Set(), maxArgKeys, maxArgDepth);
             flatObjs && Object.entries(flatObjs).forEach(([key, value]) => {
-              span.setAttribute(key, value);
+              span.setAttribute(`args.${key}`, value);
             });
           }
         }
@@ -16340,7 +15038,7 @@ function withTracing(fn, ctx = {}) {
           return ret.then((res) => {
             return res;
           }).catch((err) => {
-            span.setStatus({ code: import_api19.SpanStatusCode.ERROR, message: String(err) });
+            span.setStatus({ code: import_api7.SpanStatusCode.ERROR, message: String(err) });
             span.recordException(err);
             span.setAttribute("exception.message", err.message);
             span.setAttribute("exception.stacktrace", err.stack);
@@ -16357,7 +15055,7 @@ function withTracing(fn, ctx = {}) {
         span.end();
         return ret;
       } catch (err) {
-        span.setStatus({ code: import_api19.SpanStatusCode.ERROR, message: err.message });
+        span.setStatus({ code: import_api7.SpanStatusCode.ERROR, message: err.message });
         span.recordException(err);
         span.setAttribute("exception.message", err.message);
         err.stack && span.setAttribute("exception.stacktrace", err.stack || "");
@@ -16385,7 +15083,7 @@ __export(pino_exports, {
   options: () => options,
   write: () => write
 });
-var import_semantic_conventions3 = require("@opentelemetry/semantic-conventions");
+var import_semantic_conventions2 = require("@opentelemetry/semantic-conventions");
 var import_pino = __toESM(require_pino());
 var import_lodash2 = __toESM(require("lodash"));
 function write(str) {
@@ -16408,9 +15106,9 @@ var config2 = {
 function mixin() {
   const { filePath, lineNum, caller } = getCallerInfo(config2.mixinStackDepth);
   return import_lodash2.default.omitBy({
-    [import_semantic_conventions3.SEMATTRS_CODE_FILEPATH]: filePath,
-    [import_semantic_conventions3.SEMATTRS_CODE_LINENO]: lineNum,
-    [import_semantic_conventions3.SEMATTRS_CODE_FUNCTION]: caller
+    [import_semantic_conventions2.SEMATTRS_CODE_FILEPATH]: filePath,
+    [import_semantic_conventions2.SEMATTRS_CODE_LINENO]: lineNum,
+    [import_semantic_conventions2.SEMATTRS_CODE_FUNCTION]: caller
   }, import_lodash2.default.isNil);
 }
 __name(mixin, "mixin");
@@ -16506,7 +15204,7 @@ __name(isObject2, "isObject");
 
 // src/instrumentation/pino-http.ts
 var options2 = {
-  customSuccessMessage: (req, res) => {
+  customSuccessMessage: /* @__PURE__ */ __name((req, res) => {
     if (iudexTrpc.isTrpcRequest(req)) {
       try {
         return iudexTrpc.trpcReqMessage(req, res);
@@ -16514,7 +15212,7 @@ var options2 = {
       }
     }
     return !req.readableAborted && res.writableEnded ? "request completed" : "request aborted";
-  }
+  }, "customSuccessMessage")
 };
 var iudexPinoHttp = {
   options: options2
@@ -16571,7 +15269,7 @@ __export(fastify_exports, {
   mixin: () => mixin2,
   stream: () => stream
 });
-var import_semantic_conventions4 = require("@opentelemetry/semantic-conventions");
+var import_semantic_conventions3 = require("@opentelemetry/semantic-conventions");
 var import_lodash3 = __toESM(require("lodash"));
 var stream = iudexPino.destination;
 var config4 = {
@@ -16580,9 +15278,9 @@ var config4 = {
 function mixin2() {
   const { filePath, lineNum, caller } = getCallerInfo(config4.mixinStackDepth);
   return import_lodash3.default.omitBy({
-    [import_semantic_conventions4.SEMATTRS_CODE_FILEPATH]: filePath,
-    [import_semantic_conventions4.SEMATTRS_CODE_LINENO]: lineNum,
-    [import_semantic_conventions4.SEMATTRS_CODE_FUNCTION]: caller
+    [import_semantic_conventions3.SEMATTRS_CODE_FILEPATH]: filePath,
+    [import_semantic_conventions3.SEMATTRS_CODE_LINENO]: lineNum,
+    [import_semantic_conventions3.SEMATTRS_CODE_FUNCTION]: caller
   }, import_lodash3.default.isNil);
 }
 __name(mixin2, "mixin");
@@ -16604,18 +15302,18 @@ __export(aws_api_gateway_exports, {
   createSetSpan: () => createSetSpan,
   withTracing: () => withTracing2
 });
-var import_api20 = require("@opentelemetry/api");
+var import_api8 = require("@opentelemetry/api");
 function createSetSpan(ctx) {
   return function(span, ret) {
     return ret.then((res) => {
       if (res.statusCode && res.statusCode >= 500) {
-        span.setStatus({ code: import_api20.SpanStatusCode.ERROR, message: res.body });
+        span.setStatus({ code: import_api8.SpanStatusCode.ERROR, message: res.body });
         span.setAttribute("http.response.status_code", res.statusCode);
       } else {
         res.statusCode && span.setAttribute("http.response.status_code", res.statusCode);
       }
     }).catch((err) => {
-      span.setStatus({ code: import_api20.SpanStatusCode.ERROR, message: err.message });
+      span.setStatus({ code: import_api8.SpanStatusCode.ERROR, message: err.message });
       span.setAttribute("http.response.status_code", 500);
       span.setAttribute("exception.message", err.message);
       span.setAttribute("exception.stacktrace", err.stack);
@@ -16638,11 +15336,19 @@ function createSetArgs(ctx) {
 }
 __name(createSetArgs, "createSetArgs");
 function withTracing2(fn, ctx) {
-  return withTracing(fn, {
-    name: ctx.name,
-    setSpan: createSetSpan(ctx),
-    setArgs: createSetArgs(ctx)
-  });
+  return (event, lambdaContext) => {
+    const extractedContext = import_api8.propagation.extract(import_api8.context.active(), event.headers);
+    const baggage = import_api8.propagation.getBaggage(extractedContext);
+    const newContext = baggage ? import_api8.propagation.setBaggage(extractedContext, baggage) : extractedContext;
+    return import_api8.context.with(
+      newContext,
+      () => withTracing(fn, {
+        name: ctx.name,
+        setSpan: createSetSpan(ctx),
+        setArgs: createSetArgs(ctx)
+      })(event, lambdaContext)
+    );
+  };
 }
 __name(withTracing2, "withTracing");
 
@@ -16652,22 +15358,22 @@ __export(aws_lambda_exports, {
   withTracing: () => withTracing3
 });
 function withTracing3(fn, ctx) {
-  const wrapper = /* @__PURE__ */ __name((event, context, cb) => {
-    const remainingTimeMs = context.getRemainingTimeInMillis?.();
+  const wrapper = /* @__PURE__ */ __name((event, context3, cb) => {
+    const remainingTimeMs = context3.getRemainingTimeInMillis?.();
     if (remainingTimeMs) {
       setTimeout(() => {
         setError(new Error(`${ctx.name} timeout`));
       }, remainingTimeMs - (ctx.timeoutBuffer ?? 100));
     }
-    context.callbackWaitsForEmptyEventLoop && setAttribute("aws.callbackWaitsForEmptyEventLoop", context.callbackWaitsForEmptyEventLoop);
-    context.functionName && setAttribute("aws.functionName", context.functionName);
-    context.functionVersion && setAttribute("aws.functionVersion", context.functionVersion);
-    context.invokedFunctionArn && setAttribute("aws.invokedFunctionArn", context.invokedFunctionArn);
-    context.memoryLimitInMB && setAttribute("aws.memoryLimitInMB", context.memoryLimitInMB);
-    context.awsRequestId && setAttribute("aws.awsRequestId", context.awsRequestId);
-    context.logGroupName && setAttribute("aws.logGroupName", context.logGroupName);
-    context.logStreamName && setAttribute("aws.logStreamName", context.logStreamName);
-    return fn(event, context, cb);
+    context3.callbackWaitsForEmptyEventLoop && setAttribute("aws.callbackWaitsForEmptyEventLoop", context3.callbackWaitsForEmptyEventLoop);
+    context3.functionName && setAttribute("aws.functionName", context3.functionName);
+    context3.functionVersion && setAttribute("aws.functionVersion", context3.functionVersion);
+    context3.invokedFunctionArn && setAttribute("aws.invokedFunctionArn", context3.invokedFunctionArn);
+    context3.memoryLimitInMB && setAttribute("aws.memoryLimitInMB", context3.memoryLimitInMB);
+    context3.awsRequestId && setAttribute("aws.awsRequestId", context3.awsRequestId);
+    context3.logGroupName && setAttribute("aws.logGroupName", context3.logGroupName);
+    context3.logStreamName && setAttribute("aws.logStreamName", context3.logStreamName);
+    return fn(event, context3, cb);
   }, "wrapper");
   return withTracing(wrapper, {
     name: ctx.name
@@ -16679,7 +15385,7 @@ __name(withTracing3, "withTracing");
 var console2 = nativeConsole;
 if (process.env.IUDEX_DEBUG) {
   console2.log("IUDEX_DEBUG on. Setting diag logger to console.");
-  import_api21.diag.setLogger(new import_api21.DiagConsoleLogger(), import_api21.DiagLogLevel.DEBUG);
+  import_api9.diag.setLogger(new import_api9.DiagConsoleLogger(), import_api9.DiagLogLevel.DEBUG);
 }
 function defaultInstrumentConfig() {
   if (typeof process === "undefined") {
@@ -16702,8 +15408,7 @@ function defaultInstrumentConfig() {
 }
 __name(defaultInstrumentConfig, "defaultInstrumentConfig");
 function instrument(instrumentConfig = {}) {
-  if (config.isInstrumented)
-    return;
+  if (config.isInstrumented) return;
   const {
     baseUrl,
     iudexApiKey,
@@ -16729,6 +15434,12 @@ function instrument(instrumentConfig = {}) {
   }
   const headers = buildHeaders({ iudexApiKey, publicWriteOnlyIudexApiKey, headers: configHeaders });
   const resource = buildResource({ serviceName, instanceId, gitCommit, githubUrl, env });
+  const propagator = new import_core7.CompositePropagator({
+    propagators: [
+      new import_core7.W3CTraceContextPropagator(),
+      new import_core7.W3CBaggagePropagator()
+    ]
+  });
   const loggerProvider = new import_sdk_logs.LoggerProvider({ resource });
   const logExporter = new OTLPLogExporter({ url: baseUrl + "/v1/logs", headers });
   const logRecordProcessor = new import_sdk_logs.BatchLogRecordProcessor(logExporter);
@@ -16740,10 +15451,14 @@ function instrument(instrumentConfig = {}) {
   import_api_logs2.logs.setGlobalLoggerProvider(loggerProvider);
   const traceExporter = new import_exporter_trace_otlp_proto.OTLPTraceExporter({ url: baseUrl + "/v1/traces", headers });
   const spanProcessor = new import_sdk_trace_node.BatchSpanProcessor(traceExporter);
+  const baggageSpanProcessor = new import_baggage_span_processor.BaggageSpanProcessor((baggageKey) => baggageKey.startsWith("session"));
   const tracerProvider = new import_sdk_trace_node.NodeTracerProvider({ resource });
-  tracerProvider.register();
+  tracerProvider.register({
+    propagator
+  });
   tracerProvider.addSpanProcessor(spanProcessor);
-  import_api21.trace.setGlobalTracerProvider(tracerProvider);
+  tracerProvider.addSpanProcessor(baggageSpanProcessor);
+  import_api9.trace.setGlobalTracerProvider(tracerProvider);
   const instrumentations = [
     // Instrument OTel auto
     ...(0, import_auto_instrumentations_node.getNodeAutoInstrumentations)({
@@ -16768,11 +15483,15 @@ function instrument(instrumentConfig = {}) {
   const sdk = new import_sdk_node.NodeSDK({
     serviceName,
     resource,
-    logRecordProcessor,
-    spanProcessor,
-    autoDetectResources: true
+    logRecordProcessors: [logRecordProcessor],
+    spanProcessors: [spanProcessor, baggageSpanProcessor],
+    autoDetectResources: true,
+    textMapPropagator: propagator
   });
   sdk.start();
+  process.on("SIGTERM", async () => {
+    await sdk.shutdown();
+  });
   if (settings.instrumentConsole || settings.instrumentConsole == void 0) {
     instrumentConsole();
   }
@@ -16786,34 +15505,33 @@ function instrument(instrumentConfig = {}) {
       const tracerProvider2 = new import_sdk_trace_node.NodeTracerProvider({ resource: mergedResource });
       tracerProvider2.register();
       tracerProvider2.addSpanProcessor(spanProcessor);
-      import_api21.trace.setGlobalTracerProvider(tracerProvider2);
+      import_api9.trace.setGlobalTracerProvider(tracerProvider2);
     }
   };
 }
 __name(instrument, "instrument");
 function trackAttribute(key, value) {
-  const activeSpan = import_api21.trace.getActiveSpan();
+  const activeSpan = import_api9.trace.getActiveSpan();
   activeSpan?.setAttribute(key, value);
 }
 __name(trackAttribute, "trackAttribute");
 var setAttribute = trackAttribute;
 function setStatus(code) {
-  const activeSpan = import_api21.trace.getActiveSpan();
+  const activeSpan = import_api9.trace.getActiveSpan();
   activeSpan?.setStatus({ code });
 }
 __name(setStatus, "setStatus");
 function setError(err) {
-  const activeSpan = import_api21.trace.getActiveSpan();
-  if (!activeSpan)
-    return;
-  activeSpan.setStatus({ code: import_api21.SpanStatusCode.ERROR, message: err.message });
+  const activeSpan = import_api9.trace.getActiveSpan();
+  if (!activeSpan) return;
+  activeSpan.setStatus({ code: import_api9.SpanStatusCode.ERROR, message: err.message });
   activeSpan.setAttribute("exception.message", err.message);
   activeSpan.setAttribute("exception.stacktrace", err.stack);
   activeSpan.recordException(err);
 }
 __name(setError, "setError");
 function setName(name) {
-  const activeSpan = import_api21.trace.getActiveSpan();
+  const activeSpan = import_api9.trace.getActiveSpan();
   activeSpan?.updateName(name);
 }
 __name(setName, "setName");
@@ -16842,8 +15560,8 @@ function buildResource(instrumentConfig) {
     env
   } = { ...defaultInstrumentConfig(), ...instrumentConfig };
   return new import_resources.Resource(import_lodash4.default.omitBy({
-    [import_semantic_conventions5.SEMRESATTRS_SERVICE_NAME]: serviceName,
-    [import_semantic_conventions5.SEMRESATTRS_SERVICE_INSTANCE_ID]: instanceId,
+    [import_semantic_conventions4.SEMRESATTRS_SERVICE_NAME]: serviceName,
+    [import_semantic_conventions4.SEMRESATTRS_SERVICE_INSTANCE_ID]: instanceId,
     "git.commit": gitCommit,
     "github.url": githubUrl,
     "env": env

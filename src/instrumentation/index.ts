@@ -2,6 +2,7 @@ import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentation
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { BatchSpanProcessor, NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 import { Resource } from '@opentelemetry/resources';
+import { CompositePropagator, W3CBaggagePropagator, W3CTraceContextPropagator } from '@opentelemetry/core';
 import {
   SEMRESATTRS_SERVICE_INSTANCE_ID,
   SEMRESATTRS_SERVICE_NAME,
@@ -13,6 +14,7 @@ import {
   LogRecordProcessor,
   LogRecord,
 } from '@opentelemetry/sdk-logs';
+import { BaggageSpanProcessor } from '@opentelemetry/baggage-span-processor';
 import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-proto';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto';
 import _ from 'lodash';
@@ -131,6 +133,14 @@ export function instrument(instrumentConfig: InstrumentConfig = {}) {
   const headers = buildHeaders({ iudexApiKey, publicWriteOnlyIudexApiKey, headers: configHeaders });
   const resource = buildResource({ serviceName, instanceId, gitCommit, githubUrl, env });
 
+  // Configure propagator
+  const propagator = new CompositePropagator({
+    propagators: [
+      new W3CTraceContextPropagator(),
+      new W3CBaggagePropagator(),
+    ],
+  });
+
   // Configure logger
   const loggerProvider = new LoggerProvider({ resource });
   const logExporter = new OTLPLogExporter({ url: baseUrl + '/v1/logs', headers });
@@ -145,10 +155,15 @@ export function instrument(instrumentConfig: InstrumentConfig = {}) {
   // Configure tracer
   const traceExporter = new OTLPTraceExporter({ url: baseUrl + '/v1/traces', headers });
   const spanProcessor = new BatchSpanProcessor(traceExporter);
+  const baggageSpanProcessor =
+    new BaggageSpanProcessor((baggageKey: string) => baggageKey.startsWith('session'));
 
   const tracerProvider = new NodeTracerProvider({ resource });
-  tracerProvider.register();
+  tracerProvider.register({
+    propagator,
+  });
   tracerProvider.addSpanProcessor(spanProcessor);
+  tracerProvider.addSpanProcessor(baggageSpanProcessor);
   trace.setGlobalTracerProvider(tracerProvider);
 
   const instrumentations = [
@@ -177,9 +192,10 @@ export function instrument(instrumentConfig: InstrumentConfig = {}) {
   const sdk = new NodeSDK({
     serviceName,
     resource,
-    logRecordProcessor,
-    spanProcessor,
+    logRecordProcessors: [logRecordProcessor],
+    spanProcessors: [spanProcessor, baggageSpanProcessor],
     autoDetectResources: true,
+    textMapPropagator: propagator,
   });
   sdk.start();
 

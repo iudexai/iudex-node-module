@@ -18,7 +18,7 @@ export declare const config: {
 export declare function mixin(): Record<string, string | number | undefined>;
 export declare const destination: DestinationStream;
 export declare const options: LoggerOptions<never>;
-export declare const args: readonly [LoggerOptions<never>, DestinationStream];
+export declare const args: readonly [LoggerOptions<never, boolean>, DestinationStream];
 export declare const iudexPino: {
     write: typeof write;
     config: {
@@ -26,6 +26,6 @@ export declare const iudexPino: {
     };
     mixin: typeof mixin;
     destination: DestinationStream;
-    options: LoggerOptions<never>;
-    args: readonly [LoggerOptions<never>, DestinationStream];
+    options: LoggerOptions<never, boolean>;
+    args: readonly [LoggerOptions<never, boolean>, DestinationStream];
 };
